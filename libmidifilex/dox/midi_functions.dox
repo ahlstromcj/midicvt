@@ -1,0 +1,71 @@
+/******************************************************************************
+ * midi_functions.dox
+ *-----------------------------------------------------------------------------
+ *
+ * \library    libmidifilex
+ * \author     Chris Ahlstrom
+ * \version    0.2
+ * \date       2014-04-08
+ * \update     2014-06-21
+ * \license    GNU GPL 2.0 and above
+ *
+ *------------------------------------------------------------------------*//**
+
+\file    midi_functions.dox
+
+This document describes the functions and parameters of the libmidifilex
+modules.
+
+\page    midi_functions_page The libmidifilex Library
+
+\section midi_functions_intro Introduction to the MIDI File Library Module
+
+This library (<i>libmidifilex</i>) is based on the work of Tim Thompson
+(tjt\@blink.att.com), and updates by Michael Czeiszperger (mike\@pan.com)
+and Piet van Oostrum (piet\@cs.ruu.nl).
+Chris Ahlstrom (ahlstromcj\@gmail.com) made further updates for readability,
+documentation, coding conventions, and further bug fixes.
+
+The many global variables were moved into their own modules, and C accessor
+functions were written for many of them, so that the main routines of
+programs based on this library did not need the declaration of these
+variables.  This made it a lot easier to figure out the functionality of the
+code and add new functionality to it.
+
+The following modules are included:
+
+   -  <i>midicvt_base</i>
+      Provides public functions for initializing the private data used in
+      MIDI-to-text and text-to-MIDI conversions.
+   -  <i>midicvt_globals</i>
+      Provides access to private options via public pointers or
+      setter/getter (accessor) functions.
+   -  <i>midicvt_helpers</i>
+      Provides accessor functions for version information, help, setting up
+      any input or output files, and parsing the command line.
+   -  <i>midicvt_m2m</i>
+      Exposes new libmidifilex callback functions for usage in the midicvtpp
+      C++ application.
+   -  <i>midicvt_macros</i>
+      Defines common macros for MIDI processing, plus some "info-print"
+      macros.  Also included are macros to simulate the "bool" type and its
+      values in C++.
+   -  <i>midicvt_filex</i>
+      Provides slightly enhanced versions of the support functions and
+      callback function of the older libmidifile library.  Also defines the
+      macros defined by the original version of the library.
+   -  <i>t2mf</i>
+      These modules specify the text-to-MIDI conversion of the original
+      midicomp program.  They are defined using lex (flex) to generate C
+      files that can parse the data.  For convenience, a prebuilt module
+      called <i>t2m_no_flex</i> is provided to avoid having to install flex
+      in order to build this project.
+
+
+*//*-------------------------------------------------------------------------*/
+
+/*****************************************************************************
+ * midi_functions.dox
+ * --------------------------------------------------------------------------
+ * vim: ts=3 sw=3 et syntax=doxygen
+ *---------------------------------------------------------------------------*/

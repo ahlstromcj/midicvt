@@ -1,0 +1,65 @@
+
+
+WaoN is a Wave-to-Notes transcriber, a converter from a sound file to midi
+file. This version, midicvt, is a mild extension of the original program.
+
+Usage: midicvt [option ...]
+
+Options:
+  -h --help         Print this help.
+  -v, --version     Print version information.
+
+OPTIONS FOR FILES:
+
+  -i --input        Input WAV file (default: stdin).
+  -o --output       Output MID file (default: 'output.mid').
+                    Options -i and -o have argument '-' as stdin/stdout.
+  -p --patch        Patch file (default: no patch).
+
+FFT OPTIONS:
+
+  -n                Sampling number for WAV in 1 step (default: 2048).
+  -w --window       0 no window
+                    1 parzen window
+                    2 welch window
+                    3 hanning window (default)
+                    4 hamming window
+                    5 blackman window
+                    6 steeper 30-dB/octave rolloff window
+
+READING WAV OPTIONS:
+
+  -s --shift        Shift number from WAV in 1 step (default: 1/4 of -n option).
+
+PHASE-VOCODER OPTIONS:
+
+  --nophase         Don't use phase difference to improve frequency estimates.
+                    (default: use the correction)
+
+NOTE SELECTION OPTIONS:
+
+  -c --cutoff       log10 of cut-off ratio to scale velocity of note
+                    (default: -5.0)
+  -r --relative     log10 of cut-off ratio relative to the average.
+                    (default: no relative cutoff = absolute cutoff with the
+                    value in -c option).
+  -k --peak         Peak threshold for note-on, range [0,127]. (default: 128
+                    = no peak-search = search only first on-event).
+  -t --top          Top note [midi #]. (default: 103 = G7)
+  -b --bottom       Bottom note [midi #]. (default: 28 = E1)
+                    Middle C (261 Hz) = C4 = midi 60. Midi range [0,127].
+  -a --adjust       Adjust-pitch param, suggested by WaoNc after analysis.
+                    Unit is half-note, that is, +1 is half-note up, -0.5 is
+                    quater-note down. (default: 0)
+
+DRUM-REMOVAL OPTIONS
+
+  --psub-n          Number of averaging bins in one side.  That is, for n,
+                    (i-n,...,i,...,i+n) are averaged. (default: 0)
+  --psub-f          Factor for the average, where the power is modified as
+                    p[i] = [SQRT(p[i]) - f * SQRT(ave[i])]^2 (default: 0.0)
+
+OCTAVE-REMOVAL OPTIONS
+
+  --oct             Factor for the octave removal, where the power is modified
+                    as p[i] = [SQRT(p[i]) - f * SQRT(oct[i])]^2 (default: 0.0)

@@ -1,0 +1,51 @@
+Acoustic Bass Drum,35,N/A,35,Acoustic Bass Drum
+Bass Drum 1,36,C1 Bass Drum Reverb,36,Bass Drum 1
+Side Stick,37,Triangle Mute,80,Mute Triangle
+Acoustic Snare,38,Synth Snare,40,Electric Snare
+Hand Clap,39,Triangle Open,81,Open Triangle
+Electric Snare,40,Synth Tom Bass,41,Low Floor Tom
+Low Floor Tom,41,Synth Tom Low,45,Low Tom
+Closed Hi-Hat,42,Synth Tom Mid,47,Low-Mid Tom
+High Floor Tom,43,Synth Tom High,48,Hi-Mid Tom
+Pedal Hi-Hat,44,Bass Drum Low,35,Acoustic Bass Drum
+Low Tom,45,Bass Drum High,36,Bass Drum 1
+Open Hi-Hat,46,Rim Shot 1,37,Side Stick
+Low-Mid Tom,47,Tom Bass,41,Low Floor Tom
+Hi-Mid Tom,48,C2 Tom Low,45,Low Tom
+Crash Cymbal 1,49,Snare High,40,Electric Snare
+High Tom,50,Tom Mid,47,Low-Mid Tom
+Ride Cymbal 1,51,Rim Shot 2,37,Side Stick
+Chinese Cymbal,52,Snare Low,38,Acoustic Snare
+Ride Bell,53,Tom High,48,Hi-Mid Tom
+Tambourine,54,Hand Claps,77,Low Wood Block
+Splash Cymbal,55,Cowbell,56,Cowbell
+Cowbell,56,Cabasa,69,Cabasa
+Crash Cymbal 2,57,High Hat Closed,42,Closed Hi-Hat
+Vibraslap,58,Brash Hit,57,Crash Cymbal 2
+Ride Cymbal 2,59,High Hat Open,46,Open Hi-Hat
+Hi Bongo,60,C3 Crash Cymbal,49,Crash Cymbal 1
+Low Bongo,61,Splash Cymbal,55,Splash Cymbal
+Mute Hi Conga,62,Ride Cymbal Cup,51,Ride Cymbal 1
+Open Hi Conga,63,Ride Cymbal Edge,59,Ride Cymbal 2
+Low Conga,64,Conga Low,64,Low Conga
+High Timbale,65,Conga High,63,Open Hi Conga
+Low Timbale,66,Conga High Mute,62,Mute Hi Conga
+High Agogo,67,Bongo Low,61,Low Bongo
+Low Agogo,68,Bongo High,60,Hi Bongo
+Cabasa,69,Timbale Low,66,Low Timbale
+Maracas,70,Timbale High,65,High Timbale
+Short Whistle,71,Tambourine,54,Tambourine
+Long Whistle,72,C4 Claves Low,75,Claves
+Short Guiro,73,Claves High,75,Claves
+Long Guiro,74,Agogo Low,68,Low Agogo
+Claves,75,Agogo High,67,High Agogo
+Hi Wood Block,76,Cuica Low,78,Mute Cuica
+Low Wood Block,77,Cuica High,79,Open Cuica
+Mute Cuica,78,Whistle,71,Short Whistle
+Open Cuica,79,Brash Squeeze,55,Splash Cymbal
+Mute Triangle,80,High Hat Foot,44,Pedal Hi-Hat
+Open Triangle,81,Snare Gated Reverb,40,Electric Snare
+N/A,82,Voice One,45,Low Tom
+N/A,83,Voice Two,47,Low-Mid Tom
+N/A,84,Voice Three,48,Hi-Mid Tom
+N/A,85,Voice Four,50,High Tom

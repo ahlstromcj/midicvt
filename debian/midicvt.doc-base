@@ -1,0 +1,10 @@
+Document: midicvt
+Title: Debian liblibmidifilex Manual
+Author: Chris Ahlstrom <ahlstromcj@xyz.com>
+Abstract: This manual describes what midicvt and its accompanying libraries are
+   and how they can be used, in Doxygenated PDF format.
+Section: unknown
+
+Format: PDF
+Index: /usr/share/doc/midicvt-1.0/pdf/
+Files: /usr/share/doc/midicvt-1.0/pdf/*.pdf

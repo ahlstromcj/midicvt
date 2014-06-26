@@ -1,0 +1,27 @@
+Playing the original stomtors.mid file:
+
+   % timidity stomtors.mid 
+   Playing stomtors.mid
+   MIDI file: stomtors.mid
+   Format: 1  Tracks: 16  Divisions: 192
+   Track name: Vector
+   Track name: Chords
+   Track name: Bass
+   Track name: Melody
+   Track name: All Percussion
+   Track name: Deep Bass Clock
+   Track name: Gong
+   Track name: Syncop Clock
+   Track name: Bent Cymbal
+   Track name: Click Track
+   No instrument mapped to tone bank 0, program 20 -
+      this instrument will not be heard
+   No instrument mapped to tone bank 0, program 100 -
+      this instrument will not be heard
+   No instrument mapped to tone bank 0, program 112 -
+      this instrument will not be heard
+   No instrument mapped to tone bank 0, program 113 -
+      this instrument will not be heard
+
+Basically the same results for the recompiled version of that MIDI file.
+

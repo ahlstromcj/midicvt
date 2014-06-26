@@ -1,0 +1,64 @@
+Source: midicvt
+Version: 0.2.0-0
+Section: sound
+Priority: extra
+Build-Depends: debhelper (>= 7), autotools-dev
+Maintainer: Chris Ahlstrom <ahlstromcj@xyz.com>
+Uploaders: Chris Ahlstrom <ahlstromcj@xyz.com>
+Installed-Size: 999
+Standards-Version: 3.7.3
+Homepage: http://tbd.net
+
+Package: midicvt
+Section: sound
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: A program to convert MIDI to ASCII, based on midicomp and midi2text
+ Provides an updated version of programs from Xxxx Yyyy.
+
+Package: midicvtpp
+Section: sound
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: A program to convert MIDI files, extending midicvt.
+ Provides a way to use INI files remap MIDI files.
+
+Package: libmidipp-dev
+Section: libdevel
+Architecture: any
+Depends: libmidipp (= ${binary:Version})
+Description: A portable library for C++ MIDI programs.
+ Provides an updated version of libmidifile from Xxxx Yyyy.
+ This library allows the developer to create a set of C-interface callbacks
+ that process incoming MIDI data.
+ .
+ This package contains the development files.
+
+Package: libmidipp
+Section: libs
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: A portable library for C++ MIDI programs.
+ Provides an updated version of libmidifile from Xxxx Yyyy.
+ This library allows the developer to create a set of C-interface callbacks
+ that process incoming MIDI data.
+
+Package: libmidifilex-dev
+Section: libdevel
+Architecture: any
+Depends: libmidifilex (= ${binary:Version})
+Description: A non-portable library for C MIDI programs.
+ Provides an updated version of libmidifile from Xxxx Yyyy.
+ This library allows the developer to create a set of C-interface callbacks
+ that process incoming MIDI data.
+ .
+ This package contains the development files.
+
+Package: libmidifilex
+Section: libs
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: A non-portable library for C MIDI programs.
+ Provides an updated version of libmidifile from Xxxx Yyyy.
+ This library allows the developer to create a set of C-interface callbacks
+ that process incoming MIDI data.

@@ -1,0 +1,193 @@
+/******************************************************************************
+ * midicvt_usage.dox
+ *-----------------------------------------------------------------------------
+ *
+ *    This module provides no code.  It provides only a Doxygen "Doxygen
+ *    information" page.
+ *
+ * Date:      2014-05-21
+ * Update:    2014-06-01
+ *
+ *------------------------------------------------------------------------*//**
+
+\file       midicvt_usage.dox
+
+midicvt is a program to convert MIDI files to text files, and provide
+corrections to flawed MIDI files.
+
+\page       midicvt_usage   midicvt
+
+\section midicvt_usage_intro Introduction to midicvt
+
+The C program <code>midicvt</code> lets one convert between text and MIDI
+formats, and leverage scripting to transform MIDI files in infinite ways.
+
+\section midicvt_usage_overview Overview of midicvt
+
+You can run the command 
+
+\verbatim
+   midicvt --help
+\endverbatim
+
+in order to see the following brief explanation.
+
+\verbatim
+ -2  --m2m       Convert MIDI to MIDI (testing only in midicvt).
+ -c  --compile   Flag to compile ASCII input into SMF/MIDI.
+ -d  --debug     Send any debug output to stderr.
+ -f  --fold N    Fold SYSEX data at N columns.
+ -i  --input F   Specify input file (replaces stdin).  Default file-name is
+                 'out.mid' or 'out.asc', depending on --compile option.
+ -m  --merge     Collapse continued system-exclusives.
+
+ -n  --note      Show note on/off value using note+octave.
+ -o  --output F  Specify output file (replaces stdout). Default file-name
+                 is 'out.asc' or 'out.mid', depending on --compile option.
+ -t  --time      Use absolute time instead of ticks.
+ -v  --verbose   Output in columns with --notes on.
+ -r  --report    Write detailed information to stderr (debugging).
+ --version       Show the version information for this program.
+
+To translate a SMF file to plain ASCII format:
+
+    midicvt midi.mid                     View as plain text.
+    midicvt -i midi.mid [ -o ] midi.asc  Create a text version.
+    midicvt midi.mid > midi.asc          Create a text version.
+
+To translate a plain ASCII formatted file to SMF:
+
+    midicvt -c midi.asc midi.mid         Create a MIDI version.
+    midicvt -c midi.asc -o midi.mid      Create a MIDI version.
+
+    midicvt midi.mid | somefilter | midicvt -c -o midi2.mid
+
+ It is recommended to always use -i/--input and -o/--output to specify
+ the input and output file-names.
+\endverbatim
+
+The next section discusses each option in more detail.
+
+\section midicvt_usage Usage of midicvt
+
+The basic use case is the conversion of a MIDI file to text, dumping the
+output to standard output.  This output can be redirected to an output
+file.
+
+\verbatim
+    $ midicvt midi.mid
+       (lots of output)
+    $ midicvt midi.mid > midi.asc
+\endverbatim
+
+We've made some extensions to the program, so that it is better, in general,
+to be specific about the input by using the -i or --input options, and
+to be specific about the outut by using the -o or --output options.
+
+\verbatim
+    $ midicvt --input midi.mid --output midi.asc
+\endverbatim
+
+To convert a file from the ASCII format back to MIDI, use the -c or
+--compile option:
+
+\verbatim
+    midicvt --compile midi.asc midi.mid
+    midicvt --compile midi.asc --output midi.mid
+\endverbatim
+
+You can also pipe the ASCII output to a filter program and then to a new
+MIDI file:
+
+\verbatim
+    midicvt midi.mid | somefilter | midicvt --compile --output midi2.mid
+\endverbatim
+
+However, we may have broken this facility.  Don't be suprised if it doesn't
+work yet.
+
+Also look at the <code>tests/test_script</code> to see some examples of
+using <i>midicvt</i>.
+
+The next sections discuss each option in more detail.
+
+\subsection midicvt_usage_input midicvt --input
+
+The -i or --input option specifies the input file without any chance for
+ambiguity.  Unless you pipe the output through an ASCII filter, you should
+prefer using this option, as opposed to specifying the input file by its
+position as first file on the command-line.
+
+\subsection midicvt_usage_output midicvt --output
+
+The -o or --output option specifies the output file without any chance for
+ambiguity.  Unless you pipe the input from an ASCII filter, you should
+prefer using this option, as opposed to specifying the output file by its
+position as second file on the command-line.
+
+\subsection midicvt_usage_m2m midicvt --m2m
+
+The -2 or --m2m option is a new feature of the C program.  It doesn't do
+much but demonstrate that we can convert a file from MIDI to ASCII to MIDI.
+This feature is used more fully in the C++ program <i>midicvtpp</i>.
+
+Note that this conversion will often apply some fixes to broken MIDI files,
+so that the output MIDI file is not the same as the input MIDI file.
+(However, both will generate the same ASCII output.)
+
+\subsection midicvt_usage_compile midicvt --compile
+
+The -c or --compile option converts an ASCII file generated by
+<code>midicvt --input</code> back into a MIDI file.
+
+Note that, even if the ASCII file has not been edited, this process can
+actually fix minor issues in the MIDI file, and so the resultant MIDI file
+might not be identical to the original.
+
+\subsection midicvt_usage_debug midicvt --debug
+
+The -d or --debug option simply sends additional output to stderr, as an aid
+to troubleshooting.  Also see the -r or --report option.
+
+\subsection midicvt_usage_fold midicvt --fold
+
+The -f or --fold option folds the ASCII output of generated SYSEX data for
+easier reading.  Provide the number of columns at which to fold the output.
+
+\subsection midicvt_usage_merge midicvt --merge
+
+The -m or --merge option collapses continued system-exclusive message into
+one system-exclusive message (we think).
+
+\subsection midicvt_usage_note midicvt --note
+
+The -n or --note option displays note values in note notation (e.g. a4#) as
+opposed to just a MIDI note number.
+
+\subsection midicvt_usage_time midicvt --time
+
+The -t or --time option displays time in an expanded notation.
+
+\subsection midicvt_usage_verbose midicvt --verbose
+
+The -v or --verbose option displays more information, and uses longer names
+for the various MIDI events.
+
+\subsection midicvt_usage_report midicvt --report
+
+The -r or --report option is a new feature used mostly by the developer.  It
+dumps the MIDI information to standard-error in a very verbose format.  You
+won't have much use for this option.
+
+\subsection midicvt_usage_version midicvt --version and --help
+
+These options tell you something about the program.
+
+ *//*-------------------------------------------------------------------------*/
+
+/******************************************************************************
+ * midicvt_usage.dox
+ *----------------------------------------------------------------------------
+ * vim: ts=3 sw=3 et syntax=doxygen
+ *//*-------------------------------------------------------------------------*/
+

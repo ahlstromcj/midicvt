@@ -1,0 +1,202 @@
+ex1.xxd
+
+The ex1.mid file seems to be an incorrectly-formatted MIDI file.  The
+first track should just contain setup information, but it also contains
+note data.  Note data should appear in subsequent tracks.  Maybe this
+file was original SMF 0 instead of SMF 1.
+
+Header chunk:
+
+0000000: 4d  M
+0000001: 54  T
+0000002: 68  h
+0000003: 64  d
+
+Chunk size (4 bytes, dword):
+
+0000004: 00  .
+0000005: 00  .
+0000006: 00  .
+0000007: 06  .
+
+Format type (2 bytes, word, values are 0, 1, or 2):
+
+0000008: 00  .
+0000009: 01  .
+
+Number of tracks (2 bytes, word, 1 to 65535): 
+
+   Format 0 will always have only one track.
+
+   Format 1 has multiple tracks, the first containing song information
+   of various kinds.
+
+000000a: 00  .
+000000b: 01  .
+
+Time division (2 bytes, word):
+
+000000c: 01  .       0 == ticks per quarter-note, 1 == negative SMPTE
+000000d: 80  .       128 ticks per frame
+
+First track chunk:   [ "MTrk" ]
+
+000000e: 4d  M
+000000f: 54  T
+0000010: 72  r
+0000011: 6b  k
+
+Size of track (0x7e == 126 bytes)
+
+0000012: 00  .
+0000013: 00  .
+0000014: 00  .
+0000015: 7e  ~
+
+Track 1 data:        [ " 0 Meta SeqName "Track 1" ]
+
+0000016: 00  .       Delta time
+0000017: ff  .       Starts text event
+0000018: 03  .       Indicates "Track name"
+0000019: 07  .       Length of track name (or sequence name)
+000001a: 54  T
+000001b: 72  r
+000001c: 61  a
+000001d: 63  c
+000001e: 6b  k
+000001f: 20   
+0000020: 31  1       7th byte of track name
+
+0000021: 00  .       Dt
+0000022: 90  .       Note On, Ch 0 ?
+0000023: 30  0       Note 0x30 (48) ?
+0000024: 46  F       Velocity 0x46 () ?
+
+0000025: 00  .       Dt
+0000026: ff  .       Tempo (ff 51 03 tt tt tt)
+0000027: 51  Q
+0000028: 03  .
+0000029: 07  .       07a120 == 500000 usec/quarter note == 120 bpm
+000002a: a1  .
+000002b: 20          End of Tempo
+
+000002c: 00  .       Dt
+000002d: ff  .       Bare Time Signature? (ff 58 02 nn dd)
+000002e: 58  X       58
+000002f: 02  .       02, seems to indicate a time-sig without the cc bb bytes)
+0000030: 04  .       4 / 4 (2^02 == 4)
+0000031: 02  .
+
+Beginning of main notes:
+
+0000032: 60  `       Dt = 96                       96 On ch=1 n=48 v=0
+0000033: 90  .       Note On, Ch 0
+0000034: 30  0       Note 0x30 (48)
+0000035: 00  .       Velocity 0
+
+0000036: 00  .       Dt = 0                        96 On ch=1 n=50 v=70
+-------: --  -       Note On byte is missing!!!!
+0000037: 32  2       Note 0x32 (50)
+0000038: 46  F       Velocity 0x46 (70)
+
+0000039: 60  `       Dt = 96                       192 On ch=1 n=50 v=0
+-------: --  -       Note On byte is missing!!!!
+000003a: 32  2       Note 0x32 (50)
+000003b: 00  .       Velocity 0
+
+000003c: 00  .                                     192 On ch=1 n=52 v=70
+-------: --  -       Note On byte is missing!!!!
+000003d: 34  4       Note 0x34 (52)
+000003e: 46  F       Velocity 0x46 (70)
+
+000003f: 60  `
+-------: --  -       Note On byte is missing!!!!
+0000040: 34  4
+0000041: 00  .
+
+0000042: 00  .
+0000043: 35  5
+0000044: 46  F
+0000045: 60  `
+0000046: 35  5
+0000047: 00  .
+0000048: 00  .
+0000049: 37  7
+000004a: 46  F
+000004b: 60  `
+000004c: 37  7
+000004d: 00  .
+000004e: 00  .
+000004f: 39  9
+0000050: 46  F
+0000051: 60  `
+0000052: 39  9
+0000053: 00  .
+0000054: 00  .
+0000055: 3b  ;
+0000056: 46  F
+0000057: 60  `
+0000058: 3b  ;
+0000059: 00  .
+000005a: 00  .
+000005b: 3c  <       Running status?
+000005c: 46  F
+000005d: 60  `
+000005e: 3c  <       Running status?
+000005f: 00  .
+0000060: 00  .
+0000061: 3e  >
+0000062: 46  F
+0000063: 60  `
+0000064: 3e  >
+0000065: 00  .
+0000066: 00  .
+0000067: 3c  <       Running status?
+0000068: 46  F
+0000069: 60  `
+000006a: 3c  <       Running status?
+000006b: 00  .
+000006c: 00  .
+000006d: 3b  ;
+000006e: 46  F
+000006f: 60  `
+0000070: 3b  ;
+0000071: 00  .
+0000072: 00  .
+0000073: 39  9
+0000074: 46  F
+0000075: 60  `
+0000076: 39  9
+0000077: 00  .
+0000078: 00  .
+0000079: 37  7
+000007a: 46  F
+000007b: 60  `
+000007c: 37  7
+000007d: 00  .
+000007e: 00  .
+000007f: 35  5
+0000080: 46  F
+0000081: 60  `
+0000082: 35  5
+0000083: 00  .
+0000084: 00  .
+0000085: 34  4
+0000086: 46  F
+0000087: 60  `
+0000088: 34  4
+0000089: 00  .
+000008a: 00  .
+000008b: 32  2
+000008c: 46  F
+000008d: 60  `
+000008e: 32  2
+000008f: 00  .
+0000090: 00  .
+
+Track End:           [ "TrkEnd" ]
+
+0000091: ff  .       End of track (ff 2f 00)
+0000092: 2f  /       EOT char 2
+0000093: 00  .       EOT char 3
+0000094: 0a  .

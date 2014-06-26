@@ -1,0 +1,128 @@
+Acoustic Grand Piano,0,Synth Brass 1,62,Synth Brass 1
+Bright Acoustic Piano,1,Jazz Organ 1,16,Drawbar Organ
+Electric Grand Piano,2,Pipe Organ,19,Church Organ
+Honky-tonk Piano,3,Piano,1,Bright Acoustic Piano
+Electric Piano 1,4,Harpsichord 1,6,Harpsichord
+Electric Piano 2,5,Electric Piano 1,4,Electric Piano 1
+Harpsichord,6,Celesta,8,Celesta
+Clavinet,7,Vibraphone,11,Vibraphone
+Celesta,8,Marimba,12,Marimba
+Glockenspiel,9,Steel Drum,114,Steel Drums
+Music Box,10,Violin 1,40,Violin
+Vibraphone,11,Cello,42,Cello
+Marimba,12,Jazz Guitar,26,Elec. Guitar (jazz)
+Xylophone,13,Distortion Guitar,30,Distortion Guitar
+Tubular Bells,14,Wood Bass 1,32,Acoustic Bass
+Dulcimer,15,Trumpet,56,Trumpet
+Drawbar Organ,16,Trombone,57,Trombone
+Percussive Organ,17,Horn,60,French Horn
+Rock Organ,18,Alto Sax,65,Alto Sax
+Church Organ,19,Clarinet,71,Clarinet
+Reed Organ,20,Flute,73,Flute
+Accordion,21,Bassoon,70,Bassoon
+Harmonica,22,Harmonica,22,Harmonica
+Tango Accordion,23,N/A,23,Tango Accordion
+Acoustic Guitar (nylon),24,Music Box,10,Music Box
+Acoustic Guitar (steel),25,Honkytonk Piano,3,Honky-tonk Piano
+Electric Guitar (jazz),26,N/A,26,Elec. Guitar (jazz)
+Electric Guitar (clean),27,Jazz Organ 2,18,Rock Organ
+Electric Guitar (muted),28,Tremolo Organ,17,Percussive Organ
+Overdriven Guitar,29,Full Organ,19,Church Organ
+Distortion Guitar,30,Clavi,7,Clavinet (?)
+Guitar harmonics,31,Accordion,23,Tango Accordion
+Acoustic Bass,32,Glockenspiel,9,Glockenspiel
+Electric Bass (finger),33,Steel Guitar,25,Acou. Guitar (steel)
+Electric Bass (pick),34,Banjo,28,Elec. Guitar (muted)
+Fretless Bass,35,Bowed Bass,42,Cello
+Slap Bass 1,36,Folk Guitar,25,Acou. Guitar (nylon)
+Slap Bass 2,37,Harp,46,Orchestral Harp
+Synth Bass 1,38,Elec Bass,33,Elec. Bass (finger)
+Synth Bass 2,39,Slap Bass,36,Slap Bass 1
+Violin,40,Ukulele,25,Acou. Guitar (nylon)
+Viola,41,Strings 1,48,String Ensemble 1
+Cello,42,N/A,42,Cello
+Contrabass,43,N/A,43,Contrabass
+Tremolo Strings,44,Mute Trumpet,59,Muted Trumpet
+Pizzicato Strings,45,Synth Reed 1,71,Clarinet (?)
+Orchestral Harp,46,N/A,46,Orchestral Harp
+Timpani,47,Synth Flute 2,73,Flute (?)
+String Ensemble 1,48,N/A,48,String Ensemble 1
+String Ensemble 2,49,Reed Organ,20,Reed Organ
+Synth Strings 1,50,Strings 2,49,String Ensemble 2
+Synth Strings 2,51,Synth Strings 1,51,Synth Strings 1
+Choir Aahs,52,N/A,52,Choir Aahs
+Voice Oohs,53,Harpsichord 2,6,Harpsichord
+Synth Voice,54,Electric Piano 2,5,Electric Piano 2
+Orchestra Hit,55,N/A,55,Orchestra Hit
+Trumpet,56,N/A,56,Trumpet
+Trombone,57,N/A,57,Trombone
+Tuba,58,Synth Bass 1,38,Synth Bass 1
+Muted Trumpet,59,Xylophone,13,Xylophone
+French Horn,60,Synth Piano 1,2,Elec. Grand Piano
+Brass Section,61,N/A,61,Brass Section
+Synth Brass 1,62,N/A,62,Synth Brass 1
+Synth Brass 2,63,N/A,63,Synth Brass 2
+Soprano Sax,64,Fantasy,99,FX 4 (atmosphere ?)
+Alto Sax,65,Pizzicato Violin,45,Pizzicato Strings
+Tenor Sax,66,Timpani,47,Timpani
+Baritone Sax,67,Violin 2,40,Violin
+Oboe,68,Electric Guitar,68,Oboe
+English Horn,69,Tremolo Guitar,27,Elec. Guitar (clean)
+Bassoon,70,Mute Guitar,28,Elec. Guitar (muted)
+Clarinet,71,N/A,71,Clarinet
+Piccolo,72,12-string Guitar,25,Acou. Guitar (steel)
+Flute,73,Gut Guitar,24,Acou. Guitar (nylon)
+Recorder,74,N/A,74,Recorder
+Pan Flute,75,N/A,75,Pan Flute
+Blown Bottle,76,N/A,76,Blown Bottle
+Shakuhachi,77,N/A,77,Shakuhachi
+Whistle,78,Pizzicato Strings,45,Pizzicato Strings
+Ocarina,79,Pick Bass,34,Elec. Bass (pick)
+Lead 1 (square),80,Fretless Bass,35,Fretless Bass
+Lead 2 (sawtooth),81,Wood Bass 2,41,Viola
+Lead 3 (calliope),82,Synth Brass 2,63,Synth Brass 2
+Lead 4 (chiff),83,N/A,83,Lead 4 (chiff)
+Lead 5 (charang),84,N/A,84,Lead 5 (charang)
+Lead 6 (voice),85,Synth Reed 2,71,Clarinet (?)
+Lead 7 (fifths),86,Synth Bass 2,39,Synth Bass 2
+Lead 8 (bass + lead),87,Flugelhorn,69,English Horn
+Pad 1 (new age),88,Recorder,74,Recorder
+Pad 2 (warm),89,N/A,89,Pad 2 (warm)
+Pad 3 (polysynth),90,Orchestra Hit,55,Orchestra Hit
+Pad 4 (choir),91,Samba Whistle,78,Whistle
+Pad 5 (bowed),92,Brass Ensemble,61,Brass Section
+Pad 6 (metallic),93,Woodwind Ensemble,70,Bassoon (?)
+Pad 7 (halo),94,Synth Chorus,91,Pad 4 (choir)
+Pad 8 (sweep),95,Synth Piano 4,1,Bright Acoustic Piano
+FX 1 (rain),96,Chorus,91,Pad 4 (choir)
+FX 2 (soundtrack),97,N/A,97,FX 2 (soundtrack)
+FX 3 (crystal),98,N/A,98,FX 3 (crystal)
+FX 4 (atmosphere),99,SINE WAVE???,74,Recorder
+FX 5 (brightness),100,Percussions,0,What to do?
+FX 6 (goblins),101,Soprano Sax,64,Soprano Sax
+FX 7 (echoes),102,Tenor Sax,66,Tenor Sax
+FX 8 (sci-fi),103,Piccolo,72,Piccolo
+FX 1 (rain),104,Brass Hit,61,Brass Section
+FX 2 (soundtrack),105,N/A,105,FX 2 (soundtrack)
+FX 3 (crystal),106,N/A,106,FX 3 (crystal)
+FX 4 (atmosphere),107,Mute Bass Echo,36,Slap Bass 1
+FX 5 (brightness),108,Dist Guitar Flange,30,Distortion Guitar
+FX 6 (goblins),109,Synth Strings 2,51,Synth Strings 2
+FX 7 (echoes),110,Synth Piano 3,7,Clavinet (?)
+FX 8 (sci-fi),111,Synth Pan Voice,85,Lead 6 (voice)
+Tinkle Bell,112,Synth Flute 1,75,Pan Flute
+Agogo,113,Synth Reed 3,71,Clarinet (?)
+Steel Drums,114,Mute Bass,37,Slap Bass 2
+Woodblock,115,Synth Brass 3,62,Synth Brass 1
+Taiko Drum,116,Mute Guitar Echo,24,Acou. Guitar (nylon)
+Melodic Tom,117,Synth Piano 2,7,Clavinet (?)
+Synth Drum,118,Trumpet Echo,56,Trumpet
+Reverse Cymbal,119,Synth Strings 3,50,Synth Strings 1
+Guitar Fret Noise,120,Mute Trumpet Echo,59,Muted Trumpet
+Breath Noise,121,Elec Guitar Flange,27,Elec. Guitar (clean)
+Seashore,122,Jazz Guitar Echo,26,Elec. Guitar (jazz)
+Bird Tweet,123,Elec Guitar Echo,27,Elec. Guitar (clean)
+Telephone Ring,124,Gut Guitar Echo,24,Acou. Guitar (nylon)
+Helicopter,125,N/A,125,Helicopter
+Applause,126,N/A,126,Applause
+Gunshot,127,N/A,127,Gunshot

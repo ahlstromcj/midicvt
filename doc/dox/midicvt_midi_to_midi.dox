@@ -1,0 +1,267 @@
+/******************************************************************************
+ * midicvt_midi_to_midi.dox
+ *-----------------------------------------------------------------------------
+ *
+ *    This module provides no code.  It provides only a Doxygen "Doxygen
+ *    information" page.
+ *
+ * Date:      2014-05-03
+ * Update:    2014-06-01
+ *
+ *------------------------------------------------------------------------*//**
+
+\file       midicvt_midi_to_midi.dox
+
+midicvtpp is a C++ version of midicvt that uses the same library, but adds
+the ability to directly perform some MIDI file conversions, without the need
+for scripting.
+
+\page       midicvtpp   midicvtpp
+
+\section midicvtpp_intro MIDI to MIDI Mode
+
+The C program <code>midicvt</code> lets one convert between text and MIDI
+formats, and leverage scripting to transform MIDI files in infinite ways.
+
+However, some people might not care to work up a good script.  Therefore,
+the C++ program <code>midicvtpp</code> extends <code>midicvt</code>
+to add a MIDI-to-MIDI mode that lets the transformations to be made be
+specified in an "INI" file.
+
+An INI file is a file with a format familiar to some from the days of DOS.
+Examples of such files can be found in the <code>doc</code> directory of
+this project.  They are easier to work with than XML files, and are quite
+sufficient for the purposes of our MIDI conversions.
+
+\section midicvtpp_overview Overview of midicvtpp
+
+This document discusses how we can, with some diligence, create the INI
+file.  It describes how we make them.  Here are the broad steps:
+
+   -# In a spreadsheet, list the names and numbers of the notes or patches
+      in both GM (General MIDI) format and in the format of your native
+      device.
+   -# Convert the spreadsheet page into CSV (comma-separated values) format.
+   -# Use the <code>--csv</code> option to convert the CSV file into an INI
+      file.
+   -# Run the <code>--m2m</code> option to convert a MIDI file into a
+      remapped MIDI file.  The <code>--reverse</code> can be used to remap
+      in the opposite direction.
+   -# Test the new MIDI file.
+
+A spreadsheet is used because it is a very convenient way to cut-and-paste
+columns, sort them in order to check them, and convert them to CSV.  We use
+the free LibreOffice product for these purposes.  It is a good product, free
+to use, the source-code is available, and it even handles Microsoft Office
+formats reasonably well.
+
+   -  <code>MIDI-Maps.ods</code>.
+   -  <code>GM_PSS-790_Drums.csv</code>.
+   -  <code>GM_PSS-790_Drums.ini</code> and
+      <code>GM_PSS-790_Drums-simple.ini</code>.
+   -  <code>Standard-MIDI-file-format-updated.pdf</code>.
+
+\section midicvtpp_usage Usage of midicvtpp
+
+You can run the command 
+
+\verbatim
+   midicvtpp --help
+\endverbatim
+
+in order to see the following brief explanation.  We've left off the
+information that applies to <i>midicvt</i>, as it is also part of
+<i>midicvtpp</i>.  See the 
+\ref midicvt_usage_overview section.
+
+<i>midicvtpp</i> adds functionality to <i>midicvt</i>:
+
+\verbatim
+ --csv-drums f   Convert a CSV (comma-separated values) file to a sectioned
+                 INI drum file.  Option -o/--output specifies the full name
+                 of the output file.  The default is 'out.ini', not stdout.
+ --csv-patches f Convert a CSV file to a sectioned INI patch/program file.
+                 Option -o/--output specifies the output name.  Default is
+                 'out.ini', not stdout.
+ --m2m f         Employ the given INI mapping file to convert MIDI to MIDI.
+
+The following options require the --m2m option:
+
+ --reverse       Reverse the mapping specified by --m2m.
+ --extract n     Write only channel events from channel n, n = 1 to 16.
+ --reject n      Write only channel events not from channel n.
+ --testing       Only the programmer knows what this one does. :-D
+\endverbatim
+
+\subsection midicvtpp_usage_csv_drums midicvtpp --csv-drums
+
+This option takes a comma-separated-value (CSV) file of drum note mappings
+(see \ref midicvtpp_spreadsheet)
+and converts it to an INI file.  
+We use a spreadsheet because it makes it easier to lay out a bunch of notes
+and note names, and sort them as needed.
+We export the notes to a CSV file to make it easier to import the notes into
+an INI file.
+
+For example, in the <code>tests</code> directory, we ran the following
+command to create <code>GM_PSS-790_Drums.ini</code>:
+
+\verbatim
+   $ ../midicvtpp/midicvtpp --csv-drums csvfiles/GM_PSS-790_Drums.csv
+         --output inifiles/GM_PSS-790_Drums.ini
+\endverbatim
+
+\subsection midicvtpp_usage_csv_patches midicvtpp --csv-patches
+
+This option takes a comma-separated-value (CSV) file of patch/program mappings
+(see \ref midicvtpp_spreadsheet)
+and converts it to an INI file.  
+
+For example, in the <code>tests</code> directory, we ran the following
+command to create <code>GM_PSS-790_Drums.ini</code>:
+
+\verbatim
+   $ ../midicvtpp/midicvtpp --csv-Patches csvfiles/GM_PSS-790_Patches.csv
+         --output inifiles/GM_PSS-790_Patches.ini
+\endverbatim
+
+We concatenated
+<code>GM_PSS-790_Drum.ini</code> and 
+<code>GM_PSS-790_Patches.ini</code> in order to make a combination INI
+file, <code>GM_PSS-790_Multi.ini</code>, the can perform both
+mappings.
+
+These INI files are somewhat self-explanatory.  Further explanation can be
+found in the developer's reference manual,
+<i>midicvt_reference_manual.pdf</i>.
+
+\subsection midicvtpp_usage_m2m midicvtpp --m2m
+
+The --m2m option provides an INI file to specify how to remap between MIDI
+notes, program/patch numbers, and other options.
+
+Here is an example that maps a Yamaha PSS-790's drums to General MIDI drums.
+
+\verbatim
+   $ midicvtpp --m2m GM_PSS-790_Drums.ini -i stomtors-drums-16.mid
+        -o stomtors-drums-10.mid
+\endverbatim
+
+\subsection midicvtpp_usage_reverse midicvtpp --reverse
+
+\subsection midicvtpp_usage_extract midicvtpp --extract
+
+The --extract option takes any events on the given channel and extracts them
+into the output MIDI file.  Only events that have a channel parameter are
+extracted:
+
+   -  note on
+   -  note off
+   -  pitchbend
+   -  control messages
+
+All other kinds of events pass through to the output file.
+
+Here is an example that extracts the drum parts of a MIDI file written for
+the Yamaha PSS-790 consumer-level synthesizer.  Note the presence of the
+--m2m option.
+
+\verbatim
+   $ midicvtpp --m2m --extract 16 stomtors.mid stomtors-drums-16.mid
+\endverbatim
+
+\subsection midicvtpp_usage_reject midicvtpp --reject
+
+The --reject option is the opposite of the --extract option.  It causes the
+events from a single channel to be dropped from the output MIDI file.
+
+\subsection midicvtpp_usage_testing midicvtpp --testing
+
+This option does whatever it does.  Most like it will cause a dump of the
+maps that were created from the INI file.
+
+\section midicvtpp_spreadsheet The Spreadsheet
+
+Open <code>MIDI-Maps.ods</code> to follow this discussion.  This
+document is how I keep track of some of my old equipment, and you are
+welcome to use it and modify it as you see fit for your purposes.
+
+The current tabs are <i>Drums</i>, <i>Patches</i>, and
+<i>GM_PSS-790_Drums</i>.
+
+<i>Drums</i>.
+The first column shows the frequency of the corresponding MIDI keys shown in
+the next two columns.  The "GM 1 Percussion" column shows the stock
+percussion names for a full General MIDI 1 drum kit.
+
+The next columm is a natural drum-kit patch for the ZynAddSubFx/Yoshimi
+software synthesizers that we cobbled from a couple of other drum-kits, and
+allocated to all GM drum-kit notes, so that something will be heard for
+every note. 
+
+The "DTMF Tones" column is a patch we put together to emulate phone-dialing
+tones.
+
+You can find these patches in the <code>contrib/yoshimi</code> directory of
+this project.   <i>ZynAddSubFx/Yoshimi</i> is a complex synth, but well worth
+playing with, a great demonstration of completely digital synthesis,
+filtering, modulation, formant-processing and other techniques.
+
+The "Yamaha PSS-790 Percussion" column lists the drum notes on our old
+consumer keyboard.  Mapping between this synthesizer and newer equipment was
+our motivation for creating/enhancing the <code>midicvt/midicvtpp</code>
+programs.
+
+<i>Patches</i>.
+This tab correlates the PSS-790 program/patches number with General MIDI
+numbers.  We haven't done anything with them yet, but just you wait!
+
+<i>GM_PSS-790_Drums</i>.
+This is the tab we've been moving toward for this document.  It shows the
+drum names and notes to correlate GM1 and PSS-790 drums.
+
+The first thing we did was to key in the basic column names and then the
+PSS-790 drum notes.  Then we went over them, assigning the PSS-790 notes to
+a reasonably close GM 1 drum note.
+
+Then we highlighted all the columns and sorted them on Column D.
+In doing so, we noted that some SS-790 drum notes were assigned to more than
+one GM note.  We had to re-assign some of the notes.
+
+Once satisfied, we could take the data on this page and save it in
+comma-separated value format.  See the next section.
+
+\section midicvtpp_csv The CSV File
+
+MORE TO COME
+
+Note that sample CSV files are found in the
+<code>midicvt/tests/csvfiles</code> project directory.
+
+\section midicvtpp_ini The INI File
+
+MORE TO COME
+
+Note that sample INI files are found in the
+<code>midicvt/tests/inifiles</code> project directory.
+
+\section midicvtpp_test The Test Script
+
+MORE TO COME
+
+Note that sample files are found in the
+<code>midicvt/tests/midifiles</code> and
+<code>midicvt/tests/stomtors</code> project directories.
+Result files used by the test-script for comparison are found in the
+<code>midicvt/tests/results</code> and
+<code>midicvt/tests/results/stomtors</code> project directories.
+
+ *//*-------------------------------------------------------------------------*/
+
+/******************************************************************************
+ * midicvt_midi_to_midi.dox
+ *----------------------------------------------------------------------------
+ * vim: ts=3 sw=3 et syntax=doxygen
+ *//*-------------------------------------------------------------------------*/
+
+

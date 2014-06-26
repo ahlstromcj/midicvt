@@ -1,0 +1,13 @@
+The tests results in this directory come from the midicomp and midi2text
+projects.  The latter's text-file results were renamed with the "asc"
+extension.
+
+In many cases, we don't have a recompiled version of a MIDI file.  So we
+have to make our own.  To be sure that the MIDI files are the same, we
+then convert each to ASCII.  If the ASCII files match, we're pretty sure the
+conversion from ASCII to MIDI went correctly.
+
+In other case, we have to convert to MIDI, and then reconvert to ASCII to
+see that the results are the same.  In many cases, the --m2m option and the
+--compile options restore event bytes that were not in the original (flawed)
+MIDI files.

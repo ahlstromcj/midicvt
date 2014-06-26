@@ -1,0 +1,4 @@
+usr/lib/midicvt-0.2/lib*.so*
+usr/lib/midicvt-0.2/lib*.a
+usr/lib/midicvt-0.2/lib*.la
+usr/lib/pkgconfig/*.pc

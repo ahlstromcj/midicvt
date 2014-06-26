@@ -1,0 +1,659 @@
+#!/bin/bash
+#
+#*****************************************************************************
+# test_script (midicvt/tests)
+#-----------------------------------------------------------------------------
+##
+# \file       	test_script
+# \library    	libimidifilex, libmidipp, midicvt, midicvtpp
+# \author     	Chris Ahlstrom
+# \date       	2014-05-09
+# \updates     2014-05-23
+# \version    	$Revision$
+# \license    	$XPC_SUITE_GPL_LICENSE$
+#
+#-----------------------------------------------------------------------------
+
+TEST_LINE=""
+
+#-----------------------------------------------------------------------------
+# Directories and apps relative to midicvt/tests
+#-----------------------------------------------------------------------------
+
+MIDICVT="../midicvt/midicvt"
+MIDICVTPP="../midicvtpp/midicvtpp"
+MIDI_DIR="midifiles"
+TARGET_DIR="results"
+TMP_DIR="tmp"
+DO_VALGRIND="no"
+
+if [ ! -d "$TARGET_DIR" ] ; then
+   echo "Unable to run test_script."
+   echo "Please run test_script from the 'midicvt/tests' directory."
+   exit 1
+fi
+
+if [ "$1" == "--valgrind" ] ; then
+   DO_VALGRIND="yes"
+fi
+
+#-----------------------------------------------------------------------------
+# Test function
+#-----------------------------------------------------------------------------
+#
+# Parameters:
+#
+#  $TEST_LINE     Caller sets this to the command to test before calling.
+#  $1             Provides the path to the current-result file.
+#  $2             Provides the path to the target-result file.
+#
+# Returns a non-zero number if the test failed.
+#
+#-----------------------------------------------------------------------------
+
+function run_test ()
+{
+   ERROR_NAME="none"
+   echo "$TEST_LINE"
+   $TEST_LINE
+   if [ $? == 0 ] ; then
+      diff $1 $2 > /dev/null
+      if [ $? != 0 ] ; then
+         ERROR_NAME="Regression"
+         echo "? mismatch in 'diff $1 $2'"
+      fi
+   else
+      ERROR_NAME="Failed"
+   fi
+
+   if [ "$ERROR_NAME" != "none" ] ; then
+      echo "? $ERROR_NAME: $TEST_LINE"
+      exit 99
+   else
+      if [ "$DO_VALGRIND" == "yes" ] ; then
+         valgrind $TEST_LINE
+         if [ $? != 0 ] ; then
+            echo "? valgrind '$TEST_LINE' failed"
+            exit 98
+         fi
+      fi
+   fi
+   return 0
+}
+
+#-----------------------------------------------------------------------------
+# Temporary directory to hold current results
+#-----------------------------------------------------------------------------
+
+mkdir -p $TMP_DIR
+
+#-----------------------------------------------------------------------------
+# midicvt (C) tests
+#-----------------------------------------------------------------------------
+
+#-----------------------------------------------------------------------------
+# ex1.mid
+#-----------------------------------------------------------------------------
+# midicvt, convert MIDI to ASCII file
+#-----------------------------------------------------------------------------
+
+TEST_LINE="$MIDICVT -i $MIDI_DIR/ex1.mid -o $TMP_DIR/ex1.asc"
+run_test $TMP_DIR/ex1.asc $TARGET_DIR/ex1.asc
+
+#-----------------------------------------------------------------------------
+# midicvt, convert ASCII to MIDI file
+#-----------------------------------------------------------------------------
+
+TEST_LINE="$MIDICVT -c $TMP_DIR/ex1.asc -o $TMP_DIR/ex1-recompiled.mid"
+run_test $TMP_DIR/ex1-recompiled.mid $TARGET_DIR/ex1-recompiled.mid
+
+#-----------------------------------------------------------------------------
+# midicvt, convert MIDI to MIDI file using --m2m option
+#-----------------------------------------------------------------------------
+
+TEST_LINE="$MIDICVT --m2m --input $MIDI_DIR/ex1.mid --output $TMP_DIR/ex1-m2m.mid"
+run_test $TMP_DIR/ex1-m2m.mid $TARGET_DIR/ex1-m2m.mid
+
+#-----------------------------------------------------------------------------
+# choo2xg.mid
+#-----------------------------------------------------------------------------
+# midicvt, convert MIDI to ASCII file
+# Use option -t (absolute time) instead of ticks.
+#-----------------------------------------------------------------------------
+
+TEST_LINE="$MIDICVT -t -i $MIDI_DIR/choo2xg.mid -o $TMP_DIR/choo2xg.asc"
+
+run_test $TMP_DIR/choo2xg.asc $TARGET_DIR/choo2xg.asc
+
+#-----------------------------------------------------------------------------
+# midicvt, convert ASCII to MIDI file
+#-----------------------------------------------------------------------------
+
+TEST_LINE="$MIDICVT -c $TMP_DIR/choo2xg.asc -o $TMP_DIR/choo2xg-recompiled.mid"
+run_test $TMP_DIR/choo2xg-recompiled.mid $TARGET_DIR/choo2xg-recompiled.mid
+
+#-----------------------------------------------------------------------------
+# midicvt, convert MIDI to MIDI file using --m2m option
+#-----------------------------------------------------------------------------
+
+TEST_LINE="$MIDICVT --m2m --input $MIDI_DIR/choo2xg.mid --output $TMP_DIR/choo2xg-m2m.mid"
+run_test $TMP_DIR/choo2xg-m2m.mid $TARGET_DIR/choo2xg-recompiled.mid
+
+#-----------------------------------------------------------------------------
+# CountryStrum.mid
+#-----------------------------------------------------------------------------
+# midicvt, convert MIDI to ASCII file
+#
+# Use option -t (absolute time) instead of ticks, and add verbosity (-v).
+#-----------------------------------------------------------------------------
+
+TEST_LINE="$MIDICVT -t -v -i $MIDI_DIR/CountryStrum.mid -o $TMP_DIR/CountryStrum.asc"
+
+run_test $TMP_DIR/CountryStrum.asc $TARGET_DIR/CountryStrum.asc
+
+#-----------------------------------------------------------------------------
+# midicvt, convert ASCII to MIDI file
+#
+# Here, the original and recompiled MIDI files do not match, so we had to
+# make our own recompiled MIDI file, and verify that its ASCII version
+# matches the original MIDI file's ASCII version.
+#-----------------------------------------------------------------------------
+
+TEST_LINE="$MIDICVT -c $TMP_DIR/CountryStrum.asc -o $TMP_DIR/CountryStrum-recompiled.mid"
+run_test $TMP_DIR/CountryStrum-recompiled.mid $TARGET_DIR/CountryStrum-recompiled.mid
+
+#-----------------------------------------------------------------------------
+# midicvt, convert MIDI to MIDI file using --m2m option
+#
+# We have to compare the output MIDI file to the recompiled MIDI file here.
+#-----------------------------------------------------------------------------
+
+TEST_LINE="$MIDICVT --m2m --input $MIDI_DIR/CountryStrum.mid --output $TMP_DIR/CountryStrum-m2m.mid"
+run_test $TMP_DIR/CountryStrum-m2m.mid $TARGET_DIR/CountryStrum-recompiled.mid
+
+#-----------------------------------------------------------------------------
+# dixie03.mid
+#-----------------------------------------------------------------------------
+# midicvt, convert MIDI to ASCII file
+#
+# Use option -t (absolute time) instead of ticks, and add verbosity (-v) and
+# note conversion (-n).  The original results file from the midi2text
+# project (result/dixie03.asc) had DOS line endings as the only difference,
+# and we converted them to UNIX line endings.
+#-----------------------------------------------------------------------------
+
+TEST_LINE="$MIDICVT -t -v -n -i $MIDI_DIR/dixie03.mid -o $TMP_DIR/dixie03.asc"
+
+run_test $TMP_DIR/dixie03.asc $TARGET_DIR/dixie03.asc
+
+#-----------------------------------------------------------------------------
+# midicvt, convert ASCII to MIDI file
+#
+# Here, the original and recompiled MIDI files match, so we can compare
+# against the original dixie03.mid file, and do not need to make a
+# $TARGET_DIR/dixie03-recompiled.mid file.
+#-----------------------------------------------------------------------------
+
+TEST_LINE="$MIDICVT -c $TMP_DIR/dixie03.asc -o $TMP_DIR/dixie03-recompiled.mid"
+run_test $TMP_DIR/dixie03-recompiled.mid $MIDI_DIR/dixie03.mid
+
+#-----------------------------------------------------------------------------
+# midicvt, convert MIDI to MIDI file using --m2m option
+#-----------------------------------------------------------------------------
+
+TEST_LINE="$MIDICVT --m2m --input $MIDI_DIR/dixie03.mid --output $TMP_DIR/dixie03-m2m.mid"
+run_test $TMP_DIR/dixie03-m2m.mid $MIDI_DIR/dixie03.mid
+
+#-----------------------------------------------------------------------------
+# Dixie031.mid
+#-----------------------------------------------------------------------------
+# midicvt, convert MIDI to ASCII file
+#
+# Use option -t (absolute time) instead of ticks, and add verbosity (-v) and
+# note conversion (-n)..
+#-----------------------------------------------------------------------------
+
+TEST_LINE="$MIDICVT -t -v -n -i $MIDI_DIR/Dixie031.mid -o $TMP_DIR/Dixie031.asc"
+run_test $TMP_DIR/Dixie031.asc $TARGET_DIR/dixie031.asc
+
+#-----------------------------------------------------------------------------
+# midicvt, convert ASCII to MIDI file
+#
+# Here, the original and recompiled MIDI files match, so we can compare
+# against the original Dixie031.mid file, and do not need to make a
+# $TARGET_DIR/Dixie031-recompiled.mid file.
+#-----------------------------------------------------------------------------
+
+TEST_LINE="$MIDICVT -c $TMP_DIR/Dixie031.asc -o $TMP_DIR/Dixie031-recompiled.mid"
+run_test $TMP_DIR/Dixie031-recompiled.mid $MIDI_DIR/Dixie031.mid
+
+#-----------------------------------------------------------------------------
+# midicvt, convert MIDI to MIDI file using --m2m option
+#-----------------------------------------------------------------------------
+
+TEST_LINE="$MIDICVT --m2m --input $MIDI_DIR/Dixie031.mid --output $TMP_DIR/Dixie031-m2m.mid"
+run_test $TMP_DIR/Dixie031-m2m.mid $MIDI_DIR/Dixie031.mid
+
+#-----------------------------------------------------------------------------
+# Dixie04.mid
+#-----------------------------------------------------------------------------
+# midicvt, convert MIDI to ASCII file
+#
+# Use option -t (absolute time) instead of ticks, and add verbosity (-v) and
+# note conversion (-n).  The original results file from the midi2text
+# project (result/Dixie04.asc) had DOS line endings as the only difference,
+# and we converted them to UNIX line endings.
+#
+# This MIDI file has an error "didn't find expected continuation of a
+# sysex".  So we expect it to failed, and we don't bother with the follow-on
+# "compile" and "MIDI-to-MIDI" tests.
+#
+#-----------------------------------------------------------------------------
+
+TEST_LINE="$MIDICVT -t -v -n -i $MIDI_DIR/Dixie04.mid -o $TMP_DIR/Dixie04.asc"
+
+$TEST_LINE
+if [ $? != 0 ] ; then
+   echo "(This error is expected, so the test should pass.)"
+   diff $TMP_DIR/Dixie04.asc $TARGET_DIR/Dixie04-sysex-error.asc
+   if [ $? != 0 ] ; then
+      echo "? Regression on ' diff $TMP_DIR/Dixie04.asc $TARGET_DIR/Dixie04.asc'"
+      exit 99
+   fi
+else
+   echo "? Did not fail: '$TEST_LINE'"
+   exit 99
+fi
+
+#-----------------------------------------------------------------------------
+# example1.mid
+#-----------------------------------------------------------------------------
+# midicvt, convert MIDI to ASCII file
+#-----------------------------------------------------------------------------
+
+TEST_LINE="$MIDICVT -i $MIDI_DIR/example1.mid -o $TMP_DIR/example1.asc"
+run_test $TMP_DIR/example1.asc $TARGET_DIR/example1-a.asc
+
+#-----------------------------------------------------------------------------
+# midicvt, convert ASCII to MIDI file
+#
+#  The recompiled example1.mid MIDI file is a couple bytes bigger than
+#  example1.mid.  However, converting the recompiled one to ASCII yields
+#  the same output as the original file.  I think all we're doing is
+#  correctiong a mistake in example1.mid here, adding back a 0x92 (note on,
+#  channel 3) that the original drops.
+#
+#     run_test $TMP_DIR/example1-recompiled.mid $MIDI_DIR/example1.mid
+#
+#-----------------------------------------------------------------------------
+
+TEST_LINE="$MIDICVT -c $TMP_DIR/example1.asc -o $TMP_DIR/example1-recompiled.mid"
+$TEST_LINE
+if [ $? == 0 ] ; then
+   TEST_LINE="$MIDICVT -i $TMP_DIR/example1-recompiled.mid -o $TMP_DIR/ex1r.asc"
+   run_test $TMP_DIR/ex1r.asc $TARGET_DIR/example1-a.asc
+else
+   echo "? Failed: '$TEST_LINE'"
+   exit 99
+fi
+
+#-----------------------------------------------------------------------------
+# midicvt, convert MIDI to MIDI file using --m2m option
+#-----------------------------------------------------------------------------
+
+TEST_LINE="$MIDICVT --m2m --input $MIDI_DIR/example1.mid --output $TMP_DIR/example1-m2m.mid"
+run_test $TMP_DIR/example1-m2m.mid $TARGET_DIR/example1-recompiled.mid
+
+#-----------------------------------------------------------------------------
+# example2.mid
+#-----------------------------------------------------------------------------
+# midicvt, convert MIDI to ASCII file
+#-----------------------------------------------------------------------------
+
+TEST_LINE="$MIDICVT -i $MIDI_DIR/example2.mid -o $TMP_DIR/example2.asc"
+run_test $TMP_DIR/example2.asc $TARGET_DIR/example2.asc
+
+#-----------------------------------------------------------------------------
+# midicvt, convert ASCII to MIDI file
+#-----------------------------------------------------------------------------
+
+TEST_LINE="$MIDICVT -c $TMP_DIR/example2.asc -o $TMP_DIR/example2-recompiled.mid"
+$TEST_LINE
+if [ $? == 0 ] ; then
+   TEST_LINE="$MIDICVT -i $TMP_DIR/example2-recompiled.mid -o $TMP_DIR/ex2r.asc"
+   run_test $TMP_DIR/ex2r.asc $TARGET_DIR/example2.asc
+else
+   echo "? Failed: '$TEST_LINE'"
+   exit 99
+fi
+
+#-----------------------------------------------------------------------------
+# midicvt, convert MIDI to MIDI file using --m2m option
+#-----------------------------------------------------------------------------
+
+TEST_LINE="$MIDICVT --m2m --input $MIDI_DIR/example2.mid --output $TMP_DIR/example2-m2m.mid"
+run_test $TMP_DIR/example2-m2m.mid $TARGET_DIR/example2-recompiled.mid
+
+#-----------------------------------------------------------------------------
+# example3.mid
+#-----------------------------------------------------------------------------
+# midicvt, convert MIDI to ASCII file
+#-----------------------------------------------------------------------------
+
+TEST_LINE="$MIDICVT -i $MIDI_DIR/example3.mid -o $TMP_DIR/example3.asc"
+run_test $TMP_DIR/example3.asc $TARGET_DIR/example3.asc
+
+#-----------------------------------------------------------------------------
+# midicvt, convert ASCII to MIDI file
+#-----------------------------------------------------------------------------
+
+TEST_LINE="$MIDICVT -c $TMP_DIR/example3.asc -o $TMP_DIR/example3-recompiled.mid"
+$TEST_LINE
+if [ $? == 0 ] ; then
+   TEST_LINE="$MIDICVT -i $TMP_DIR/example3-recompiled.mid -o $TMP_DIR/ex3r.asc"
+   run_test $TMP_DIR/ex3r.asc $TARGET_DIR/example3.asc
+else
+   echo "? Failed: '$TEST_LINE'"
+   exit 99
+fi
+
+#-----------------------------------------------------------------------------
+# midicvt, convert MIDI to MIDI file using --m2m option
+#
+# Again, we short-cut the process of figuring out the differences by adding
+# a follow-on step that makes sure converting the two MIDI files to ASCII
+# yields matching ASCII files.
+#-----------------------------------------------------------------------------
+
+TEST_LINE="$MIDICVT --m2m --input $MIDI_DIR/example3.mid --output $TMP_DIR/example3-m2m.mid"
+$TEST_LINE
+
+TEST_LINE="$MIDICVT -i $TMP_DIR/example3-m2m.mid -o $TMP_DIR/example3-m2m.asc"
+run_test $TMP_DIR/example3-m2m.asc $TARGET_DIR/example3.asc
+
+#-----------------------------------------------------------------------------
+# example4.mid
+#-----------------------------------------------------------------------------
+# midicvt, convert MIDI to ASCII file
+#-----------------------------------------------------------------------------
+
+TEST_LINE="$MIDICVT -i $MIDI_DIR/example4.mid -o $TMP_DIR/example4.asc"
+run_test $TMP_DIR/example4.asc $TARGET_DIR/example4.asc
+
+#-----------------------------------------------------------------------------
+# midicvt, convert ASCII to MIDI file
+#-----------------------------------------------------------------------------
+
+TEST_LINE="$MIDICVT -c $TMP_DIR/example4.asc -o $TMP_DIR/example4-recompiled.mid"
+$TEST_LINE
+if [ $? == 0 ] ; then
+   TEST_LINE="$MIDICVT -i $TMP_DIR/example4-recompiled.mid -o $TMP_DIR/ex4r.asc"
+   run_test $TMP_DIR/ex4r.asc $TARGET_DIR/example4.asc
+else
+   echo "? Failed: '$TEST_LINE'"
+   exit 99
+fi
+
+#-----------------------------------------------------------------------------
+# midicvt, convert MIDI to MIDI file using --m2m option
+#
+# Again, we short-cut the process of figuring out the differences by adding
+# a follow-on step that makes sure converting the two MIDI files to ASCII
+# yields matching ASCII files.
+#-----------------------------------------------------------------------------
+
+TEST_LINE="$MIDICVT --m2m --input $MIDI_DIR/example4.mid --output $TMP_DIR/example4-m2m.mid"
+$TEST_LINE
+
+TEST_LINE="$MIDICVT -i $TMP_DIR/example4-m2m.mid -o $TMP_DIR/example4-m2m.asc"
+run_test $TMP_DIR/example4-m2m.asc $TARGET_DIR/example4.asc
+
+#-----------------------------------------------------------------------------
+# example5.mid
+#-----------------------------------------------------------------------------
+# midicvt, convert MIDI to ASCII file
+#-----------------------------------------------------------------------------
+
+TEST_LINE="$MIDICVT -i $MIDI_DIR/example5.mid -o $TMP_DIR/example5.asc"
+run_test $TMP_DIR/example5.asc $TARGET_DIR/example5.asc
+
+#-----------------------------------------------------------------------------
+# midicvt, convert ASCII to MIDI file
+#-----------------------------------------------------------------------------
+
+TEST_LINE="$MIDICVT -c $TMP_DIR/example5.asc -o $TMP_DIR/example5-recompiled.mid"
+$TEST_LINE
+if [ $? == 0 ] ; then
+   TEST_LINE="$MIDICVT -i $TMP_DIR/example5-recompiled.mid -o $TMP_DIR/ex5r.asc"
+   run_test $TMP_DIR/ex5r.asc $TARGET_DIR/example5.asc
+else
+   echo "? Failed: '$TEST_LINE'"
+   exit 99
+fi
+
+#-----------------------------------------------------------------------------
+# midicvt, convert MIDI to MIDI file using --m2m option
+#
+# Again, we short-cut the process of figuring out the differences by adding
+# a follow-on step that makes sure converting the two MIDI files to ASCII
+# yields matching ASCII files.
+#-----------------------------------------------------------------------------
+
+TEST_LINE="$MIDICVT --m2m --input $MIDI_DIR/example5.mid --output $TMP_DIR/example5-m2m.mid"
+$TEST_LINE
+
+TEST_LINE="$MIDICVT -i $TMP_DIR/example5-m2m.mid -o $TMP_DIR/example5-m2m.asc"
+run_test $TMP_DIR/example5-m2m.asc $TARGET_DIR/example5.asc
+
+#-----------------------------------------------------------------------------
+# tdixie03.mid
+#-----------------------------------------------------------------------------
+# midicvt, convert MIDI to ASCII file
+#
+# Use option -t (absolute time) instead of ticks, and add verbosity (-v) and
+# note conversion (-n).  The original results file from the midi2text
+# project (result/tdixie03.asc) had DOS line endings as the only difference,
+# and we converted them to UNIX line endings.
+#-----------------------------------------------------------------------------
+
+TEST_LINE="$MIDICVT -i $MIDI_DIR/tdixie03.mid -o $TMP_DIR/tdixie03.asc"
+
+run_test $TMP_DIR/tdixie03.asc $TARGET_DIR/tdixie03.asc
+
+#-----------------------------------------------------------------------------
+# midicvt, convert ASCII to MIDI file
+#
+# Here, the original and recompiled MIDI files match, so we can compare
+# against the original tdixie03.mid file, and do not need to make a
+# $TARGET_DIR/tdixie03-recompiled.mid file.
+#-----------------------------------------------------------------------------
+
+TEST_LINE="$MIDICVT -c $TMP_DIR/tdixie03.asc -o $TMP_DIR/tdixie03-recompiled.mid"
+run_test $TMP_DIR/tdixie03-recompiled.mid $MIDI_DIR/tdixie03.mid
+
+#-----------------------------------------------------------------------------
+# midicvt, convert MIDI to MIDI file using --m2m option
+#-----------------------------------------------------------------------------
+
+TEST_LINE="$MIDICVT --m2m --input $MIDI_DIR/tdixie03.mid --output $TMP_DIR/tdixie03-m2m.mid"
+run_test $TMP_DIR/tdixie03-m2m.mid $MIDI_DIR/tdixie03.mid
+
+#-----------------------------------------------------------------------------
+# wonworld.mid
+#-----------------------------------------------------------------------------
+# midicvt, convert MIDI to ASCII file
+#
+# Use option -t (absolute time) instead of ticks, and add verbosity (-v) and
+# note conversion (-n).  The original results file from the midi2text
+# project (result/wonworld.asc) had DOS line endings as the only difference,
+# and we converted them to UNIX line endings.
+#-----------------------------------------------------------------------------
+
+TEST_LINE="$MIDICVT -t -i $MIDI_DIR/wonworld.mid -o $TMP_DIR/wonworld.asc"
+
+run_test $TMP_DIR/wonworld.asc $TARGET_DIR/wonworld.asc
+
+#-----------------------------------------------------------------------------
+# midicvt, convert ASCII to MIDI file
+#
+# Here, the original and recompiled MIDI files match, so we can compare
+# against the original wonworld.mid file, and do not need to make a
+# $TARGET_DIR/wonworld-recompiled.mid file.
+#-----------------------------------------------------------------------------
+
+TEST_LINE="$MIDICVT -c $TMP_DIR/wonworld.asc -o $TMP_DIR/wonworld-recompiled.mid"
+run_test $TMP_DIR/wonworld-recompiled.mid $TARGET_DIR/wonworld-recompiled.mid
+
+#-----------------------------------------------------------------------------
+# midicvt, convert MIDI to MIDI file using --m2m option
+#-----------------------------------------------------------------------------
+
+TEST_LINE="$MIDICVT --m2m --input $MIDI_DIR/wonworld.mid --output $TMP_DIR/wonworld-m2m.mid"
+$TEST_LINE
+if [ $? == 0 ] ; then
+   TEST_LINE="$MIDICVT -t -i $TMP_DIR/wonworld-recompiled.mid -o $TMP_DIR/wonworld.asc"
+   run_test $TMP_DIR/wonworld.asc $TARGET_DIR/wonworld.asc
+else
+   echo "? Failed: '$TEST_LINE'"
+   exit 99
+fi
+
+#-----------------------------------------------------------------------------
+# midicvtpp (C++) tests
+#-----------------------------------------------------------------------------
+
+CSV_DIR="csvfiles"
+INI_DIR="inifiles"
+ST_MIDI_DIR="stomtors"
+ST_TARGET_DIR="results/stomtors"
+
+#-----------------------------------------------------------------------------
+# stomtors.mid
+#-----------------------------------------------------------------------------
+# 
+# This MIDI file was one that C.A. "recorded" on the Yamaha PSS-790's track
+# recorder.  It is very rough, and will provided a good initial test of
+# remapping tracks.  It's percussion is on channel 16, and the instruments
+# are not GM-compliant.  It's patch number are also not GM-compliant.
+#
+# We need to verify that the original stomtors.mid and its cleaned up
+# version, stomtors-m2m.mid, generate identical ASCII files.
+#
+# We start with some basic C program tests first.  The first test is a
+# regression test for the C version of the --m2m option, which doesn't
+# attempt any remappings.  The output should be similar to the input;
+# however, many MIDI files have issues that --m2m (or --compile from the
+# ASCII file) fix.
+#
+#-----------------------------------------------------------------------------
+
+TEST_LINE="$MIDICVT --m2m $ST_MIDI_DIR/stomtors.mid $TMP_DIR/stomtors-m2m.mid"
+run_test $TMP_DIR/stomtors-m2m.mid $ST_TARGET_DIR/stomtors-m2m.mid
+
+#-----------------------------------------------------------------------------
+# Verify that stomtors.asc generation hasn't changed
+#-----------------------------------------------------------------------------
+
+TEST_LINE="$MIDICVT -i $ST_MIDI_DIR/stomtors.mid $TMP_DIR/stomtors.asc"
+run_test $TMP_DIR/stomtors.asc $ST_TARGET_DIR/stomtors.asc
+
+#-----------------------------------------------------------------------------
+# Verify that stomtors-m2m.asc matches stomtors.asc
+#-----------------------------------------------------------------------------
+
+TEST_LINE="$MIDICVT -i $ST_TARGET_DIR/stomtors-m2m.mid $TMP_DIR/stomtors-m2m.asc"
+run_test $TMP_DIR/stomtors-m2m.asc $ST_TARGET_DIR/stomtors.asc
+
+#-----------------------------------------------------------------------------
+# Verify that stomtors-m2m.asc compiles back to stomtors-m2m.mid
+#-----------------------------------------------------------------------------
+
+TEST_LINE="$MIDICVT --compile $ST_TARGET_DIR/stomtors.asc $TMP_DIR/stomtors-m2m.mid"
+run_test $TMP_DIR/stomtors-m2m.mid $ST_TARGET_DIR/stomtors-m2m.mid
+
+#-----------------------------------------------------------------------------
+# Extract channel 16 from stomtors.mid
+#-----------------------------------------------------------------------------
+
+TEST_LINE="$MIDICVTPP --m2m --extract 16 $ST_MIDI_DIR/stomtors.mid $TMP_DIR/stomtors-drums-16.mid"
+run_test $TMP_DIR/stomtors-drums-16.mid $ST_TARGET_DIR/stomtors-drums-16.mid
+echo ""
+echo "Also examine $ST_TARGET_DIR/stomtors-drums-16.mid to see that the tracks"
+echo "that did not have channel 16 events are now empty."
+echo ""
+
+#-----------------------------------------------------------------------------
+# Verify that compiling the (saved) ASCII file, with empty tracks, recovers
+# the channel 16 MIDI file
+#-----------------------------------------------------------------------------
+
+TEST_LINE="$MIDICVTPP --compile $ST_TARGET_DIR/stomtors-drums-16.asc $TMP_DIR/st16.mid"
+run_test $TMP_DIR/st16.mid $ST_TARGET_DIR/stomtors-drums-16.mid
+
+#-----------------------------------------------------------------------------
+# Now that we have a drums-only track for the PSS-790 (channel 16), verify
+# the remapping to a GM drums track on channel 10.
+#
+# TODO:  Why do we need the -i and -o to get this to work???
+#-----------------------------------------------------------------------------
+
+TEST_LINE="$MIDICVTPP --m2m $INI_DIR/GM_PSS-790_Drums.ini -i $ST_TARGET_DIR/stomtors-drums-16.mid -o $TMP_DIR/stomtors-drums-10.mid"
+run_test $TMP_DIR/stomtors-drums-10.mid $ST_TARGET_DIR/stomtors-drums-10.mid
+
+#-----------------------------------------------------------------------------
+# Verify that ASCII generation for the drums still works
+#-----------------------------------------------------------------------------
+
+TEST_LINE="$MIDICVTPP -i $ST_TARGET_DIR/stomtors-drums-10.mid -o $TMP_DIR/stomtors-drums-10.asc"
+run_test $TMP_DIR/stomtors-drums-10.asc $ST_TARGET_DIR/stomtors-drums-10.asc
+
+TEST_LINE="$MIDICVTPP -i $ST_TARGET_DIR/stomtors-drums-16.mid -o $TMP_DIR/stomtors-drums-16.asc"
+run_test $TMP_DIR/stomtors-drums-16.asc $ST_TARGET_DIR/stomtors-drums-16.asc
+
+#-----------------------------------------------------------------------------
+# Multiple transformations of a PSS-790-based tune
+#-----------------------------------------------------------------------------
+#
+# TODO:  I misspelled the name of the INI file, and yet NO FAILURE OCCURRED.
+
+$MIDICVTPP --m2m $INI_DIR/GM_PSS-790_Multi.ini -i $ST_MIDI_DIR/stomtors.mid -o $TMP_DIR/stomtors-multi.mid
+
+$MIDICVT -i $TMP_DIR/stomtors-multi.mid -o $TMP_DIR/stomtors-multi.asc
+
+# Later will compare the outputs above with stock ones.
+#
+# Also need to test the --reject option.
+#
+# We cannot compare the original with the reversed because there is no
+# one-to-one correspondence between PSS-790 and GM drums in the reverse
+# direction.
+#
+# $MIDICVTPP --m2m $INI_DIR/GM_PSS-790_Multi.ini --reverse
+#     -i $TMP_DIR/stomtors-multi.mid -o $TMP_DIR/stomtors-multi-reversed.mid
+#
+# $MIDICVT -i $TMP_DIR/stomtors-multi-reversed.mid
+#     -o $TMP_DIR/stomtors-multi-reversed.asc
+
+#-----------------------------------------------------------------------------
+# Verify round-trip processing using the --reverse option.
+#-----------------------------------------------------------------------------
+
+#-----------------------------------------------------------------------------
+# End of testing
+#-----------------------------------------------------------------------------
+
+rm -rf $TMP_DIR
+
+echo "All tests PASSED."
+if [ "$DO_VALGRIND" == "no" ] ; then
+   echo "Don't forget to run with option --valgrind as well."
+fi
+
+#*****************************************************************************
+# test_script (midicvt/tests)
+#------------------------------------------------------------------------------
+# Local Variables:
+# End:
+#-----------------------------------------------------------------------------
+# vim: ts=3 sw=3 ft=sh
+#----------------------------------------------------------------------------

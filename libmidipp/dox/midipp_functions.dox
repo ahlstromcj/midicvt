@@ -1,0 +1,52 @@
+/******************************************************************************
+ * midipp_functions.dox
+ *-----------------------------------------------------------------------------
+ *
+ * \library    libmidipp
+ * \author     Chris Ahlstrom
+ * \version    0.1
+ * \date       2014-04-22
+ * \update     2014-06-21
+ * \license    GNU GPL 2.0 and above
+ *
+ *------------------------------------------------------------------------*//**
+
+\file    midipp_functions.dox
+
+This document describes the functions and parameters of the libmidipp module.
+
+\page    midipp_page The libmidipp Library
+
+\section midipp_intro Introduction to the MIDIcvt Library Module
+
+This library (<i>libmidipp</i>) is merely a convenience library for the C++
+application <i>midicvtpp</i>.
+
+It provides local versions of the following classes:
+
+   -  midipp:csvarray
+      This class provides a data structure that is a list of items created
+      from a comma-separated-value (CSV) file.
+   -  midipp::stringmap
+      This class holds a lookup-table that maps values to string names.
+      It is a fairly reusable class; the midipp version is included here
+      to avoid dependencies on other project libraries we maintain.
+      We want the MIDI programs and libraries to stand on their own, for
+      the convenient of other developers.
+   -  midipp::initree
+      This class holds data for "sections" of midipp::stringmap<std::string>
+      items that represent name/value pairs grouped into sections.
+      This class is created using the data from a
+      special initialization (INI) file.
+   -  midipp::midimapper
+      This class provides data structures to remap drum notes, program (patch)
+      values, and other items.  This class is created using the data from a
+      midipp::initree data structure.
+
+*//*-------------------------------------------------------------------------*/
+
+/*****************************************************************************
+ * midipp_functions.dox
+ * --------------------------------------------------------------------------
+ * vim: ts=3 sw=3 et syntax=doxygen
+ *---------------------------------------------------------------------------*/

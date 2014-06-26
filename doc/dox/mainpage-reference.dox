@@ -1,0 +1,78 @@
+/******************************************************************************
+ * mainpage-reference.dox
+ *-----------------------------------------------------------------------------
+ *
+ *    This module provides no code.  It provides only a Doxygen "Doxygen
+ *    information" page.
+ *
+ *    Since this documentation could be part of a more comprehensive
+ *    documentation package covering many libraries and applications, we
+ *    include a \mainpage directive in this stub file.
+ *
+ *    This file will be copied to or clean from each documentation
+ *    subdirectory as needed.
+ *
+ *------------------------------------------------------------------------*//**
+
+\file       mainpage-reference.dox
+
+This document describes the modules and functions of the libmidifilex
+library and the midicvt and midicvtpp applications.
+
+\mainpage   midicvt
+\author     Chris Ahlstrom 2014-06-21
+
+MIDIcvt is a minor cleanup, refactoring, and documentation of the related
+midi2text and midicomp projects.
+
+The purpose of these projects is to convert MIDI to and from a
+human-readable, machine-parsed text format, for easy modifications to MIDI
+files using standard tools.
+
+In addition to the <i>midicvt</i> C program, this project includes a
+refactored version of <i>libmidifile</i> called <i>libmidifilex</i>,
+a new library called <i>libmidipp</i>, and a C++ program called
+<i>midicvtpp</i> that includes the functionality of <i>midicvt</i> and adds
+some canned MIDI-to-MIDI transformations to save the user the writing of
+some scripts.
+
+The current document describes the functions, classes, modules, and other
+entities used in this project.
+
+\section midicvt_reference_intro Introduction
+
+The following changes were made to the <i>midicomp</i> project to make it
+easier to understand and modify:
+
+   -  The ancient Kernighan and Ritchie conventions for C function
+      parameters were used for the parameters of the libmidifile functions.
+      We changed these conventions to modern C.
+   -  The comments about functions and values were increased in depth, and
+      were converted to use Doxygen/JavaDocs conventions, so that a
+      reference manual could be generated.
+   -  We regrouped the global variables into semi-private modules, and added
+      accessor functions to those that needed to be used by callers outside
+      of the library.
+   -  We moved code around and added modules so that the code was better
+      organized, and the main() function much simpler.
+   -  We rename the library to libmidifilex to avoid conflicts with the old
+      library.
+   -  We added a minor reporting facility so that the existing callbacks
+      could dump information.
+   -  We added an additional set of C callbacks that transformed MIDI to
+      MIDI.  (These callbacks tend to fix issue in the input MIDI file, as
+      well.)
+   -  We added a C++ class with static callbacks that can be used to remap
+      notes and patches, extract or reject a given MIDI channel, and make
+      other stock changes to a MIDI file.
+   -  We added a C++ program that can perform some MIDI-to-MIDI conversions
+      without the need for scripting.
+
+
+ *//*-------------------------------------------------------------------------*/
+
+/******************************************************************************
+ * mainpage-reference.dox
+ *----------------------------------------------------------------------------
+ * vim: ts=3 sw=3 et syntax=doxygen
+ *//*-------------------------------------------------------------------------*/

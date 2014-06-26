@@ -1,0 +1,100 @@
+#******************************************************************************
+# midicvt/test-files/README
+#------------------------------------------------------------------------------
+##
+# \file        README
+# \author      Chris Ahlstrom
+# \date        2014-04-08
+# \update      2014-04-19
+#
+#------------------------------------------------------------------------------
+
+The following two command lines were run in sequence to generate the results
+files in test-files/results:
+
+   ./midicvt --report -i ../test-files/ex1.mid -o ex1.asc 2> ex1-report.txt
+
+   ./midicvt --report -i ../test-files/ex1-recompiled.mid -o ex1-recompiled.asc
+       2> ex1-recompiled-report.txt
+
+The input files are:
+
+   ex1.mid
+
+      The original test file provided with the midicomp project.  It has
+      some oddities in it, including a two-parameter version of the time
+      signature event, and missing "note on" bytes for most of the notes.
+
+  ex1-recompiled.mid
+
+      This file is the result of the following command, which takes the
+      ex1.asc output file and reconverts it back to MIDI, as a kind of
+      round-trip test.  It is to be noted that the compiling restores many
+      of the byte values that are missing from the original ex1.mid file.
+
+         ./midicvt -c ex1.asc ex1-recompiled.mid
+
+The result files are:
+
+   ex1.asc
+
+      Provides the text version of ex1.mid, as obtained by the first command
+      at the top of this README file.
+
+   ex1-report.txt
+
+      Provides a more detailed "stderr" dump of the data processed by
+      libmidifile, to help see what bytes are being processed.  The first
+      column is supposed to be the offset into the MIDI file.  Numbers are
+      shown in decimal and hex for better understanding.
+
+   ex1-recompiled.asc
+
+      Provides the text version of ex1-recompiled.mid, as obtained by the
+      second command at the top of this README file.  It should be noted
+      that this output file is identical to the ex1.asc output file.
+
+   ex1-recompiled-report.txt
+
+      Like ex1-report.txt, but for ex1-recompiled.mid.
+
+   ex1.xxd
+
+      Provides ex1.mid transformed by "xxd -c 1", with annotations added
+      about the events, including events that are missing.
+
+   ex1-recompiled.xxd
+
+      Provides ex1-recompiled.mid transformed by "xxd -c 1", with
+      annotations.
+
+   ex1-verbose.asc
+
+      The conversion of ex1.mid using the "verbose" option.  MORE TO COME.
+
+   ex1-recompiled-verbose.mid
+
+      Illustrates that compiling ex1-verbose.asc yields a file that matches
+      ex1-recompiled.mid.  In other words, the normal and verbose ASCII
+      representations of ex1.mid both compile to the same (enhanced by
+      midicvt) MIDI file.
+
+We also tried some of the test files from the midi2text project.
+
+   choo2xg.mid and choo2xg.asc
+
+This MIDI file, when converted to a text file using the --time option, yields
+a text file that matches ch002xg.asc, so we can see that midicvt's conversion
+matches that of midi2text.  Compiling it back from the text file yields:
+
+   choo2xg-recompiled.mid
+
+This file is a lot smaller than choo2xg.mid, but when both are play via
+timidity, they sound the same.  We haven't checked yet.
+
+#*****************************************************************************
+# README (midicvt/test-files)
+#-----------------------------------------------------------------------------
+# vim: ts=3 sw=3 et ft=sh
+#-----------------------------------------------------------------------------
+

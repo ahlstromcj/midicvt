@@ -1,0 +1,231 @@
+ex1-recompiled.xxd
+
+Derived from ex1.mid by converting ex1.mid to a text file, and compiling
+it back to a MIDI file.  Seems to be incorrectly formatted.  The first
+track should just contain setup information, but it also contains note
+data.  Note data should appear in subsequent tracks.
+
+Header chunk:
+
+0000000: 4d  M
+0000001: 54  T
+0000002: 68  h
+0000003: 64  d
+
+Chunk size (4 bytes, dword):
+
+0000004: 00  .
+0000005: 00  .
+0000006: 00  .
+0000007: 06  .
+
+Format type (2 bytes, word, values are 0, 1, or 2):
+
+0000008: 00  .
+0000009: 01  .
+
+Number of tracks (2 bytes, word, 1 to 65535): 
+
+   Format 0 will always have only one track.
+
+   Format 1 has multiple tracks, the first containing song information
+   of various kinds.
+
+000000a: 00  .
+000000b: 01  .
+
+Time division (2 bytes, word):
+
+000000c: 01  .       0 == ticks per quarter-note, 1 == negative SMPTE
+000000d: 80  .       128 ticks per frame
+
+First track chunk:   [ "Trk" ]
+
+000000e: 4d  M
+000000f: 54  T
+0000010: 72  r
+0000011: 6b  k
+
+Size of track (0x9e == 158 bytes)
+
+0000012: 00  .
+0000013: 00  .
+0000014: 00  .
+0000015: 9e  .
+
+Track 1 data:        [ " 0 Meta SeqName "Track 1" ]
+
+0000016: 00  .       Delta time
+0000017: ff  .       Starts text event
+0000018: 03  .       Indicates "Track name"
+0000019: 07  .       Length of track name (or sequence name)
+000001a: 54  T
+000001b: 72  r
+000001c: 61  a
+000001d: 63  c
+000001e: 6b  k
+000001f: 20   
+0000020: 31  1       7th byte of track name
+
+Note On???
+
+0000021: 00  .       Delta time (Dt)
+0000022: 90  .       Note On, Ch 0 ?
+0000023: 30  0       Note 0x30 (48) ?
+0000024: 46  F       Velocity 0x46 () ?
+0000025: 00  .       Dt
+0000026: ff  .       Tempo (ff 51 03 tt tt tt)
+0000027: 51  Q
+0000028: 03  .
+0000029: 07  .       07a120 == 500000 usec/quarter note == 120 bpm
+000002a: a1  .
+000002b: 20          End of Tempo
+
+000002c: 00  .       Dt
+000002d: ff  .       Time Signature (ff 58 04 nn dd cc bb)
+000002e: 58  X       58
+000002f: 04  .       04
+0000030: 04  .       4 / 4 (2^02 == 4)
+0000031: 02  .
+0000032: 20          Number of MIDI clocks per metronome tick == 32
+0000033: 63  c       Number of 32nd-notes in MIDI quarter-note (24 MIDI clocks) ?
+
+Beginning of main notes:
+
+0000034: 60  `       Dt = 96
+0000035: 90  .       Note On, Ch 0
+0000036: 30  0       Note 0x30 (48)
+0000037: 00  .       Velocity 0
+
+0000038: 00  .       Dt = 0
+0000039: 90  .       Note On, Ch 0
+000003a: 32  2       Note 0x32 (50)
+000003b: 46  F       Velocity 0x46
+
+000003c: 60  `       Dt = 96
+000003d: 90  .       Note On, Ch 0
+000003e: 32  2       Note 0x32 (50)
+000003f: 00  .       Velocity 0
+
+0000040: 00  .
+0000041: 90  .
+0000042: 34  4
+0000043: 46  F
+
+0000044: 60  `
+0000045: 90  .
+0000046: 34  4
+0000047: 00  .
+
+0000048: 00  .
+0000049: 90  .
+000004a: 35  5
+000004b: 46  F
+000004c: 60  `
+000004d: 90  .
+000004e: 35  5
+000004f: 00  .
+0000050: 00  .
+0000051: 90  .
+0000052: 37  7
+0000053: 46  F
+0000054: 60  `
+0000055: 90  .
+0000056: 37  7
+0000057: 00  .
+0000058: 00  .
+0000059: 90  .
+000005a: 39  9
+000005b: 46  F
+000005c: 60  `
+000005d: 90  .
+000005e: 39  9
+000005f: 00  .
+0000060: 00  .
+0000061: 90  .
+0000062: 3b  ;
+0000063: 46  F
+0000064: 60  `
+0000065: 90  .
+0000066: 3b  ;
+0000067: 00  .
+0000068: 00  .
+0000069: 90  .
+000006a: 3c  <       Running status?
+000006b: 46  F
+000006c: 60  `
+000006d: 90  .
+000006e: 3c  <       Running status?
+000006f: 00  .
+0000070: 00  .
+0000071: 90  .
+0000072: 3e  >
+0000073: 46  F
+0000074: 60  `
+0000075: 90  .
+0000076: 3e  >
+0000077: 00  .
+0000078: 00  .
+0000079: 90  .
+000007a: 3c  <       Running status?
+000007b: 46  F
+000007c: 60  `
+000007d: 90  .
+000007e: 3c  <       Running status?
+000007f: 00  .
+0000080: 00  .
+0000081: 90  .
+0000082: 3b  ;
+0000083: 46  F
+0000084: 60  `
+0000085: 90  .
+0000086: 3b  ;
+0000087: 00  .
+0000088: 00  .
+0000089: 90  .
+000008a: 39  9
+000008b: 46  F
+000008c: 60  `
+000008d: 90  .
+000008e: 39  9
+000008f: 00  .
+0000090: 00  .
+0000091: 90  .
+0000092: 37  7
+0000093: 46  F
+0000094: 60  `
+0000095: 90  .
+0000096: 37  7
+0000097: 00  .
+0000098: 00  .
+0000099: 90  .
+000009a: 35  5
+000009b: 46  F
+000009c: 60  `
+000009d: 90  .
+000009e: 35  5
+000009f: 00  .
+00000a0: 00  .
+00000a1: 90  .
+00000a2: 34  4
+00000a3: 46  F
+00000a4: 60  `
+00000a5: 90  .
+00000a6: 34  4
+00000a7: 00  .
+00000a8: 00  .
+00000a9: 90  .
+00000aa: 32  2
+00000ab: 46  F
+00000ac: 60  `
+00000ad: 90  .
+00000ae: 32  2
+00000af: 00  .
+00000b0: 00  .
+
+Track End:           [ "TrkEnd" ]
+
+00000b1: ff  .       End of track (ff 2f 00)
+00000b2: 2f  /       EOT char 2
+00000b3: 00  .       EOT char 3
+00000b4: 0a  .

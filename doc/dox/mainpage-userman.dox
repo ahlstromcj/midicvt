@@ -1,0 +1,103 @@
+/******************************************************************************
+ * mainpage-userman.dox
+ *-----------------------------------------------------------------------------
+ *
+ *    This module provides no code.  It provides only a Doxygen "Doxygen
+ *    information" page.
+ *
+ *    Since this documentation could be part of a more comprehensive
+ *    documentation package covering many libraries and applications, we
+ *    include a \mainpage directive in this stub file.
+ *
+ *    This file will be copied to or clean from each documentation
+ *    subdirectory as needed.
+ *
+ *    Date: 2014-04-08 to 2014-06-23
+ *
+ *------------------------------------------------------------------------*//**
+
+\file       mainpage-userman.dox
+
+Provides a primitive (at present) user manual for the midicvt and midicvtpp
+applications.
+
+\mainpage   midicvt and midicvtpp
+\author     Chris Ahlstrom 2014-06-23
+
+<i>MIDIcvt</i> (<code>midicvt</code>) is a refactoring, augmentation, and
+documentation of the related <i>midi2text</i> and <i>midicomp</i> projects.
+The purpose of these projects was to convert MIDI to and from a
+human-readable, machine-parsed text format, for easy modifications to MIDI
+files using standard tools.
+
+The text representation is chosen such that it is easily recognized and
+manipulated by programs like <i>sed</i>, <i>awk</i>, or <i>perl</i>.
+Yet it is also human-readable so that it can be manipulated with an ordinary
+text editor.
+
+<code>midicvt</code> is a C program that does essentially the same task,
+with some minor upgrades.
+
+<code>midicvtpp</code> is a C++ program that incorporates the functionality
+of <code>midicvt</code>, but adds the ability to do some canned MIDI-to-MIDI
+conversions using "INI" files to control the conversions.  These canned
+conversions mean that the use can avoid learning scripting in order to
+perform certain conversions.
+
+This document is based, in part, on documentation provided by the
+<i>midi2text</i> project at the https://code.google.com/p/midi2text/ site.
+Here is the information on the author of that program.
+
+\verbatim
+   Piet van Oostrum, Dept of Computer Science, Utrecht University,
+   P.O. Box 80.089, 2508 TB Utrecht, The Netherlands
+   email: piet@cs.ruu.nl
+\endverbatim
+
+Please check out his project and peruse it.  We're not attempting to support
+Windows or Mac OSX at this time.
+
+Those programs use the midifile library written by Tim Thompson
+(tjt\@blink.att.com) and updated by Michael Czeiszperger (mike\@pan.com).
+However, there were some bugs in the write code, and Piet and ourselves
+added some features that we needed. He also changed some of the names to
+cope with the 7-character limit for external identifiers in the Sozobon
+compiler.  However, we changed the coding conventions to use more recent C
+and C++ standards.  The new library is called <code>midifilex</code>.
+
+Piet compiled the programs on an Atari ST with the Sozobon compiler and
+the dlibs library. The scanner is generated using flex 2.3. The output of
+flex (t2mflex.c) is included for those that do not have flex.  The module
+yyread.c is a flex library module that you need on TOS (and on MSDOS).  The
+corresponding makefile is makefile.st. For Unix use makefile.unx. For
+Borland C on MSDOS use makefile.bcc. For Microsoft C on MSDOS makefile.msc.
+The makefiles may need minor changes for other systems.
+
+There don't seem to be any make-files at Piet's
+site.  Luckily, it is easy to build his code from the command-line.
+
+Licensing (GPL) for this project is defined in greater detail at the end of
+this document.
+
+Related projects:
+
+   -  https://github.com/markc/midicomp
+      A version of the midicomp program.  Dead sites for this same project
+      include http://alsa.opensrc.org/MidiComp and
+      http://midicomp.opensrc.org/.
+   -  https://code.google.com/p/midi2text/
+      The midi2text project, providing the mf2t and t2mf programs, as
+      described above.
+   -  http://www.midiox.com/
+      Windows versions of the mf2t and t2mf programs.
+   -  http://www.fourmilab.ch/webtools/midicsv/
+      Converts MIDI to CSV files.  Not to be confused with our project's
+      usage of CSV.
+
+ *//*-------------------------------------------------------------------------*/
+
+/******************************************************************************
+ * mainpage-userman.dox
+ *----------------------------------------------------------------------------
+ * vim: ts=3 sw=3 et syntax=doxygen
+ *//*-------------------------------------------------------------------------*/

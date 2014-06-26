@@ -1,0 +1,28 @@
+#******************************************************************************
+# libwaonc/m4/README
+#------------------------------------------------------------------------------
+##
+# \file        README
+# \author      Chris Ahlstrom
+# \date        2013-10-19
+# \update      2013-10-19
+#
+#------------------------------------------------------------------------------
+
+Bootstrapping the project on a Gentoo system led to the following notes, and
+we're keeping the new versions.
+
+aclocal-1.11:
+
+   overwriting 4/libtool.m4' with usr/share/aclocal/libtool.m4'
+   overwriting 4/ltoptions.m4' with usr/share/aclocal/ltoptions.m4'
+   overwriting 4/ltversion.m4' with usr/share/aclocal/ltversion.m4'
+   overwriting 4/lt~obsolete.m4' with usr/share/aclocal/lt~obsolete
+
+Also of later version was: ax_prefix_config_h.m4
+
+#*****************************************************************************
+# README (libwaonc/m4)
+#-----------------------------------------------------------------------------
+# vim: ts=3 sw=3 et ft=sh
+#-----------------------------------------------------------------------------

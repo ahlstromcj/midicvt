@@ -1,0 +1,343 @@
+#!/usr/bin/make -f
+#
+# -*- makefile -*-
+#
+#*****************************************************************************
+# debian/rules (midicvt)
+#-----------------------------------------------------------------------------
+##
+# \file       	rules
+# \library    	midicvt etc.
+# \author     	Chris Ahlstrom
+# \date       	2014-06-02 to 2014-06-02
+# \version    	$Revision$
+# \license    	$XPC_SUITE_GPL_LICENSE$
+#
+# 		Sample debian/rules that uses debhelper.
+#
+# 		This file was originally written by Joey Hess and Craig Small.  As a
+# 		special exception, when this file is copied by dh-make into a dh-make
+# 		output file, you may use that output file without restriction.  This
+# 		special exception was added by Craig Small in version 0.37 of dh-make.
+#
+#		This version of the rules file requires that the top-level 'Makefile'
+#		exist.  If this project has already been distributed, it will have the
+#		'Makefile' (and the 'configure' script).  If not, then they can be
+#		created using the 'bootstrap' script in the project's root directory.
+#
+#-----------------------------------------------------------------------------
+
+#*****************************************************************************
+# Uncomment this to turn on verbose mode.  Other potential items are noted
+# for future reference.
+#-----------------------------------------------------------------------------
+
+export DH_VERBOSE=1
+
+#-----------------------------------------------------------------------------
+#
+# #DPKG_ARCH#
+# #PATCH_CLASS#
+#
+# Shared library versions, option 1
+#
+# version=1.0.0
+# major=1
+#
+# Shared library versions, option 2
+#
+# This one assumes the library is created as src/.libs/libfoo.so.1.0.0
+#
+# version=`ls src/.libs/lib*.so.* | \
+#   awk '{if (match($$0,/[0-9]+\.[0-9]+\.[0-9]+$$/)) print substr($$0,RSTART)}'`
+#
+# major=`ls src/.libs/lib*.so.* | \
+#   awk '{if (match($$0,/\.so\.[0-9]+$$/)) print substr($$0,RSTART+4)}'`
+#
+#-----------------------------------------------------------------------------
+
+#*****************************************************************************
+# Directory names and other names
+#-----------------------------------------------------------------------------
+#
+# 	workdir:		The current directory, which should be the root directory of
+# 					this project.
+# 	tempdir:		The temporary directory into which the automake script will
+# 					install the built libraries, internationalization files, and
+# 					documentation.
+# 	temppath:	The full path to tempdir.
+# 	pkgname:		The name of the binary (library) package, as specified in
+# 					the file named 'control'.  There's probably a variable
+# 					already defined for this item, but we don't know that yet.
+# 	pkgdevname:	The name of the development (header and documentation)
+# 					package, as specified in the file named 'control'.
+# 	pkgvername:	The canonical name of the package, including the version
+# 					designation with major.minor digits only.  Used only for the
+# 					HTML documentation directory location.
+# 	htmldir:		The relative directory where the package HTML documentation
+# 					goes.  It must match the html directory specified in
+# 					midicvt-dev.dirs.
+#  localedir:	The relative directory for the locale files.
+#
+#-----------------------------------------------------------------------------
+
+workdir=$(shell pwd)
+tempdir=debian/tmp
+temppath=$(workdir)/$(tempdir)
+pkgname=midicvt
+pkgdevname=midicvt-dev
+pkgvername=midicvt-0.2
+htmldir=usr/share/doc/$(pkgvername)/html
+localedir=usr/share/locale
+eslocaledir=$(localedir)/es/LC_MESSAGES
+
+#*****************************************************************************
+# Architecture and cross-compilation settings.
+#-----------------------------------------------------------------------------
+#
+# These are used for cross-compiling and for saving the configure script
+# from having to guess our platform (since we know it already)
+#
+#-----------------------------------------------------------------------------
+
+DEB_HOST_GNU_TYPE   ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
+DEB_BUILD_GNU_TYPE  ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
+ifneq ($(DEB_HOST_GNU_TYPE),$(DEB_BUILD_GNU_TYPE))
+CROSS= --build $(DEB_BUILD_GNU_TYPE) --host $(DEB_HOST_GNU_TYPE)
+else
+CROSS= --build $(DEB_BUILD_GNU_TYPE)
+endif
+
+#*****************************************************************************
+# Shared library versions, option 1
+#-----------------------------------------------------------------------------
+#
+# version=2.0.5
+# major=2
+#
+#-----------------------------------------------------------------------------
+# option 2, assuming the library is created as src/.libs/libfoo.so.2.0.5 or so
+#-----------------------------------------------------------------------------
+#
+# version=`ls src/.libs/lib*.so.* | \
+#   awk '{if (match($$0,/[0-9]+\.[0-9]+\.[0-9]+$$/)) print substr($$0,RSTART)}'`
+# major=`ls src/.libs/lib*.so.* | \
+#   awk '{if (match($$0,/\.so\.[0-9]+$$/)) print substr($$0,RSTART+4)}'`
+#-----------------------------------------------------------------------------
+
+#*****************************************************************************
+# configure
+#-----------------------------------------------------------------------------
+#
+# 	Since we've already got the configure script working by this time, we
+# 	dump its output to a log file, so it won't interfere with spotting more
+# 	likely errors.
+#
+#-----------------------------------------------------------------------------
+
+configure: configure-stamp
+
+configure-stamp:
+	dh_testdir
+	touch configure-stamp
+
+config.status: configure
+	@echo "! Configuring the package"
+ifneq "$(wildcard /usr/share/misc/config.sub)" ""
+	cp -f /usr/share/misc/config.sub config.sub
+endif
+ifneq "$(wildcard /usr/share/misc/config.guess)" ""
+	cp -f /usr/share/misc/config.guess config.guess
+endif
+	./configure $(CROSS) --prefix=/usr --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info CFLAGS="$(CFLAGS)" LDFLAGS="-Wl,-z,defs" > debian/configure.log
+
+#*****************************************************************************
+# build
+#-----------------------------------------------------------------------------
+
+build: build-stamp
+
+build-stamp: config.status
+	#
+	# dh_testdir
+	#
+	# ./configure --prefix=/usr  (done in config.status target)
+	#
+	@echo "! Building the package"
+	$(MAKE)
+	#
+	# We currently use doxygen to generate detailed design/developer
+	# documentation.
+	#
+	# docbook-to-man debian/xpc.sgml > xpc.1
+	#
+	# touch $@
+
+#*****************************************************************************
+# clean
+#-----------------------------------------------------------------------------
+#
+# 		(No #PATCH_CLEAN# dependency).
+#
+#		rm -rf debian/{midicvt,midicvt-dev}
+#		find . -name '*.o' -o -name '_libs' -o -name '*.lo' -o -name '*.a' \
+#			-o -name '*.P' -o -name 'Makefile' | xargs rm -rf
+#		$(MAKE) distclean
+#
+#-----------------------------------------------------------------------------
+
+clean: 
+	dh_testdir
+	dh_testroot
+	@echo "! Cleaning the package"
+	rm -f build-stamp configure-stamp
+	#
+	# Add here commands to clean up after the build process.
+	#
+	# $(MAKE) clean
+	[ ! -f Makefile ] || $(MAKE) distclean
+	rm -f config.sub config.guess
+	dh_clean 
+
+#*****************************************************************************
+# install
+#-----------------------------------------------------------------------------
+#
+# 		The actual "make install" tries to write the output to /usr/local
+# 		instead of the temporary directory where the installation tree is
+# 		built.  So we have to replace this line of code:
+#
+#			$(MAKE) DESTDIR=$(CURDIR)/debian/midicvt install
+#
+#		This target basically does the 'make install' bit of the package.  All
+#		the individual files for each package are then moved through judicious
+#		use of dh_movefiles.  (We highly recommend using dh_movefiles for
+#		multi-binary packages; it makes things much easier.)
+#
+#			$(MAKE) prefix=$(CURDIR)/debian/midicvt install
+#
+#-----------------------------------------------------------------------------
+# dh_clean
+#-----------------------------------------------------------------------------
+#
+# 		Cleans Debian derived files (but use dh_auto_clean to actually do a
+# 		"make clean", too).  "dh_clean -k" is deprecated, so dh_prep is used
+# 		instead, to perform cleaning in preparation for building a binary
+# 		package.
+#
+#-----------------------------------------------------------------------------
+
+install: install-stamp
+
+install-stamp: build
+	dh_testroot
+	dh_clean -k 
+	dh_installdirs -a
+	@echo "! Installing the package into the tmp directory"
+	#
+	# Add here commands to install the package into debian/midicvt.
+	#
+	# $(MAKE) prefix=$(CURDIR)/debian/midicvt install
+	#
+	# Add here commands to install the package into debian/tmp
+	#
+	$(MAKE) DESTDIR=$(CURDIR)/debian/tmp install
+
+#*****************************************************************************
+# binary-related targets
+#-----------------------------------------------------------------------------
+#
+# 		Notice how binary-arch has lots of separate targets for the different
+# 		packages that get built! Each one gets built after the 'build' and the
+# 		'install' targets are run.
+#
+# dh_testdir
+#
+# 		This script makes sure we're in the proper directory for the rules to
+# 		be applied.
+#
+# dh_testroot
+#
+# 		Makes sure that you are root (or fakeroot).
+#
+# dh_installdocs
+#
+# 		Installs Debian-related documents.
+#
+#-----------------------------------------------------------------------------
+
+# Build architecture-independent files here.  The install target eventually
+# calls the build target.
+
+binary-indep: install
+	@echo "! We have nothing to do to build binary-indep, by default."
+
+# Build architecture-dependent files here.
+#
+# 	binary-arch: build midicvt-dev midicvt
+
+binary-arch: install binary-arch-1 binary-docs binary-arch-2
+
+binary-arch-1:
+	@echo "! Building the binary-arch package"
+	dh_testdir
+	dh_testroot
+	dh_installchangelogs ChangeLog
+	dh_installexamples
+	dh_install --sourcedir=$(tempdir)
+	dh_installman
+
+binary-arch-2:
+	dh_link
+	dh_strip
+	dh_compress
+	dh_fixperms
+	dh_installdeb
+	dh_shlibdeps
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+
+#*****************************************************************************
+# binary-docs
+#-----------------------------------------------------------------------------
+#
+#		This is our own target to force the documentation and
+#		internationalization files to be copied to where they are needed to
+#		build the deb files.
+#
+#		We've been unable to beat dh_installdocs into submission, hence the
+#		need for this target.
+#
+# Not needed, already handled in non-dev package, and doing this causes
+# an error about overwriting an already-installed *.mo file:
+#
+#	cp -r $(tempdir)/$(eslocaledir)/* debian/$(pkgdevname)/$(eslocaledir)
+#
+#-----------------------------------------------------------------------------
+
+binary-docs:
+	@echo "cp -r $(tempdir)/$(htmldir)/* debian/$(pkgdevname)/$(htmldir)"
+	cp -r $(tempdir)/$(htmldir)/* debian/$(pkgdevname)/$(htmldir)
+	cp -r $(tempdir)/$(eslocaledir)/* debian/$(pkgname)/$(eslocaledir)
+
+#*****************************************************************************
+# binary
+#-----------------------------------------------------------------------------
+
+binary: binary-indep binary-arch
+
+#*****************************************************************************
+# PHONY
+#-----------------------------------------------------------------------------
+
+.PHONY: build clean binary-docs binary-indep binary-arch binary install configure
+
+#*****************************************************************************
+# debian/rules (midicvt)
+#-----------------------------------------------------------------------------
+# Local Variables:
+# End:
+#-----------------------------------------------------------------------------
+# vim: ts=3 sw=3 ft=automake
+#-----------------------------------------------------------------------------

@@ -1,0 +1,213 @@
+/******************************************************************************
+ * midicvt_file_format.dox
+ *-----------------------------------------------------------------------------
+ *
+ *    This module provides no code.  It provides only a Doxygen "Doxygen
+ *    information" page.
+ *
+ *------------------------------------------------------------------------*//**
+
+\file       midicvt_file_format.dox
+
+Describes the file format of the ASCII text generated and used by midicvt.
+
+\page       midicvt_file_format   ASCII File Format
+
+\section midicvt_file_format_intro Introduction
+
+Much of the usage documentation here comes from Piet van Oostrum, as noted
+elsewhere in this document.
+
+The text representation is chosen such that it is easily recognized and
+manipulated by programs like <i>sed</i>, <i>awk</i>, or <i>perl</i>.
+Yet it is also human-readable so that it can be manipulated with an ordinary
+text editor.
+
+In this way you can make changes to your midifiles using these
+powerful programs or even a Fortran program :=). Or you can write
+algorithmic compositions using a familiar programming language.
+   
+\section midicvt_file_format_text  Format of the Textfile
+
+The following representation of the MIDI events is generated.
+When the <code>-v</code> option is used, the longer strings shown in square
+brackets ("[]") are generated.  The items in angle brackets ("<>") are
+integer or string data values
+
+\verbatim
+   File header:            Mfile <format> <ntrks> <division>
+   Start of track:         MTrk
+   End of track:           TrkEnd
+   Note On:                On <ch> <note> <vol>
+   Note Off:               Off <ch> <note> <vol>
+   Poly Pressure:          PoPr[PolyPr] <ch> <note> <val>
+   Channel Pressure:       ChPr[ChanPr] <ch> <val>
+   Controller parameter:   Par[Param] <ch> <con> <val>
+   Pitch bend:             Pb <ch> <val>
+   Program change:         PrCh[ProgCh] <ch> <prog>
+   Sysex message:          SysEx <hex>
+   Arbitrary midi bytes:   Arb <hex>
+   Sequence number:        Seqnr <num>
+   Key signature:          KeySig <num> <manor>
+   Tempo:                  Tempo <num>
+   Time signature:         TimeSig <num>/<num> <num> <num>
+   SMPTE event:            SMPTE <num> <num> <num> <num> <num>
+   Meta text events:       Meta <texttype> <string>
+   Meta end of track:      Meta TrkEnd
+   Sequencer specific:     SeqSpec <type> <hex>
+   Misc meta events:       Meta <type> <hex>
+\endverbatim
+
+The "<>" symbols have the following meanings:
+
+\verbatim
+   <ch>                    Channel number (1 to 16).
+   <note>                  Note value (0 to 127).
+   <vol>                   Volume value (0 to 127).
+   <val>                   Other value (0 to 127).
+   <con>                   Controller number (0 to 127).
+   <prog>                  Program/patch number (0 to 127).
+   <manor>                 Minor or major flag (values are ???)
+   <noteval>               Either a <num> or A-G optionally followed by "#",
+                           followed by <num> without intermediate spaces.
+   <texttype>              Text Copyright SeqName TrkName InstrName Lyric
+                           Marker Cue or <type>.
+   <type>                  A hex number of the form 0xab.
+   <hex>                   A sequence of 2-digit hex numbers (without 0x)
+                           separated by space.
+   <string>                A string between double quotes (like "text").
+\endverbatim
+
+Channel numbers are 1-based; all other numbers are as they appear in
+the MIDI file.
+
+"<division>" is either a positive number (giving the time resolution in
+clicks per quarter note) or a negative number followed by a positive
+number (giving SMPTE timing).
+
+"<format>",  "<ntrks>",  and "<num>" are decimal numbers.
+
+The "<num>" in the "Pb" construct is the real value (two MIDI bytes combined)
+In Tempo it is a long (32 bits) value. Others are in the interval 0-127
+
+The SysEx sequence contains the leading F0 and the trailing F7.
+
+In a string certain characters are escaped:
+
+   -  Double-quotes and backslashes are escaped with a backslash.
+   -  A zero byte is written as "\\0"
+   -  CR and LF are written as "\\r" and "\\n" respectively
+   -  Other non-printable characters are written as "\\x<2 hex digits>"
+   -  When "-f" is given long strings and long hex sequences are folded by
+      inserting "\\<newline><tab>". If in a string the next character would be
+      a space or tab it will be escaped by a backslash.
+
+This facility is for those programs that have a limited buffer length.
+Of course parsing is more difficult with this option (see below).
+
+\section midicvt_file_format_input Input
+
+In the midi2text project, the processing was split between two applications.
+We'll use that convention in this usage description.  Maybe we'll make UNIX
+shortcuts for them.
+
+   <i>mf2t</i> is the same as <i>midicvt --input</i>.  This command converts
+   MIDI files to ASCII text files.
+
+   <i>t2mf</i> is the same as <i>midicvt --compile</i>.  This command
+   converts the ASCII text file back to a MIDI file.
+
+"t2mf" will accept all formats that "mf2t" can produce, plus a number of
+others (to be determined).
+
+Input is case insensitive (except in strings) and extra tabs and
+spaces are allowed. Newlines are required but empty lines are allowed.
+Comment starts with "#" at the beginning of a lexical item and continues
+to the end of the line. The only other places where a "#" is legal are
+inside strings and as a sharp symbol in a verbose symbolic note.
+
+In symbolic notes "+" and "#" are allowed for sharp notes, and "b" and "-"
+for flat.
+
+In the "bar:beat:click" time construct, the ":" may also be "/".
+
+On input, a string may also contain "\t" for a tab, and in a folded
+string any whitespace at the beginning of a continuation line is skipped.
+
+Hex sequences may be input without intervening spaces if each byte is
+given as exactly 2 hex digits.
+Hex sequences may be given where a string is required and vice versa.
+
+Hex numbers of the form "0xaaa" and decimal numbers are equivalent.
+Also allowed as numbers are "bank numbers" of the form "'123". In fact
+this is equivalent to the octal number 012 (subtract 1 from each
+digit, digits 1-8 allowed). The letters "a-h" may also be used for "1-8".
+
+The input is checked for correctness but not extensively. An
+error message will generally imply that the resulting MIDI file is illegal.
+
+\section midicvt_file_format_hints Useful Hints
+
+Channel number can be recognized by the regular expression "/ch=/".
+Note numbers can be recognized by "/n=/" or "/note=/", program numbers by
+"/p=/" or "/prog=/".  Meta events can be recognized by "/^Meta/" or
+"/^SeqSpec/".  Text events can be recognized by /"/, continued lines by
+"/\\$/", continuation
+lines by "/$\t/" (the tab character).
+
+In <i>awk</i> each parameter is a field, in <i>perl</i> you can use split to
+get the parameters (except for strings).
+
+The following Perl script changes note off messages to note on with
+vol = 0, deletes controller 3 changes, makes some note reassignments on
+channel 10, and changes the channel numbers from channel 1 depending
+on the track number. 
+
+<code>test.pl</code>:
+
+\verbatim
+%drum = (62, 36, 63, 47, 65, 61, 67, 40, 68, 54);
+
+while (<>) {
+   next if /c=3/;
+   s/Off(.*)v=[0-9]* /On\1v=0/;
+   if (/ch=10/ && /n=([0-9]*)/ && $drum{$1}) {
+      s/n=$1/"n=".$drum{$1}/e;
+   }
+   if (/^MTrk/) {++$trknr ; print "track $trknr\n";}
+   if ($trknr > 2) { s/ch=1\b/ch=3/; }
+   else  { s/ch=1\b/ch=4/; }
+   print || die "Error: $!\n";
+}   
+\endverbatim
+
+See the actual file for the best results.
+
+This is the corresponding Awk script.
+
+<code>test.awk</code>:
+
+\verbatim
+BEGIN { drum[62] = 36; drum[63] = 47; drum[65] = 61; \
+   drum[67] = 40; drum[68] = 54 }
+/c=3/ { next }
+($2 == "Off") { $2 = "On"; $5 = "v=0" }
+/ch=10/ { n = substr($4, 3); if (n in drum) $4 = "n=" drum[n] }
+/^MTrk/ { trknr++ }
+/ch=1 / { if (trknr > 2) { $3 = "ch=2" } else { $3 = "ch=3" } } 
+{ print }
+\endverbatim
+
+Good luck!
+
+\verbatim
+   $Id: readme.,v 1.6 1995/09/23 22:27:48 piet Rel $
+\endverbatim
+
+ *//*-------------------------------------------------------------------------*/
+
+/******************************************************************************
+ * midicvt_file_format.dox
+ *----------------------------------------------------------------------------
+ * vim: ts=3 sw=3 et syntax=doxygen
+ *//*-------------------------------------------------------------------------*/

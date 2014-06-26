@@ -1,0 +1,42 @@
+This package was debianized by ahlstrom <ahlstromcj@xyz.com> on
+Sat, 09 Jun 2014 12:29:21 -0400.
+
+It is the midicvt project originated from the upstream author.
+
+Upstream Author(s):
+
+   Chris Ahlstrom <ahlstromcj@xyz.com>
+
+Copyright:
+
+   Copyright (C) 2014-2014 Chris Ahlstrom
+
+License:
+
+   $XPC_SUITE_GPL_LICENSE$
+
+   This package is free software; you can redistribute it and/or modify it
+   under the terms of the GNU General Public License as published by the
+   Free Software Foundation; either version 3 of the License, or (at your
+   option) any later version.
+
+   This package is distributed in the hope that it will be useful, but
+   WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General
+   Public License for more details.
+
+   You should have received a copy of the GNU General Public License along
+   with this package; if not, write to the Free Software Foundation, Inc.,
+   51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
+
+On Debian systems, the complete text of the GNU General Public License can
+be found in `/usr/share/common-licenses/GPL'.
+
+The Debian packaging is (C) 2014, ahlstrom
+<ahlstromcj@xyz.com> and is licensed under the GPL, see above.
+
+# Please also look if there are files or directories which have a different
+# copyright/license attached and list them here.
+#
+# None so far!
+
