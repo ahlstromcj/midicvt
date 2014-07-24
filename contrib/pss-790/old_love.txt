@@ -1,0 +1,148 @@
+		|\/\/\/|	Chris Ahlstrom
+		|      |	uunet!pak!ca
+		|      |	GEnie KICKAHA; Compuserve 73340,26
+		| (.)(.)
+		C      _)  "Don't have a cow; name's Art, not Bart."
+		| `___|
+		\   /		9950 Topanga Canyon Blvd
+		/____\		Chatsworth, CA   91311
+	       /      \		(818) 998-0490
+
+    Song Title:	"Old Love" by Eric Clapton & Robert Cray
+        Source:	Transcription from guitar score
+        Format:	SMF 1, MIDI channels 5-16
+     Sequencer:	Edit Track II (Hybrid Arts)
+      Playback:	MIDIMOVR.ARC (GEnie's MIDI sig); any SMF-capable sequencer
+      Computer:	Atari ST
+ Native Synths:	Yamaha PSS-790
+          Date:	91.01.22
+
+
+INTRODUCTION
+
+	This is the first song I've done with a machine sensitive
+to volume and velocity.  Since the PSS-790 doesn't transmit velocity,
+I had to edit velocity graphically (I can't play keyboards very
+well, anyway.)  I took great pains to make the velocity and
+pitch bend as realistic as possible.  Of course, it's only
+my best shot as of today.
+	
+	The original format was Edit Track II (Atari ST) --
+download MIDIMOVR.ARC from the MIDI section of GEnie, to play this
+file.  MIDIMOVR is "freeware" provided by Hybrid Arts.  It plays SMF 0
+1, EZ-Track+, and Midi-Track (Edit Track) files.  The mouse buttons
+are significant!
+
+
+LYRICS AND CHORDS
+
+	The essence of this song is simplicity, with fairly
+complex guitar improvisations.  I followed the score very faithfully,
+but there are a couple of places where I put my own improvisations
+in.  Can you detect them?  (Can you say "sententious"?  I knew
+you could.)
+
+	The accompaniment tracks (drum, bass, etc.) are fairly
+simple and repetitious.  I did not bother to make every reiteration
+unique.  Hope it's not too boring.
+
+	Rhythm figure 1 consists of the sequence of Am, Dm7,
+Gsus4, and G.  Rhythm figure 2 consists of F, Ftype2, F, E, G#,
+D, E, G#, E, Am, Am+7, Am7, Am6, Ftype3, A, C, A, C, D, Etype2,
+
+
+1.  (Fig. 1) I can feel your body/ When I'm lying in my bed.
+    Too much confusion/ Goin' 'round through my head.
+
+    (Fig. 2) It makes me so angry/ To know that the flame still burns.
+    Why can't I get over?/ When will I ever learn?
+
+    (Chorus; Fig. 1) Old love/ Leave me alone.
+    Old love/ Go on home.
+
+2.  I can see your face/ But I know it's not real.
+    It's just an illusion/ Caused by how I used to feel.
+
+    And it makes me so angry/ To know that the flame will always burn.
+    I'll never get over/ I know that I'll never learn.
+
+    Old love/ Leave me alone.
+    Old love/ Go on home.
+    Take me home, baby (whispered).
+
+    (Robert Cray guitar solo)
+    (Eric Clapton guitar solo)
+
+    Old love/ Leave me alone.
+    Old love/ Go on home.
+
+
+
+THE TRACKS (SMF version)
+
+Track		       Ch	Notes
+
+ 1 Guitar 1 (RC)	 5	Robert Cray's part
+ 2 Guitar 2 (EC)	 6	Eric Clapton's part
+ 3 Guitar 3 		 7	An accompaniment guitar
+ 4 Bass Guitar 4	 8	Electric bass accompaniment
+ 5 Accompaniment	 9	Electric piano
+ 6 Vocal		10	Eric Clapton's vocals, done by a horn
+ 7 Riff Guitar 5	11	Mostly mute guitar (patching in track)
+ 8 Synth Strings	12	Occasional atmosphere
+ 9 Percussion		16	See the table of note equivalents
+10 Fade Out 9,12,16	--	Ending decrescendo on three channels
+11 Chris Ahlstrom	Off	Presumptuous S.O.B.
+12 (GEnie: KICKAHA)	Off	Undercover agent for the F.B.I.
+13 PSS-790 Overall	--	Instruments and initial volume
+
+
+KEEPING TRACK OF TRACKS
+
+	The vocal and guitar tracks came from a score that included
+notation for all sorts of quitar tricks.  On the guitar solos,
+I doubled up and delayed the notes.  Might have overdone it.
+
+	The Edit Track version of this file employs chains to
+control playback.  For the SMF version, I flattened each chain.
+This time, I decided to merge the modulation tracks with the
+note tracks.  It's easier for me, and I don't think it will
+hurt most people's playback.
+
+	For the pitch bend, set your guitar patches to respond
+to the range of -8169 to +8064 with pitch bend of -1 to +1
+octaves.  The PSS-790, even with only 7 significant digits to
+the pitch bend, having to cover a whole octave, still provides
+adequately smooth bending.
+
+	I finally did away with my HT-700; my little daughter
+has control of it now, though I might find it useful on
+rare occasions.  I still use the MT-240, but now I can do
+all composing on a single machine.  A great relief.
+
+
+TABLE OF NOTE-EQUIVALENTS USED IN THIS SONG
+
+	Note	Deci	PSS-790 Drum Name
+
+	G#1	44	Bass Drum Lo
+	C 2	48	Tom Lo
+	C#2	49	Snare Hi
+	D 2	50	Tom Mid
+	D#2	51	Rim Shot 2
+	E 2	52	Snare Lo
+	B 2	59	Open HiHat
+	C 3	60	Crash Cymbal
+	B 3	71	Tambourine
+	G#4	80	Foot HiHat
+	A 4	81	Gated Snare, Reverb
+
+
+
+----------------
+FANFARE SECTION
+----------------
+
+	Thanks once again to Roger Jewell for listening.
+	Thanks to John DeGuenther for the music, and for
+"letting" me learn a bit about live mixing.

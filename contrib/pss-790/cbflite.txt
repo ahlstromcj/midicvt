@@ -1,0 +1,301 @@
+
+          
+
+
+
+
+                  |\/\/\/|        Chris Ahlstrom
+                  |      |        uucp ahlstrom%hei.uucp@usc.edu
+                  |      |        GEnie KICKAHA; Compuserve 73340,26
+                  | (.)(.)
+                  C      _) Cheesy beard idea from Scott Abderhalden.
+                  | `****|   Shoulda used it on the Clapton tunes, dudes.
+                  | * -- *
+                  | ******
+                  \   /           9950 Topanga Canyon Blvd
+                  /____\          Chatsworth, CA   91311
+                 /      \         (818) 998-0490
+
+                   File:  CBFLITE.LZH (use LHARC to unpack)
+             Song Title:  "Cloudburst Flight" by Tangerine Dream (7:50)
+                 Source:  Transcription from the record "Force Majeure"
+                 Format:  SMF 1, MIDI channels 2-16, 192 ppq
+              Sequencer:  Cakewalk Professional 4.0A
+               Playback:  MIDIMOVR.ARC (GEnie's MIDI sig); any SMF-
+                          capable sequencer
+               Computer:  386 SX IBM PC clone (HD Systems)
+          Native Synths:  Yamaha PSS-790, Yamaha DD-11 Drums
+                   Date:  91.12.02
+
+
+
+          INTRODUCTION 
+
+               "Cloudburst Flight"   is   my   first   tune  done  using
+          Cakewalk.   I  have  three songs in progress that were started
+          using  Edit  Track  II on the Atari ST.  If I ever finish them
+          (oh,  I  have  such learning to do!), they will have been done
+          on   two   different  sequencers  on  two  different  computer
+          platforms.   Before  I  get into the music, let me quickly say
+          that  I  did  not  switch  to  a new system because either the
+          Atari  ST or Edit Track were bad.  My main motivation was that
+          my  day-jobs have put me heavily into PC programming, and it's
+          much  easier  if one has a similar machine at home.  Also, PCs
+          have  finally  gotten  so  good  and  so cheap that the Atari,
+          Amiga,  and  MacIntosh have no overwhelming advantages for the
+          *generic*  user.   And they're so good and cheap that I didn't
+          feel  cheated in buying one.  Taiwanese PC clones represent an
+          amazing bargain! 
+
+
+          DISCUSSION 
+
+               Although this  tune  is  in  SMF  format, like the others
+          I've  done,  it  is  layed  out quite differently.  I got real
+          used  to  Cakewalk's  256  tracks,  and took full advantage of
+          this  elbow  room.   Hence,  instead of around 20 tracks, this
+          sequence  has  53.  If your sequencer cannot handle it, let me
+
+
+                                      - 1 -
+
+          Tangerine Dream's "Cloudburst Flight"                 Ahlstrom
+
+
+
+          know,  and  I'll  mix  some  tracks  together.  Lack-o'-tracks
+          shouldn't be a problem nowadays.  
+
+               The timebase   used   is   192   pulses-per-quarter-note.
+          Versions  of  Cakewalk prior to 4.0 could handle only 120 ppq,
+          I  believe,  so  users  of the older software might experience
+          some  minor  inaccuracies,  but  certainly  no  more  than  my
+          playing introduces.  Let me know if it is a problem.  
+
+               Cakewalk has  an  extra  column  of  text  notes for each
+          track.   That  is  the  only extra you'd get if I gave you the
+          Cakewalk  version,  and  it is copied below.  I use it to tell
+          me  which  voices  to  choose.   It should be a guide to those
+          with   non-Yamaha   voicings.    Unlike   previous  sequences,
+          however,  I  left  all  the  patch  changes  in their original
+          tracks.   Sequencers  nowadays should make it easier to locate
+          and  change  them.   If  not, let me know, and I'll consider a
+          version  with  a  separate PSS-790 track.  If you need to know
+          the  PSS-790  instruments,  find a copy of my PSS.TXT (PSS.LZH
+          on GEnie, if I remember right).  Or call me.  
+
+               Cakewalk lets  you  strip  the program changes all out in
+          one  fell  swoop,  and  lay them into one track.  However, the
+          CAL  language  isn't complex enough to make it easy to write a
+          program  to  convert  from  PSS-790  to other instruments very
+          easily.  Ya gotta do it by hand.  
+
+               The song has the usual sacrifices I have to make: 
+
+              1.  Extra voices to achieve an effect.  
+
+              2.  Voices left out because I didn't hear them.  
+
+              3.  Raggy lead instrument solos (I really need a 
+                  guitar controller and some lessons).  
+
+              4.  Amateurish sound mixing.  
+
+              5.  Precious few special effects.  
+
+
+          IRRELEVANT STORY 
+
+               Went to  L.A.  traffic  school  couple a weeks or so ago.
+          What  a stupefying experience! Some fun, but I think the whole
+          "class"   left  feeling  pretty  numb.   Being  reminded  that
+          driving  a  car  incurs  a certain risk of flaming death is no
+          fun.  
+
+
+
+
+
+
+                                      - 2 -
+
+          Tangerine Dream's "Cloudburst Flight"                 Ahlstrom
+
+
+
+          LYRICS 
+
+               You've got to be joking! 
+
+
+
+          THE TRACKS (SMF and WRK version) 
+
+          Trk Name 1              Name 2 (Cakewalk only)  Ch
+
+           1 "Cloudburst          [Pocket Filter]         --
+           2 Flight" by           [KTWV Humor   ]         --
+           3 Tangerine Dream      ForceMajeure            --
+           4 GEnie:KICKAHA        CIS:73340,26            --
+           5 == INTRO =======     003:1-021:1 ===         --
+           6 Intro Filler         SynthChorus/low          4
+           7 Intro Atmosphere     Strings 2                5
+           8 Intro Bass           WoodwindEnsembl          6
+           9 Intro Accompanim     Flugelhorn               7
+          10 Intro Pulse 1        SynthBrass 2             8
+          11 Intro Pulse 2        ElectricPiano 1          9
+          12 Intro Picking        FolkGuitar              10
+          13 == PART 1 ======     020:6-040:1             --
+          14 Filler 1             SynthChorus/low          4
+          15 Atmosphere           Strings 1                5
+          16 Filler 2             SynthFlute 1             6
+          17 Bass Roar            Flugelhorn/low           7
+          18 Pulse 1              SynthBrass 2             8
+          19 Pulse 2              ElectricPiano 1          9
+          20 Strum                FolkGuitar              10
+          21 Mournful Organ       Chorus        *         11
+          22 Mournful Loon        Trombone                12
+          23 Yamaha Drums         DD-11/PSS-790           16
+          24 == PART 2 ======     040:1-058:1             --
+          25 Lead                 Trump/SynBrass           3
+          26 Pulse 4              SynthReed 2   *          5
+          27 Filler 4             SynthChorus   *          6
+          28 Bass                 JazzGuitar/lo *          7
+          29 Pulse 1              SynthBrass 2  *          8
+          30 Pulse 2              ElecPiano 1   *          9
+          31 Pulse 3              SynthReed 3   *         10
+          32 Brass Anthem         BrassEnsemble           12
+          33    "    "            SynthPiano 2            13
+          34    "    "            Trombone                14
+          35 Filler 3             Fantasy                 15
+          36 Yamaha Drums         DD-11/PSS-790           16
+          37 == PART 3 ======     058:1-090:1             --
+          38 Lead Vector 1        SynthBrass 1             2
+          39 Lead Vector 2        JazzGuitarEcho           3
+          40 Lead Vector 3        DistGuitarFlang          4
+          41 == PART 4 ======     090:1-End               --
+          42 Mournful Whistle     Piccolo                  2
+
+
+                                      - 3 -
+
+          Tangerine Dream's "Cloudburst Flight"                 Ahlstrom
+
+
+
+          43 Atmosphere           Strings 1                5
+          44 Transition 1         Fretless Bass            7
+          45 Closing Pulse 1      SynthBrass 2             8
+          46 Closing Pulse 2      ElectricBass             9
+          47 Closing Pulse 3      Harpsichord 1           10
+          48 Transition 2         Horn                    11
+          49 Transition 3         BrassEnsemble           13
+          50 Transition 4         DistortGuitar           14
+          51 Head Filler          ElectricBass            15
+          52 Foot Filler          ElectricBass            15
+          53 Yamaha Drums         DD-11/PSS-790           16
+
+
+          Total time:  7:50
+
+
+
+          Notes: 
+
+          *  Continues into the parts the follow 
+
+
+
+
+
+          PERCUSSION
+
+               Cakewalk starts the number from octave 1, rather than from -1.
+          Hence, subtract two octaves from the designations given by
+          Cakewalk.
+
+                  PSS-790 Note Number
+                  Cakewalk Normal Number  Percussion Name
+
+                  G#3      G#1    44      Bass Drum Low
+                  A 3      A 1    45      Bass Drum High
+                  B 3      B 1    47      Tom Bass
+                  C 4      C 2    48      Tom Low
+                  D 4      D 2    50      Tom Mid
+                  F 4      F 2    53      Tom High
+                  A 4      A 2    57      Hi Hat Closed
+                  C 5      C 3    60      Crash Cymbal
+                  D#5      D#3    63      Ride Cymbal Edge
+                  G#6      G#4    80      Hi Hat Foot
+                  A 6      A 4    81      Snare Gated Reverb
+
+
+
+
+
+
+
+
+
+                                      - 4 -
+
+          Tangerine Dream's "Cloudburst Flight"                 Ahlstrom
+
+
+
+          KEEPING TRACK OF TRACKS 
+
+               My musical  ignorance  shows through in the names I chose
+          for  the tracks.  Yet, the two sets of track names should give
+          you  enough  data  to  pick  reasonably  good patches for your
+          synth.  
+
+               The drum  tracks aren't really suited to the DD-11.  I've
+          been  having  trouble  with  my  pocket filter, and so haven't
+          transposed  some  of  the  notes so that they play properly on
+          the  DD-11.   The  DD-11  and  PSS-790 have similar, but by no
+          means identical, drum layouts.  
+
+               For the  pitch  bend,  set  all patches to respond to the
+          range  of  -8169 to +8064 with pitch bend of -1 to +1 octaves.
+          The  PSS-790, even with only 7 significant digits to the pitch
+          bend,   having   to  cover  a  whole  octave,  still  provides
+          adequately smooth bending.  
+
+               I included  a  track  that's supposed to set up my Pocket
+          Filter  so  that  the dang Yamaha DD-11 drum set responds only
+          to  channel  16.   I've  been  having  some  problems with it,
+          though,  and  didn't  bother  to  make the drums totally match
+          those  of  the  DD-11.   Instead,  they  match all the PSS-790
+          drums.  
+
+               Track 2  is  simply  a  little  joke;  it  is part of the
+          corporate  anthem  of  the corporation that owns a popular New
+          Age  (Muzak) FM station in Los Angeles.  The real music starts
+          in measure 3.  
+
+               If you don't like any tracks, turn 'em off.  
+
+
+          ACKNOWLEDGMENTS 
+
+               Actually, the  whole  Bart  logo  idea  came  from  Scott
+          Abderhalden.  Who knows where he got it? 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                      - 5 -
+
