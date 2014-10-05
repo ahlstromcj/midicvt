@@ -21,6 +21,9 @@
 # *.7z
 # *.cab
 
+GOOGLECODE-NOTE
+contrib/tmp
+
 # Compiled Object files
 
 *.slo
