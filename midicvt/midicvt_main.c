@@ -29,7 +29,7 @@
  * \library       midicvt application
  * \author        Major modifications by Chris Ahlstrom
  * \date          2014-04-09
- * \updates       2014-05-08
+ * \updates       2015-07-22
  * \version       $Revision$
  * \license       GNU GPL
  *
@@ -64,7 +64,7 @@
  *    Version string.
  */
 
-static const char * const s_help_version = "midicvt v 0.2 2014-05-08";
+static const char * const s_help_version = "midicvt v 0.3 2015-07-22";
 
 /**
  *    Provides the entry-point for the midicvt program.

@@ -1,0 +1,47 @@
+#******************************************************************************
+# midicvt/tests/midifiles/README
+#------------------------------------------------------------------------------
+##
+# \file        README
+# \author      Chris Ahlstrom
+# \date        2014-04-08
+# \update      2017-07-22
+#
+#------------------------------------------------------------------------------
+
+The following files are standard test files for the MIDI conversion
+functionality exercised in the ../test_script file.
+
+   choo2xg.mid
+   CountryStrum.mid
+   Dixie031.mid
+   dixie03.mid
+   Dixie04.mid
+   ex1.mid
+   example1.mid
+   example2.mid
+   example3.mid
+   example4.mid
+   example5.mid
+   README
+   tdixie03.mid
+   wonworld.mid
+
+This file will be added to the tests.  It is a MIDI file created by
+importing a MIDI file into the nice Seq24 sequencer, laying out each of its
+tracks as a pattern in the Seq24 song editor, and then saving the file.
+
+   b4uacuse-seq24.midi
+
+Currently, "midicvt b4uacuse-seq24.midi" exits with the following error:
+
+   ? Error at offset 80655 (13b0f)
+     Error: Garbage at end 'Expecting 'MTrk', but input[0] == '$' [0x24]'
+
+So we have this file in the queue for debugging, when we get time.
+
+#*****************************************************************************
+# README (midicvt/tests/midifiles)
+#-----------------------------------------------------------------------------
+# vim: ts=3 sw=3 et ft=sh
+#-----------------------------------------------------------------------------

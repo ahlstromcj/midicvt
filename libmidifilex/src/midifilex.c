@@ -59,7 +59,7 @@
  * \author        Other authors (see below), with modifications by Chris
  *                Ahlstrom,
  * \date          2014-04-08
- * \updates       2014-06-02
+ * \updates       2015-07-22
  * \version       $Revision$
  * \license       GNU GPL
  *
@@ -121,6 +121,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#include <midicvt_helpers.h>           /* midi_file_offset() for errors       */
 #include <midifilex.h>
 
 /**
@@ -189,6 +190,11 @@ static long s_Mf_numbyteswritten = 0L;
 static void
 mferror (char * s)
 {
+   fprintf
+   (
+      stderr, "? Error at offset %ld (%lx)\n",
+      midi_file_offset(), midi_file_offset()
+   );
    if (Mf_error)
        (void) (*Mf_error)(s);
 

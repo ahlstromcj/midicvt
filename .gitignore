@@ -1,6 +1,6 @@
 # .gitignore
 #
-# Updates: 2014-06-25 to 2014-06-25
+# Updates: 2014-06-25 to 2015-07-22
 #
 # Also see the following blog about making your local .gitingore files
 # leaner by using global ignore-files for system (i.e. not project-related)
@@ -23,6 +23,14 @@
 
 GOOGLECODE-NOTE
 contrib/tmp
+
+# Ignore this by-product:
+
+include/midicvt-config.h
+
+# New feature of Doxygen, apparently: doc/dox/doxygen_sqlite3.db
+
+*.db
 
 # Compiled Object files
 
