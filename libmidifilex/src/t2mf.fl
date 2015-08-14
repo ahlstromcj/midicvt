@@ -38,6 +38,7 @@ Hex   [0-9a-f]
 <INITIAL,HEX>"#".*\n      /* skip comment */ lineno++;
 
 MFile          return MTHD;
+MThd           return MTHD;   /* Handle MThd like MFile */
 MTrk           return MTRK;
 TrkEnd         return TRKEND;
 
@@ -105,3 +106,5 @@ p(rog)?=       return PROG;
 <<EOF>>              return EOF;
 
 %%
+
+vim: ft=lex

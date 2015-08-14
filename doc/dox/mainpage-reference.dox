@@ -20,7 +20,9 @@ This document describes the modules and functions of the libmidifilex
 library and the midicvt and midicvtpp applications.
 
 \mainpage   midicvt
-\author     Chris Ahlstrom 2014-06-21
+\author     Chris Ahlstrom 2015-08-14
+
+\section midicvt_reference_intro Introduction
 
 MIDIcvt is a minor cleanup, refactoring, and documentation of the related
 midi2text and midicomp projects.
@@ -38,8 +40,6 @@ some scripts.
 
 The current document describes the functions, classes, modules, and other
 entities used in this project.
-
-\section midicvt_reference_intro Introduction
 
 The following changes were made to the <i>midicomp</i> project to make it
 easier to understand and modify:

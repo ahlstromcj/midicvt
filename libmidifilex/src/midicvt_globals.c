@@ -29,7 +29,7 @@
  * \library       midicvt application
  * \author        Chris Ahlstrom
  * \date          2014-04-09
- * \updates       2014-05-20
+ * \updates       2015-08-14
  * \version       $Revision$
  * \license       GNU GPL
  */
@@ -57,6 +57,7 @@ int g_status_clicks;
 long g_status_T0;
 
 int g_option_fold                = 0;
+cbool_t g_option_mfile_tag       = false;    /* new 2015-08-14 */
 cbool_t g_option_verbose         = false;
 cbool_t g_option_verbose_notes   = false;
 cbool_t g_option_absolute_times  = false;
@@ -102,6 +103,7 @@ midicvt_set_defaults (void)
     */
 
    g_option_fold           = 0;
+   g_option_mfile_tag      = false;       /* new 2015-08-14 */
    g_option_verbose        = false;
    g_option_verbose_notes  = false;
    g_option_absolute_times = false;
@@ -134,6 +136,26 @@ int
 midicvt_option_fold (void)
 {
    return g_option_fold;
+}
+
+/**
+ * @setter g_option_mfile_tag
+ */
+
+void
+midicvt_set_option_mfile (cbool_t f)
+{
+   g_option_mfile_tag = f;
+}
+
+/**
+ * @getter g_option_mfile_tag
+ */
+
+cbool_t
+midicvt_option_mfile (void)
+{
+   return g_option_mfile_tag;
 }
 
 /**

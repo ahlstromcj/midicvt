@@ -22,7 +22,9 @@ Provides a primitive (at present) user manual for the midicvt and midicvtpp
 applications.
 
 \mainpage   midicvt and midicvtpp
-\author     Chris Ahlstrom 2014-06-23
+\author     Chris Ahlstrom 2015-08-14
+
+\section midicvt_userman_intro Introduction
 
 <i>MIDIcvt</i> (<code>midicvt</code>) is a refactoring, augmentation, and
 documentation of the related <i>midi2text</i> and <i>midicomp</i> projects.

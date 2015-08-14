@@ -13,9 +13,7 @@
    This file is a copy of the main license file.
 
 \page       midicvt_suite_license_subproject Licenses, MIDIcvt Projects.
-\library    midicvt_suite and its libraries, applications, and documents
-\license    $XPC_SUITE_GPL_LICENSE$
-\author     Chris Ahlstrom 2014-06-01
+\author     Chris Ahlstrom 2015-08-14
 
 \section midicvt_suite_license_text License Terms for the midicvt project.
 

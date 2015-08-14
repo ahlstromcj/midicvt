@@ -8,9 +8,14 @@
 # \library    	libimidifilex, libmidipp, midicvt, midicvtpp
 # \author     	Chris Ahlstrom
 # \date       	2014-05-09
-# \updates     2014-05-23
+# \updates     2015-08-14
 # \version    	$Revision$
 # \license    	$XPC_SUITE_GPL_LICENSE$
+#
+# \change ca 2015-08-14
+#     Added a test of converting ASCII to MIDI, where the ASCII files uses
+#     the new "MThd" feature as a tag, instead of using "MFile".  Both
+#     should now work.
 #
 #-----------------------------------------------------------------------------
 
@@ -106,6 +111,15 @@ run_test $TMP_DIR/ex1.asc $TARGET_DIR/ex1.asc
 
 TEST_LINE="$MIDICVT -c $TMP_DIR/ex1.asc -o $TMP_DIR/ex1-recompiled.mid"
 run_test $TMP_DIR/ex1-recompiled.mid $TARGET_DIR/ex1-recompiled.mid
+
+#-----------------------------------------------------------------------------
+# midicvt, convert ASCII to MIDI file, where ASCII uses "MThd" instead
+# of "MFile".
+#-----------------------------------------------------------------------------
+
+cp $TARGET_DIR/ex1-mthd.asc $TMP_DIR
+TEST_LINE="$MIDICVT -c $TMP_DIR/ex1-mthd.asc -o $TMP_DIR/ex1-mthd-recompiled.mid"
+run_test $TMP_DIR/ex1-mthd-recompiled.mid $TARGET_DIR/ex1-recompiled.mid
 
 #-----------------------------------------------------------------------------
 # midicvt, convert MIDI to MIDI file using --m2m option

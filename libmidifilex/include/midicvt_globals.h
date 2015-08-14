@@ -32,7 +32,7 @@
  * \library       midicvt application portion of libmidifilex
  * \author        Chris Ahlstrom and others; see documentation
  * \date          2014-04-09
- * \updates       2014-05-20
+ * \updates       2015-08-14
  * \version       $Revision$
  * \license       GNU GPL
  */
@@ -81,6 +81,9 @@ extern void midicvt_set_defaults (void);
 
 extern void midicvt_set_option_fold (int f);
 extern int midicvt_option_fold (void);
+
+extern void midicvt_set_option_mfile (cbool_t f);  /* new 2015-08-14 */
+extern cbool_t midicvt_option_mfile (void);
 
 extern void midicvt_set_option_verbose (cbool_t f);
 extern cbool_t midicvt_option_verbose (void);

@@ -5,7 +5,7 @@
 # \file        README
 # \author      Chris Ahlstrom
 # \date        2014-04-08
-# \update      2014-04-19
+# \update      2015-08-14
 #
 #------------------------------------------------------------------------------
 
@@ -40,6 +40,11 @@ The result files are:
 
       Provides the text version of ex1.mid, as obtained by the first command
       at the top of this README file.
+
+   ex1-mthd.asc
+
+      The same as ex1.asc, except that the header tag "MFile" is replaced
+      by the less-puzzling "MThd".
 
    ex1-report.txt
 

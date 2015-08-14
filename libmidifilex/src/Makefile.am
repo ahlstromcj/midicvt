@@ -158,9 +158,7 @@ libmidifilex_la_DEPENDENCIES = \
 # Flex issues:
 #
 # First, we really only need to run flex one time.
-#
 # Second, we don't want to force people to install flex unless they want to.
-#
 # Third, we get Get a "bash -c: end of file error, and we don't know why.
 #
 #	if [ $(FLEX_VERSION) == "flex 2.5.35" ] ; then

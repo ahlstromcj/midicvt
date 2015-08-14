@@ -59,7 +59,7 @@
  * \author        Other authors (see below), with modifications by Chris
  *                Ahlstrom,
  * \date          2014-04-08
- * \updates       2015-07-22
+ * \updates       2015-08-14
  * \version       $Revision$
  * \license       GNU GPL
  *
@@ -675,13 +675,12 @@ read16bit (void)
 }
 
 /**
- *    write32bit() and write16bit()
- *    are used to make sure that the byte order of the
- *    various data types remains constant between machines. This helps make
- *    sure that the code will be portable from one system to the next.  It
- *    is slightly dangerous that it assumes that longs have at least 32 bits
- *    and ints have at least 16 bits, but this has been true at least on
- *    PCs, UNIX machines, and Macintosh's.
+ *    write32bit() and write16bit() are used to make sure that the byte
+ *    order of the various data types remains constant between machines.
+ *    This helps make sure that the code will be portable from one system
+ *    to the next.  It is slightly dangerous that it assumes that longs
+ *    have at least 32 bits and ints have at least 16 bits, but this has
+ *    been true at least on PCs, UNIX machines, and Macintosh's.
  *
  * \todo
  *    Provide the proper 32-bit data types needed to do this more

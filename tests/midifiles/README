@@ -5,7 +5,7 @@
 # \file        README
 # \author      Chris Ahlstrom
 # \date        2014-04-08
-# \update      2017-07-22
+# \update      2015-08-14
 #
 #------------------------------------------------------------------------------
 
@@ -39,6 +39,10 @@ Currently, "midicvt b4uacuse-seq24.midi" exits with the following error:
      Error: Garbage at end 'Expecting 'MTrk', but input[0] == '$' [0x24]'
 
 So we have this file in the queue for debugging, when we get time.
+It might be worth upgrading midicvt to convert it to
+readable text (and handle both directions).  Also, midicvt does not
+show "MThd" near the beginning, and it should, and we should be able
+to handle this on the conversion back to MIDI!
 
 #*****************************************************************************
 # README (midicvt/tests/midifiles)

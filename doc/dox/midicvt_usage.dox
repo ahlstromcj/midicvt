@@ -6,7 +6,6 @@
  *    information" page.
  *
  * Date:      2014-05-21
- * Update:    2014-06-01
  *
  *------------------------------------------------------------------------*//**
 
@@ -16,6 +15,7 @@ midicvt is a program to convert MIDI files to text files, and provide
 corrections to flawed MIDI files.
 
 \page       midicvt_usage   midicvt
+\author     Chris Ahlstrom 2015-08-14
 
 \section midicvt_usage_intro Introduction to midicvt
 
@@ -48,6 +48,9 @@ in order to see the following brief explanation.
  -v  --verbose   Output in columns with --notes on.
  -r  --report    Write detailed information to stderr (debugging).
  --version       Show the version information for this program.
+ --mfile         Write ASCII using 'MFile' instead of 'MThd' tag.
+ --mthd          Write ASCII using the 'MThd' tag (default).  The program
+                 can read either tag.
 
 To translate a SMF file to plain ASCII format:
 
@@ -124,6 +127,18 @@ The -o or --output option specifies the output file without any chance for
 ambiguity.  Unless you pipe the input from an ASCII filter, you should
 prefer using this option, as opposed to specifying the output file by its
 position as second file on the command-line.
+
+\subsection midicvt_usage_mfile midicvt --mfile
+
+Midicvt has recently been modified to be able to output ASCII files that
+start with the "MThd" tag, rather than the "MFile" tag.  If you want your
+ASCII files to be compatible with older programs, then use this option.
+
+The current version of midicvt can read either variant of ASCII file.
+
+\subsection midicvt_usage_mthd midicvt --mthd
+
+This option is the opposite of --mfile, and is now the default option.
 
 \subsection midicvt_usage_m2m midicvt --m2m
 

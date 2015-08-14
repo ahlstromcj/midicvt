@@ -28,7 +28,7 @@
  * \library       midicvt application
  * \author        Chris Ahlstrom and many other authors
  * \date          2014-04-09
- * \updates       2014-05-21
+ * \updates       2015-08-14
  * \version       $Revision$
  * \license       GNU GPL
  *
@@ -124,6 +124,22 @@
 #include <midicvt_globals.h>           /* midicvt_setup_compile()             */
 #include <midicvt_helpers.h>           /* midicvt_input_file(), output_file() */
 #include <t2mf.h>                      /* yylex() and yyval global            */
+
+
+/**
+ *    We now write out "MThd" instead of "MFile" for our generated results.
+ *    The reason?  We were puzzled why we didn't see the header, after not
+ *    having run this program for a long time.
+ *
+ *    Now, files that were written by the old (0.2) version of midicvt
+ *    can still be read by the new version.  One can write out the old tag
+ *    using the --mfile option.
+ */
+
+#define MFILE_FORMAT_4                 "MFile %d %d %d %d\n"
+#define MFILE_FORMAT_3                 "MFile %d %d %d\n"
+#define MTHD_FORMAT_4                  "MThd %d %d %d %d\n"
+#define MTHD_FORMAT_3                  "MThd %d %d %d\n"
 
 /*
  * Internal functions.
@@ -423,18 +439,19 @@ prnote (int pitch)
 static int
 my_header (int format, int ntrks, int division)
 {
+   cbool_t usemfile = midicvt_option_mfile();
    if (division & 0x8000)                          /* SMPTE                   */
    {
       midicvt_set_option_absolute_times(false);    /* now we cannot do beats  */
       printf
       (
-         "MFile %d %d %d %d\n",
+         usemfile ? MFILE_FORMAT_4 : MTHD_FORMAT_4,
          format, ntrks, -((-(division >> 8)) & 0xff), division & 0xff
       );
    }
    else
    {
-      printf("MFile %d %d %d\n", format, ntrks, division);
+      printf(usemfile ? MFILE_FORMAT_3 : MTHD_FORMAT_3, format, ntrks, division);
    }
    if (format > 2)
    {
@@ -1599,8 +1616,9 @@ syntax (void)
 }
 
 /**
- *    This function makes sure the MFile token is found.  It then gathers
- *    up some status information and passes it to mfwrite().
+ *    This function makes sure the "MFile" or (new) "MThd" token is found.
+ *    It then gathers up some status information and passes it to
+ *    mfwrite().
  *
  * \note
  *    This function used to be called translate(), which was a bit
@@ -1612,6 +1630,11 @@ midicvt_compile (void)
 {
    if (yylex() == MTHD)
    {
+      /*
+       * Do not change "MFile" to "MThd" here unless you're willing to
+       * risk an extended debug session.
+       */
+
       g_status_format = getint("MFile format");
       g_status_no_of_tracks = getint("MFile #tracks");
       g_status_clicks = getint("MFile Clicks");

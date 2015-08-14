@@ -12,6 +12,7 @@
 Describes the file format of the ASCII text generated and used by midicvt.
 
 \page       midicvt_file_format   ASCII File Format
+\author     Chris Ahlstrom 2015-08-14
 
 \section midicvt_file_format_intro Introduction
 

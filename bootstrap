@@ -8,7 +8,7 @@
 # \library    	midicvt
 # \author     	Chris Ahlstrom
 # \date       	2014-04-08
-# \update     	2014-06-25
+# \update     	2015-08-14
 # \version    	$Revision$
 # \license    	$XPC_SUITE_GPL_LICENSE$
 #
@@ -33,8 +33,8 @@ export LANG
 CYGWIN=binmode
 export CYGWIN
 
-export MIDICVT_SCRIPT_EDIT_DATE="2014-06-25"
-export MIDICVT_LIBRARY_API_VERSION="0.2"
+export MIDICVT_SCRIPT_EDIT_DATE="2015-08-14"
+export MIDICVT_LIBRARY_API_VERSION="0.3"
 export MIDICVT_LIBRARY_VERSION="$MIDICVT_LIBRARY_API_VERSION.0"
 
 #******************************************************************************
@@ -445,8 +445,8 @@ E_O_F
 
          cat << E_O_F
 
-Now run './configure' to configure midicvt for compilation, or './configure
---help' for configuration options.
+Run './configure' to configure midicvt to build, './configure --help' for
+options, or './configure --enable-debug --disable-shared' for debugging.
 E_O_F
       fi
    fi
@@ -455,9 +455,6 @@ fi
 
 #******************************************************************************
 # bootstrap (midicvt)
-#------------------------------------------------------------------------------
-# Local Variables:
-# End:
 #------------------------------------------------------------------------------
 # vim: ts=3 sw=3 et ft=sh
 #------------------------------------------------------------------------------

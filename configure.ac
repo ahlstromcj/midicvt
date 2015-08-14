@@ -6,7 +6,7 @@ dnl \file          configure.ac
 dnl \library       libmidifilex, libmidipp, midicvt, and midicvtpp
 dnl \author        Chris Ahlstrom
 dnl \date          2014-04-08
-dnl \update        2014-06-02
+dnl \update        2015-08-14
 dnl \version       $Revision$
 dnl \license       $MIDICVT_SUITE_GPL_LICENSE$
 dnl
@@ -16,8 +16,8 @@ dnl
 dnl ---------------------------------------------------------------------------
 
 AC_PREREQ(2.60)
-AC_REVISION($Revision: 0.2$)dnl
-AC_INIT(midicvt, [0.2], [ahlstromcj@users.sourceforge.net])
+AC_REVISION($Revision: 0.3$)dnl
+AC_INIT(midicvt, [0.3], [ahlstromcj@users.sourceforge.net])
 AC_CONFIG_AUX_DIR([aux-files])
 AC_CONFIG_SRCDIR([libmidifilex/src/midifilex.c])
 
@@ -50,7 +50,7 @@ PACKAGE=midicvt
 AC_DEFINE_UNQUOTED(PACKAGE, "$PACKAGE")
 AC_SUBST(PACKAGE)
 
-VERSION="0.2.0"
+VERSION="0.3.0"
 AC_DEFINE_UNQUOTED(VERSION, "$VERSION")
 AC_SUBST(VERSION)
 

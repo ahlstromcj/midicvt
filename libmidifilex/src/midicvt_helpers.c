@@ -74,7 +74,6 @@ static const char * const gs_help_usage_2_1 =
    " -i  --input F   Specify input file (replaces stdin).  Default file-name is\n"
    "                 'out.mid' or 'out.asc', depending on --compile option.\n"
    " -m  --merge     Collapse continued system-exclusives."
-/* "\n" */
    ;
 
 static const char * const gs_help_usage_2_2 =
@@ -84,7 +83,14 @@ static const char * const gs_help_usage_2_2 =
    " -t  --time      Use absolute time instead of ticks.\n"
    " -v  --verbose   Output in columns with --notes on.\n"
    " -r  --report    Write detailed information to stderr (debugging).\n"
-   " --version       Show the version information for this program.\n"
+   " --version       Show the version information for this program."
+   ;
+
+static const char * const gs_help_usage_2_3 =
+   " --mfile         Write ASCII using 'MFile' instead of 'MThd' tag.\n"
+   " --mthd          Write ASCII using the 'MThd' tag (default).  The program\n"
+   "                 can read either tag."
+   "\n"
    ;
 
 static const char * const gs_help_usage_3 =
@@ -184,6 +190,7 @@ midicvt_help (const char * version)
    fprintf(stderr, "%s\n", gs_help_usage_1);
    fprintf(stderr, "%s\n", gs_help_usage_2_1);
    fprintf(stderr, "%s\n", gs_help_usage_2_2);
+   fprintf(stderr, "%s\n", gs_help_usage_2_3);
    fprintf(stderr, "%s\n", gs_help_usage_3);
    fprintf(stderr, "%s\n", gs_help_usage_4);
 }
@@ -517,6 +524,14 @@ midicvt_parse (int argc, char * argv [], const char * version)
             else
                (void) midicvt_set_output_file("out.asc");
          }
+      }
+      else if (check_option(argv[option_index], "", "--mfile"))
+      {
+         midicvt_set_option_mfile(true);
+      }
+      else if (check_option(argv[option_index], "", "--mthd"))
+      {
+         midicvt_set_option_mfile(false);
       }
       else if (check_option(argv[option_index], "-v", "--verbose"))
       {

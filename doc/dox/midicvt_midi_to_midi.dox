@@ -17,6 +17,7 @@ the ability to directly perform some MIDI file conversions, without the need
 for scripting.
 
 \page       midicvtpp   midicvtpp
+\author     Chris Ahlstrom 2015-08-14
 
 \section midicvtpp_intro MIDI to MIDI Mode
 
