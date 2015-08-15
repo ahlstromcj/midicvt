@@ -1206,7 +1206,7 @@ my_arbitrary (int leng, char * mess)
 /**
  *    Callback function implementing Mf_error().
  *
- *    This fuction checks for garbage at the end of the MIDI file.  If it
+ *    This function checks for garbage at the end of the MIDI file.  If it
  *    does not find such garbage, then the error is simply printed.
  *
  * \param s

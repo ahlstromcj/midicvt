@@ -8,7 +8,7 @@
 # \library    	libimidifilex, libmidipp, midicvt, midicvtpp
 # \author     	Chris Ahlstrom
 # \date       	2014-05-09
-# \updates     2015-08-14
+# \updates     2015-08-15
 # \version    	$Revision$
 # \license    	$XPC_SUITE_GPL_LICENSE$
 #
@@ -16,6 +16,10 @@
 #     Added a test of converting ASCII to MIDI, where the ASCII files uses
 #     the new "MThd" feature as a tag, instead of using "MFile".  Both
 #     should now work.
+#
+# \change ca 2015-08-15
+#     Added --mfile to make tests work, for now (the ASCII file output has
+#     to match the current templates).
 #
 #-----------------------------------------------------------------------------
 
@@ -25,8 +29,8 @@ TEST_LINE=""
 # Directories and apps relative to midicvt/tests
 #-----------------------------------------------------------------------------
 
-MIDICVT="../midicvt/midicvt"
-MIDICVTPP="../midicvtpp/midicvtpp"
+MIDICVT="../midicvt/midicvt --mfile"         # new feature requires option
+MIDICVTPP="../midicvtpp/midicvtpp --mfile"   # new feature requires option
 MIDI_DIR="midifiles"
 TARGET_DIR="results"
 TMP_DIR="tmp"
