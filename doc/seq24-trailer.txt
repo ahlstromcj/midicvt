@@ -1,5 +1,19 @@
+Chris Ahlstrom
+Analysis of Seq24 imported file
+2015-08-14 to 2015-08-15
 
+We want to do a few things with importing tracks in our fork of Seq24 (a
+live-loop sequencer), and need to analyze the MIDI events in a specific file.
 
+The data below appears start around the last track of the
+b4uacuse-seq24.midi file, which is a Seq24-specific MIDI file created by
+importing a MIDI file into the Seq24 application, and saving it.
+
+Note that there is currently a bug (I think) in Seq24 that prevents this
+last track (named "Robert Cray") from being read in as a pattern/sequence by
+Seq24.
+
+Here is the data:
 
 00013ac0:  05 24 24 00 02 00 30 ff  2f 00 4d 54 72 6b 00 00  .$$...0./.MTrk..
 00013ad0:  00 3d 00 ff 00 02 00 0d  00 ff 03 0b 52 6f 62 65  .=..........Robe
@@ -14,4 +28,55 @@
 00013b60:  00 00 00 00 00 24 24 00  07 00 00 00 78 24 24 00  .....$$.....x$$.
 00013b70:  09 00 00 04 00 00 00 00  00 00 00 00 00 00 00 00  ................
 00013b80:  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  ................
+
+... and many more bytes until the end of the *.midi file.
+
+The midicvt program shows the following events for the "Robert Cray" track,
+and we append the correspond bytes for clarity:
+
+MTrk                             # 4d 54 72 6b 
+0 SeqNr 13                       # ff 00 02 00 0d (00 0d == 13, seq number)
+0 Meta TrkName "Robert Cray"     # ff 03 0b Robert Cray (0b == 11 bytes) 00 ?
+0 SeqSpec 24 24 00 08            # ff 7f 04 24 24 00 08 (seq specific) 00 ?
+0 SeqSpec 24 24 00 01 00         # ff 7f 05 24 24 00 01 00 (seq specific) 00 ?
+0 SeqSpec 24 24 00 06 04 04      # ff 7f 06 24 24 00 06 04 04 (") 00 ?
+0 SeqSpec 24 24 00 02 00         # ff 7f 05 24 24 00 02 00 (") 30 ?
+48 Meta TrkEnd                   # ff 2f 00 (00 == no data)
+TrkEnd                           # (no bytes, a midicvt tag)
+
+Then follows information that must be Seq24-specific (the unimported MIDI
+file ends at the above TrkEnd event):
+
+24 24 00 10 00 00 00 00
+24 24 00 03 00 00 00 00
+24 24 00 05 00 20 00 00 00  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00
+   00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00
+   00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  00 00 00 00 00
+24 24 00 07 00 00 00 78
+24 24 00 09 00 00 04 00 00  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00
+   00 00 00 00 00 00 00 00  00 00 . . .
+
+These items are not correct MIDI!  They need to be preceded by the "ff 20
+len" construct.
+
+Sequencer-specific meta-event:
+
+   FF 7F len data
+
+      "FF 7F" is the marker for this meta-event.
+
+      "len" is the length of the data that follows.  See "Variable-length
+      quantity" below.
+
+      "data" is the data, where the first byte or three bytes of data is the
+      manufacturer's ID in the same format as for system-exclusive messages.
+
+      This optional event can be used to store sequencer-specific
+      information.
+
+Variable-length quantity:
+
+   This item is a value used to represent delta times and length values.
+   It's format is ... ???
+
 

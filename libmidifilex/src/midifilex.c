@@ -59,7 +59,7 @@
  * \author        Other authors (see below), with modifications by Chris
  *                Ahlstrom,
  * \date          2014-04-08
- * \updates       2015-08-14
+ * \updates       2015-08-16
  * \version       $Revision$
  * \license       GNU GPL
  *
@@ -715,13 +715,16 @@ write16bit (int data)
 
 /**
  *    Write multi-length bytes to MIDI format files.
+ *    We changed the name of this function from "writevarinum()" to
+ *    "writevarinum()" to match "readvarinum()" and cut down on some
+ *    confusion.
  *
  * \param value
  *    Provides the value to be written.
  */
 
 static void
-writevarlen (unsigned long value)
+writevarinum (unsigned long value)
 {
    unsigned long buffer = value & 0x7f;
    while ((value >>= 7) > 0)
@@ -1565,7 +1568,7 @@ mf_w_midi_event
 #endif
    int i;
    unsigned char c;
-   writevarlen(delta_time);
+   writevarinum(delta_time);
 
    /*
     * All MIDI events start with the type in the first four bits, and the
@@ -1629,12 +1632,12 @@ mf_w_meta_event
 {
    int i;
    unsigned long byteswritten = s_Mf_numbyteswritten;
-   writevarlen(delta_time);
+   writevarinum(delta_time);
    eputc(meta_event);                  /* mark that we're writing meta-event  */
    s_laststat = meta_event;
    eputc(type);                        /* The type of meta event              */
    s_lastmeta = type;
-   writevarlen(size);                  /* length of the data bytes to follow  */
+   writevarinum(size);                  /* length of the data bytes to follow  */
    for (i = 0; i < (int) size; i++)
    {
       if (eputc(data[i]) != data[i])
@@ -1675,10 +1678,10 @@ mf_w_sysex_event
 )
 {
    int i;
-   writevarlen(delta_time);
+   writevarinum(delta_time);
    eputc(*data);                       /* The type of sysex event             */
    s_laststat = 0;
-   writevarlen(size - 1);              /* length of the data bytes to follow  */
+   writevarinum(size - 1);              /* length of the data bytes to follow  */
    for (i = 1; i < (int) size; i++)
    {
       if (eputc(data[i]) != data[i])
@@ -1703,7 +1706,7 @@ mf_w_sysex_event
 void
 mf_w_tempo (unsigned long delta_time, unsigned long tempo)
 {
-    writevarlen(delta_time);
+    writevarinum(delta_time);
     eputc(meta_event);
     s_laststat = meta_event;
     eputc(set_tempo);
