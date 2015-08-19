@@ -29,7 +29,7 @@
  * \library       midicvt application
  * \author        Chris Ahlstrom
  * \date          2014-04-09
- * \updates       2015-08-18
+ * \updates       2015-08-19
  * \version       $Revision$
  * \license       GNU GPL
  */
@@ -72,6 +72,7 @@ char * g_option_ChPrmsg          = "ChPr ch=%d v=%d\n";
 static int g_option_fold                = 0;
 static cbool_t g_option_mfile_tag       = false;    /* new 2015-08-14 */
 static cbool_t g_option_strict_track    = false;    /* new 2015-08-18 */
+static cbool_t g_option_ignore_track    = false;    /* new 2015-08-19 */
 static cbool_t g_option_verbose         = false;
 static cbool_t g_option_verbose_notes   = false;
 static cbool_t g_option_absolute_times  = false;
@@ -112,6 +113,7 @@ midicvt_set_defaults (void)
    g_option_fold           = 0;
    g_option_mfile_tag      = false;       /* new 2015-08-14 */
    g_option_strict_track   = false;       /* new 2015-08-18 */
+   g_option_ignore_track   = false;       /* new 2015-08-19 */
    g_option_verbose        = false;
    g_option_verbose_notes  = false;
    g_option_absolute_times = false;
@@ -184,6 +186,26 @@ cbool_t
 midicvt_option_strict (void)
 {
    return g_option_strict_track;
+}
+
+/**
+ * @setter g_option_ignore_track
+ */
+
+void
+midicvt_set_option_ignore (cbool_t f)
+{
+   g_option_ignore_track = f;
+}
+
+/**
+ * @getter g_option_ignore_track
+ */
+
+cbool_t
+midicvt_option_ignore (void)
+{
+   return g_option_ignore_track;
 }
 
 /**

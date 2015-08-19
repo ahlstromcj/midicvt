@@ -28,7 +28,7 @@
  * \library       midicvt application
  * \author        Chris Ahlstrom
  * \date          2014-04-19
- * \updates       2015-08-18
+ * \updates       2015-08-19
  * \version       $Revision$
  * \license       GNU GPL
  *
@@ -70,15 +70,15 @@ static const char * const gs_help_usage_2_1 =
    " -2  --m2m       Convert MIDI to MIDI (testing only in midicvt).\n"
    " -c  --compile   Flag to compile ASCII input into MIDI/SMF.\n"
    " -d  --debug     Send any debug output to stderr.\n"
-   " -f  --fold N    Fold Sysex and SeqSpec data at N columns.\n"
-   " -i  --input F   Specify input file (replaces stdin).  Default file-name is\n"
+   " -f  --fold [N]  Fold SysEx and SeqSpec data at N (default 80) columns.\n"
+   " -i  --input [F] Specify input file (replaces stdin).  Default file-name is\n"
    "                 'out.mid' or 'out.asc', depending on --compile option.\n"
    " -m  --merge     Collapse continued system-exclusives."
    ;
 
 static const char * const gs_help_usage_2_2 =
    " -n  --note      Show note on/off value using note+octave.\n"
-   " -o  --output F  Specify output file (replaces stdout). Default file-name\n"
+   " -o --output [F] Specify output file (replaces stdout). Default file-name\n"
    "                 is 'out.asc' or 'out.mid', depending on --compile option.\n"
    " -t  --time      Use absolute time instead of ticks.\n"
    " -v  --verbose   Output in columns with --notes on.\n"
@@ -91,9 +91,10 @@ static const char * const gs_help_usage_2_3 =
    " --mthd          Write ASCII using the 'MThd' tag (default).  The program\n"
    "                 can read either tag.\n"
    " --strict        Require that all tracks are marked with 'MTrk'.  By\n"
-   "                 default, tracks with other names can be handled.\n"
-   "                 Per the MIDI specification, they should be  ignored,\n"
-   "                 but midicvt currently treats them like tracks."
+   "                 default, tracks with other names can be processed.\n"
+   " --ignore        Allow non-MTrk chunks, but do not process them.\n"
+   "                 Per the MIDI specification, they should be ignored,\n"
+   "                 but midicvt otherwise treats them like tracks."
    "\n"
    ;
 
@@ -536,6 +537,10 @@ midicvt_parse (int argc, char * argv [], const char * version)
       else if (check_option(argv[option_index], "", "--strict"))
       {
          midicvt_set_option_strict(true);
+      }
+      else if (check_option(argv[option_index], "", "--ignore"))
+      {
+         midicvt_set_option_ignore(true);
       }
       else if (check_option(argv[option_index], "", "--mthd"))
       {

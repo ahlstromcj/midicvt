@@ -32,7 +32,7 @@
  * \library       midicvt application portion of libmidifilex
  * \author        Chris Ahlstrom and others; see documentation
  * \date          2014-04-09
- * \updates       2015-08-18
+ * \updates       2015-08-19
  * \version       $Revision$
  * \license       GNU GPL
  */
@@ -40,6 +40,17 @@
 #include <setjmp.h>                    /* jmp_buf                             */
 #include <stdio.h>                     /* FILE *                              */
 #include <midicvt_macros.h>            /* cbool_t and other stuff             */
+
+/**
+ *    Provides a return value for readmt() that indicates that "MTrk" was
+ *    not matched, but we're simply ignoring such results.
+ */
+
+#define READMT_IGNORE_NON_MTRK      (-9)
+
+/**
+ *    Global variables!
+ */
 
 extern FILE * g_io_file;
 extern FILE * g_redirect_file;         /* for redirecting stdout              */
@@ -87,6 +98,9 @@ extern cbool_t midicvt_option_mfile (void);
 
 extern void midicvt_set_option_strict (cbool_t f); /* new 2015-08-18 */
 extern cbool_t midicvt_option_strict (void);
+
+extern void midicvt_set_option_ignore (cbool_t f); /* new 2015-08-19 */
+extern cbool_t midicvt_option_ignore (void);
 
 extern void midicvt_set_option_verbose (cbool_t f);
 extern cbool_t midicvt_option_verbose (void);

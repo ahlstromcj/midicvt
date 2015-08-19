@@ -59,7 +59,7 @@
  * \author        Other authors (see below), with modifications by Chris
  *                Ahlstrom,
  * \date          2014-04-08
- * \updates       2015-08-18
+ * \updates       2015-08-19
  * \version       $Revision$
  * \license       GNU GPL
  *
@@ -951,12 +951,13 @@ metaevent (int type)
  *
  * \return
  *    Returns the last character obtained, or EOF if the match was unable
- *    to be consumated.
+ *    to be consumated.  Returns -9
  */
 
 static int
 readmt (char * s)
 {
+   int result = 0;
    int n = 0;
    char * p = s;
    int c;
@@ -974,10 +975,30 @@ readmt (char * s)
                s, n-1, (char) c, c
             );
             mferror(buff);
+            result = EOF;
+         }
+      }
+      else if (midicvt_option_ignore())
+      {
+         bool is_set = false;
+         if (c != *p++)
+         {
+            char buff[64];
+            (void) snprintf
+            (
+               buff, sizeof(buff),
+               "Ignoring non-Mtrk chunk at input[%d] == '%c' [0x%x]",
+               n-1, (char) c, c
+            );
+            if (! is_set)
+            {
+               is_set = true;
+               result = READMT_IGNORE_NON_MTRK;
+            }
          }
       }
    }
-   return c;
+   return result;
 }
 
 /**
@@ -1112,7 +1133,7 @@ readtrack (void)
          }
          c = egetc();
          if (sysexcontinue && c != 0xf7)
-             mferror("didn't find expected continuation of a sysex");
+             mferror("didn't find expected continuation of a SysEx");
 
          if ((c & 0x80) == 0)             /* bit 7 is not set                 */
          {

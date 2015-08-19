@@ -5,7 +5,7 @@
  *    This module provides no code.  It provides only a Doxygen "Doxygen
  *    information" page.
  *
- * Date:      2014-05-21
+ * Date:      2014-05-21 to the date below.
  *
  *------------------------------------------------------------------------*//**
 
@@ -15,7 +15,7 @@ midicvt is a program to convert MIDI files to text files, and provide
 corrections to flawed MIDI files.
 
 \page       midicvt_usage   midicvt
-\author     Chris Ahlstrom 2015-08-14
+\author     Chris Ahlstrom 2015-08-19
 
 \section midicvt_usage_intro Introduction to midicvt
 
@@ -36,13 +36,13 @@ in order to see the following brief explanation.
  -2  --m2m       Convert MIDI to MIDI (testing only in midicvt).
  -c  --compile   Flag to compile ASCII input into SMF/MIDI.
  -d  --debug     Send any debug output to stderr.
- -f  --fold N    Fold SYSEX data at N columns.
- -i  --input F   Specify input file (replaces stdin).  Default file-name is
+ -f  --fold [N]  Fold SysEx or SeqSpec data at N (default 80) columns.
+ -i  --input [F] Specify input file (replaces stdin).  Default file-name is
                  'out.mid' or 'out.asc', depending on --compile option.
  -m  --merge     Collapse continued system-exclusives.
 
  -n  --note      Show note on/off value using note+octave.
- -o  --output F  Specify output file (replaces stdout). Default file-name
+ -o --output [F] Specify output file (replaces stdout). Default file-name
                  is 'out.asc' or 'out.mid', depending on --compile option.
  -t  --time      Use absolute time instead of ticks.
  -v  --verbose   Output in columns with --notes on.
@@ -51,6 +51,11 @@ in order to see the following brief explanation.
  --mfile         Write ASCII using 'MFile' instead of 'MThd' tag.
  --mthd          Write ASCII using the 'MThd' tag (default).  The program
                  can read either tag.
+ --strict        Require that all tracks are marked with 'MTrk'.  By
+                 default, tracks with other names can be processed.
+ --ignore        Allow non-Mtrk chunks, but do not process them.
+                 Per the MIDI specification, they should be ignored,
+                 but midicvt otherwise treats them like tracks.
 
 To translate a SMF file to plain ASCII format:
 
@@ -166,8 +171,26 @@ to troubleshooting.  Also see the -r or --report option.
 
 \subsection midicvt_usage_fold midicvt --fold
 
-The -f or --fold option folds the ASCII output of generated SYSEX data for
+The -f or --fold option folds the ASCII output of generated SysEx data or
+SeqSpec (sequencer-specific) data for
 easier reading.  Provide the number of columns at which to fold the output.
+If this number is not provided, the default value is 80 columns.
+
+This option was useful when working on a fork (Sequencer24)
+of the Seq24 live-looping
+sequencer, and noting that the files saved by Seq24 caused errors in midicvt
+because they were not quite MIDI-compliant.
+Once we got Sequencer24 to write MIDI-compliant files, we saw that some of
+its sequencer-specific "proprietary" sections were very long.  So this
+option proved useful.
+
+See the following projects:
+
+   -  http://www.filter24.org/seq24
+   -  http://edge.launchpad.net/seq24
+   -  https://github.com/ahlstromcj/sequencer24.git
+
+That last URL is not yet in existence, but will be soon.
 
 \subsection midicvt_usage_merge midicvt --merge
 
@@ -178,6 +201,25 @@ one system-exclusive message (we think).
 
 The -n or --note option displays note values in note notation (e.g. a4#) as
 opposed to just a MIDI note number.
+
+\subsection midicvt_usage_strict midicvt --strict
+
+The midicvt application now, by default, tries to process non-MTrk chunks as
+if they were MTrk chunks.  This allows the MIDI-compliant formats of certain
+sequencers to be processed by midicvt when converting to ASCII.  (However,
+conversions in the opposite direction might now work.)
+
+The --strict option causes the old behavior, where an error is reported and
+processing may abort.
+
+\subsection midicvt_usage_ignore midicvt --ignore
+
+The --ignore option is intermediate between the now-default permissive
+behavior of midicvt and the --strict behavior that restores the old
+functionality.
+
+This option allows non-MTrk chunks to be handled, but no output is generated
+for those non-MTrk chunks.
 
 \subsection midicvt_usage_time midicvt --time
 
