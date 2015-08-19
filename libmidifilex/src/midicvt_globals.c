@@ -29,7 +29,7 @@
  * \library       midicvt application
  * \author        Chris Ahlstrom
  * \date          2014-04-09
- * \updates       2015-08-14
+ * \updates       2015-08-18
  * \version       $Revision$
  * \license       GNU GPL
  */
@@ -56,14 +56,6 @@ int g_status_beat;
 int g_status_clicks;
 long g_status_T0;
 
-int g_option_fold                = 0;
-cbool_t g_option_mfile_tag       = false;    /* new 2015-08-14 */
-cbool_t g_option_verbose         = false;
-cbool_t g_option_verbose_notes   = false;
-cbool_t g_option_absolute_times  = false;
-cbool_t g_option_debug           = false;
-cbool_t g_option_docompile       = false;
-cbool_t g_option_midi2midi       = false;
 char * g_option_Onmsg            = "On ch=%d n=%s v=%d\n";
 char * g_option_Offmsg           = "Off ch=%d n=%s v=%d\n";
 char * g_option_PoPrmsg          = "PoPr ch=%d n=%s v=%d\n";
@@ -71,6 +63,21 @@ char * g_option_Parmsg           = "Par ch=%d c=%d v=%d\n";
 char * g_option_Pbmsg            = "Pb ch=%d v=%d\n";
 char * g_option_PrChmsg          = "PrCh ch=%d p=%d\n";
 char * g_option_ChPrmsg          = "ChPr ch=%d v=%d\n";
+
+/*
+ * These variables have accessor functions in this module, but are
+ * otherwise private.
+ */
+
+static int g_option_fold                = 0;
+static cbool_t g_option_mfile_tag       = false;    /* new 2015-08-14 */
+static cbool_t g_option_strict_track    = false;    /* new 2015-08-18 */
+static cbool_t g_option_verbose         = false;
+static cbool_t g_option_verbose_notes   = false;
+static cbool_t g_option_absolute_times  = false;
+static cbool_t g_option_debug           = false;
+static cbool_t g_option_docompile       = false;
+static cbool_t g_option_midi2midi       = false;
 
 /**
  * Use externs from an include file!  The flex-generated code is a bit
@@ -104,6 +111,7 @@ midicvt_set_defaults (void)
 
    g_option_fold           = 0;
    g_option_mfile_tag      = false;       /* new 2015-08-14 */
+   g_option_strict_track   = false;       /* new 2015-08-18 */
    g_option_verbose        = false;
    g_option_verbose_notes  = false;
    g_option_absolute_times = false;
@@ -156,6 +164,26 @@ cbool_t
 midicvt_option_mfile (void)
 {
    return g_option_mfile_tag;
+}
+
+/**
+ * @setter g_option_strict_track
+ */
+
+void
+midicvt_set_option_strict (cbool_t f)
+{
+   g_option_strict_track = f;
+}
+
+/**
+ * @getter g_option_strict_track
+ */
+
+cbool_t
+midicvt_option_strict (void)
+{
+   return g_option_strict_track;
 }
 
 /**

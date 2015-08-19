@@ -59,7 +59,7 @@
  * \author        Other authors (see below), with modifications by Chris
  *                Ahlstrom,
  * \date          2014-04-08
- * \updates       2015-08-16
+ * \updates       2015-08-18
  * \version       $Revision$
  * \license       GNU GPL
  *
@@ -192,7 +192,7 @@ mferror (char * s)
 {
    fprintf
    (
-      stderr, "? Error at offset %ld (%lx)\n",
+      stderr, "? Error at offset %ld (0x%lx)\n",
       midi_file_offset(), midi_file_offset()
    );
    if (Mf_error)
@@ -243,7 +243,10 @@ static void
 badbyte (int c)
 {
     char buff[32];
-    (void) snprintf(buff, sizeof(buff), "unexpected byte: 0x%02x", c);
+    (void) snprintf
+    (
+      buff, sizeof(buff), "unexpected byte reading track: 0x%02x", c
+   );
     mferror(buff);
 }
 
@@ -959,15 +962,19 @@ readmt (char * s)
    int c;
    while (n++ < 4 && (c = (*Mf_getc)()) != EOF)
    {
-      if (c != *p++)
+      if (midicvt_option_strict())
       {
-         char buff[64];
-         (void) snprintf
-         (
-            buff, sizeof(buff), "Expecting '%s', but input[%d] == '%c' [0x%x]",
-            s, n-1, (char) c, c
-         );
-         mferror(buff);
+         if (c != *p++)
+         {
+            char buff[64];
+            (void) snprintf
+            (
+               buff, sizeof(buff),
+               "Expecting '%s', but input[%d] == '%c' [0x%x]",
+               s, n-1, (char) c, c
+            );
+            mferror(buff);
+         }
       }
    }
    return c;
@@ -1110,7 +1117,7 @@ readtrack (void)
          if ((c & 0x80) == 0)             /* bit 7 is not set                 */
          {
             if (status == 0)              /* running status?                  */
-                mferror("unexpected running status");
+                mferror("readtrack(): unexpected running status");
 
             /**
              * \note
@@ -1850,7 +1857,7 @@ readtrack_m2m (void)
          if ((c & 0x80) == 0)             /* bit 7 is not set                 */
          {
             if (status == 0)              /* running status?                  */
-                mferror("unexpected running status");
+                mferror("readtrack_m2m(): unexpected running status");
 
             /**
              * \note

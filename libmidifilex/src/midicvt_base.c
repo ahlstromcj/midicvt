@@ -1873,7 +1873,8 @@ checkprog (void)
 }
 
 /**
- *
+ *    Check for the end-of-line.
+ * \internal
  */
 
 static void

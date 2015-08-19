@@ -28,7 +28,7 @@
  * \library       midicvt application
  * \author        Chris Ahlstrom
  * \date          2014-04-19
- * \updates       2014-06-01
+ * \updates       2015-08-18
  * \version       $Revision$
  * \license       GNU GPL
  *
@@ -70,7 +70,7 @@ static const char * const gs_help_usage_2_1 =
    " -2  --m2m       Convert MIDI to MIDI (testing only in midicvt).\n"
    " -c  --compile   Flag to compile ASCII input into MIDI/SMF.\n"
    " -d  --debug     Send any debug output to stderr.\n"
-   " -f  --fold N    Fold SYSEX data at N columns.\n"
+   " -f  --fold N    Fold Sysex and SeqSpec data at N columns.\n"
    " -i  --input F   Specify input file (replaces stdin).  Default file-name is\n"
    "                 'out.mid' or 'out.asc', depending on --compile option.\n"
    " -m  --merge     Collapse continued system-exclusives."
@@ -89,7 +89,11 @@ static const char * const gs_help_usage_2_2 =
 static const char * const gs_help_usage_2_3 =
    " --mfile         Write ASCII using 'MFile' instead of 'MThd' tag.\n"
    " --mthd          Write ASCII using the 'MThd' tag (default).  The program\n"
-   "                 can read either tag."
+   "                 can read either tag.\n"
+   " --strict        Require that all tracks are marked with 'MTrk'.  By\n"
+   "                 default, tracks with other names can be handled.\n"
+   "                 Per the MIDI specification, they should be  ignored,\n"
+   "                 but midicvt currently treats them like tracks."
    "\n"
    ;
 
@@ -436,9 +440,9 @@ midicvt_parse (int argc, char * argv [], const char * version)
          int fold = 80;                /* provides the default option value   */
          if ((option_index + 1) < argc)
          {
-            fold = atoi(argv[option_index]);
             option_index++;
-            if (fold <= 0)    /* found a "-d" or nonconvertible no.  */
+            fold = atoi(argv[option_index]);
+            if (fold <= 0)             /* found a "-d" or nonconvertible no.  */
             {
                option_index--;
                fold = 80;
@@ -528,6 +532,10 @@ midicvt_parse (int argc, char * argv [], const char * version)
       else if (check_option(argv[option_index], "", "--mfile"))
       {
          midicvt_set_option_mfile(true);
+      }
+      else if (check_option(argv[option_index], "", "--strict"))
+      {
+         midicvt_set_option_strict(true);
       }
       else if (check_option(argv[option_index], "", "--mthd"))
       {
