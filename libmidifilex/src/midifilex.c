@@ -59,7 +59,7 @@
  * \author        Other authors (see below), with modifications by Chris
  *                Ahlstrom,
  * \date          2014-04-08
- * \updates       2015-08-19
+ * \updates       2015-08-20
  * \version       $Revision$
  * \license       GNU GPL
  *
@@ -948,14 +948,17 @@ metaevent (int type)
  *    Provides the string that is expected to be read from the file.
  *
  * \return
- *    Returns the last character obtained, or EOF if the match was unable
- *    to be consumated.  Returns -9
+ *    Returns the last character obtained, or READMT_EOF if not characters
+ *    could be read (and the --strict option is in force).  Also returns
+ *    READMT_EOF if the match was unable to be detected.  Returns
+ *    READMT_IGNORE_NON_MTRK if there is no match, but the --ignore option
+ *    is active.
  */
 
 static int
 readmt (char * s)
 {
-   int result = 0;
+   int result = READMT_EOF;
    int n = 0;
    char * p = s;
    int c;
@@ -974,7 +977,7 @@ readmt (char * s)
                s, n-1, (char) c, c
             );
             mferror(buff);
-            result = EOF;
+            result = READMT_EOF;
          }
       }
       else if (midicvt_option_ignore())
@@ -1024,7 +1027,7 @@ static int
 readheader (void)
 {
    int result = readmt("MThd");
-   if (result != EOF)
+   if (result != READMT_EOF)
    {
       cbool_t ignore = result == READMT_IGNORE_NON_MTRK;
       int format, ntrks, division;
@@ -1112,7 +1115,7 @@ readtrack (void)
    int running = 0;          /* 1 when running status used                    */
    int status = 0;           /* status value (e.g. 0x90==note-on)             */
    int needed;
-   cbool_t result = readmt("MTrk") != EOF;
+   cbool_t result = readmt("MTrk") != READMT_EOF;
    if (result)
    {
       s_Mf_toberead = read32bit();
@@ -1128,13 +1131,6 @@ readtrack (void)
 
       while (s_Mf_toberead > 0)
       {
-
-         printf
-         (
-            "readtrack(): toberead = %ld [0x%x]\n",
-            s_Mf_toberead, s_Mf_toberead
-         );
-
          Mf_currtime += readvarinum();    /* delta time                       */
          if (mfreportable())
          {
@@ -1253,9 +1249,11 @@ mfread (void)
    if (Mf_getc == nullptr)
        mferror("mfread() called without setting Mf_getc");
 
-   readheader();
-   while (readtrack())
-       ;
+   if (readheader() != READMT_EOF)
+   {
+      while (readtrack())
+          ;
+   }
 }
 
 /**
@@ -1848,7 +1846,7 @@ mf_ticks2sec (unsigned long ticks, int division, unsigned int tempo)
 static cbool_t
 readtrack_m2m (void)
 {
-   cbool_t result = readmt("MTrk") != EOF;
+   cbool_t result = readmt("MTrk") != READMT_EOF;
    if (result)
    {
       long lookfor;

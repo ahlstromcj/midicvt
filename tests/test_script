@@ -8,7 +8,7 @@
 # \library    	libimidifilex, libmidipp, midicvt, midicvtpp
 # \author     	Chris Ahlstrom
 # \date       	2014-05-09
-# \updates     2015-08-15
+# \updates     2015-08-20
 # \version    	$Revision$
 # \license    	$XPC_SUITE_GPL_LICENSE$
 #
@@ -664,7 +664,7 @@ rm -rf $TMP_DIR
 
 echo "All tests PASSED."
 if [ "$DO_VALGRIND" == "no" ] ; then
-   echo "Don't forget to run with option --valgrind as well."
+   echo "Don't forget to run './test_script --valgrind' as well."
 fi
 
 #*****************************************************************************
