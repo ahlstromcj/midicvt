@@ -42,6 +42,13 @@
 #include <midicvt_macros.h>            /* cbool_t and other stuff             */
 
 /**
+ *    Provides a return value for readmt() that indicates that EOF was
+ *    encountered.  This is a more searchable macro for EOF.
+ */
+
+#define READMT_EOF                   EOF
+
+/**
  *    Provides a return value for readmt() that indicates that "MTrk" was
  *    not matched, but we're simply ignoring such results.
  */

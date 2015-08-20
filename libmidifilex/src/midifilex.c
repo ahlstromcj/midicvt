@@ -121,8 +121,9 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <midicvt_helpers.h>           /* midi_file_offset() for errors       */
-#include <midifilex.h>
+#include "midicvt_globals.h"           /* midi_file_options...()              */
+#include "midicvt_helpers.h"           /* midi_file_offset() for errors       */
+#include "midifilex.h"
 
 /**
  *    Functions to be called while processing and writing the MIDI file.
@@ -243,10 +244,7 @@ static void
 badbyte (int c)
 {
     char buff[32];
-    (void) snprintf
-    (
-      buff, sizeof(buff), "unexpected byte reading track: 0x%02x", c
-   );
+    snprintf(buff, sizeof(buff), "unexpected byte reading track: 0x%02x", c);
     mferror(buff);
 }
 
@@ -295,7 +293,7 @@ egetc (void)
 {
     int c = (*Mf_getc)();
     if (c == EOF)
-        mferror("premature EOF");
+        mferror("Premature EOF");
 
     s_Mf_toberead--;
     return c;
@@ -963,6 +961,7 @@ readmt (char * s)
    int c;
    while (n++ < 4 && (c = (*Mf_getc)()) != EOF)
    {
+      result = c;                      /* ca 2015-08-19 */
       if (midicvt_option_strict())
       {
          if (c != *p++)
@@ -980,7 +979,7 @@ readmt (char * s)
       }
       else if (midicvt_option_ignore())
       {
-         bool is_set = false;
+         cbool_t is_set = false;
          if (c != *p++)
          {
             char buff[64];
@@ -1021,19 +1020,23 @@ readmt (char * s)
  *    are flushed by calling egetc() s_Mf_toberead times.
  */
 
-static void
+static int
 readheader (void)
 {
-   if (readmt("MThd") != EOF)
+   int result = readmt("MThd");
+   if (result != EOF)
    {
+      cbool_t ignore = result == READMT_IGNORE_NON_MTRK;
       int format, ntrks, division;
       s_Mf_toberead = read32bit();
       format = read16bit();
       ntrks = read16bit();
       division = read16bit();
-      if (Mf_header)
-         (void) (*Mf_header)(format, ntrks, division);
-
+      if (! ignore)
+      {
+         if (Mf_header)
+            (void) (*Mf_header)(format, ntrks, division);
+      }
       if (mfreportable())
       {
          char temp[80];
@@ -1053,6 +1056,7 @@ readheader (void)
       while (s_Mf_toberead > 0)
          (void) egetc();
    }
+   return result;
 }
 
 /**
@@ -1115,7 +1119,7 @@ readtrack (void)
       if (mfreportable())
       {
          char temp[80];
-         (void) snprintf(temp, sizeof(temp), "MTrk chunk-size=%ld", s_Mf_toberead);
+         snprintf(temp, sizeof(temp), "MTrk chunk-size=%ld", s_Mf_toberead);
          mfreport(temp);
       }
       Mf_currtime = 0;
@@ -1124,11 +1128,18 @@ readtrack (void)
 
       while (s_Mf_toberead > 0)
       {
+
+         printf
+         (
+            "readtrack(): toberead = %ld [0x%x]\n",
+            s_Mf_toberead, s_Mf_toberead
+         );
+
          Mf_currtime += readvarinum();    /* delta time                       */
          if (mfreportable())
          {
             char temp[80];
-            (void) snprintf(temp, sizeof(temp), "Delta time = %ld", Mf_currtime);
+            snprintf(temp, sizeof(temp), "Delta time = %ld", Mf_currtime);
             mfreport(temp);
          }
          c = egetc();
@@ -1321,7 +1332,7 @@ mf_w_track_chunk
    if (mfreportable())
    {
       char temp[64];
-      (void) snprintf(temp, sizeof(temp), "Writing track chunk %d", which_track);
+      snprintf(temp, sizeof(temp), "Writing track chunk %d", which_track);
       mfreport(temp);
    }
 
@@ -1408,7 +1419,7 @@ mf_w_track_start (int which_track, FILE * fp)
    if (mfreportable())
    {
       char temp[64];
-      (void) snprintf(temp, sizeof(temp), "Writing track chunk %d", which_track);
+      snprintf(temp, sizeof(temp), "Writing track chunk %d", which_track);
       mfreport(temp);
    }
 }
@@ -1455,7 +1466,7 @@ mf_w_header_chunk (int format, int ntracks, int division)
  *    mfwrite() is the only function you'll need to call to write out a MIDI
  *    file.
  *
- *    First, the Mf_putc() and Mf_wtrack() callbacks are check to make
+ *    First, the Mf_putc() and Mf_wtrack() callbacks are checked to make
  *    sure that they have been assigned to callback functions.
  *
  *    Then mf_w_header_chunk(format, ntracks, division) is called.
@@ -1851,7 +1862,7 @@ readtrack_m2m (void)
       if (mfreportable())
       {
          char tmp[80];
-         (void) snprintf(tmp, sizeof(tmp), "MTrk chunk-size=%ld", s_Mf_toberead);
+         snprintf(tmp, sizeof(tmp), "MTrk chunk-size=%ld", s_Mf_toberead);
          mfreport(tmp);
       }
       Mf_currtime = 0;
@@ -1868,7 +1879,7 @@ readtrack_m2m (void)
          if (mfreportable())
          {
             char temp[80];
-            (void) snprintf(temp, sizeof(temp), "Delta time = %ld", Mf_currtime);
+            snprintf(temp, sizeof(temp), "Delta time = %ld", Mf_currtime);
             mfreport(temp);
          }
          c = egetc();
@@ -1974,7 +1985,7 @@ readtrack_m2m (void)
  *    The mfread() function, with suitable callbacks (see the
  *    midicvt_m2m.c module) almost works for MIDI-to-MIDI conversions.
  *    However, the existing "write-track" callbacks are a bit difficult to
- *    usd because they actually require some ability to read input, and
+ *    use because they actually require some ability to read input, and
  *    don't help keep track of file pointers.
  *
  *    Calls readheader(), which works fine with the m2m_header() callback.

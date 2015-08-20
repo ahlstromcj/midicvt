@@ -1628,7 +1628,7 @@ syntax (void)
 void
 midicvt_compile (void)
 {
-   if (yylex() == MTHD)
+   if (yylex() == MTHD)    /* true if "MFile" or (new) "MThd" is found */
    {
       /*
        * Do not change "MFile" to "MThd" here unless you're willing to

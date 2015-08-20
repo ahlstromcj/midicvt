@@ -8,7 +8,7 @@
 # \library    	midicvt
 # \author     	Chris Ahlstrom
 # \date       	2014-04-08
-# \update     	2014-06-03
+# \update     	2015-08-19
 # \version    	$Revision$
 # \license    	$WAONC_SUITE_GPL_LICENSE$
 #
@@ -46,7 +46,7 @@ fi
 if [ "$1" == "--help" ] || [ "$1" == "help" ] ; then
 
    echo
-   echo "pack 0.2 edited on 2014-06-03"
+   echo "pack 0.3 edited on 2015-08-19"
    echo
    echo "Usage:  ./pack [--dry-run] [--clean] [tag]"
    echo
@@ -60,8 +60,8 @@ if [ "$1" == "--help" ] || [ "$1" == "help" ] ; then
    echo "This script packs the entire current directory ('$WORKINGDIR') into"
    echo "a file named like the following (using no tag as an example):"
    echo
-   echo "   $WORKINGDIR-master-$TAGSTRING-my-code.tar.bz2"
-   echo "   $WORKINGDIR-$TAGSTRING-my-code.tar.bz2"
+   echo "   $WORKINGDIR-master-$TAGSTRING-my-code.tar.xz"
+   echo "   $WORKINGDIR-$TAGSTRING-my-code.tar.xz"
    echo
    echo "Excluded from the tarball are derived products such as the 'Debug',"
    echo "'Release', 'html', and 'latex' directories, as well as object"
@@ -107,22 +107,23 @@ else
    done
 
    if [ "$ISGITBRANCH" == "yes" ] ; then
-      TARBALLNAME="$WORKINGDIR-$GITBRANCH-$CURRENTDATE-$TAGSTRING.tar.bz2"
+      TARBALLNAME="$WORKINGDIR-$GITBRANCH-$CURRENTDATE-$TAGSTRING.tar.xz"
    else
-      TARBALLNAME="$WORKINGDIR-$CURRENTDATE-$TAGSTRING.tar.bz2"
+      TARBALLNAME="$WORKINGDIR-$CURRENTDATE-$TAGSTRING.tar.xz"
    fi
 
    echo "The tar-ball to be generated is '../$TARBALLNAME'..."
 
    if [ "$DODRYRUN" == "yes" ] ; then
       if [ "$DOCLEAN" == "yes" ] ; then
-         echo "midicvt will be cleaned by 'bootstrap --clean'."
+         echo "midicvt will be cleaned by 'bootstrap --full-clean'."
       fi
       exit 1
    fi
 
    if [ "$DOCLEAN" == "yes" ] ; then
-      bootstrap --clean
+      echo "Cleaning the project..."
+      ./bootstrap --full-clean
    fi
 
    pushd ..
@@ -136,7 +137,7 @@ else
 # Linux executable files
 # --exclude="aux-files"
 
-   tar cjf $TARBALLNAME $WORKINGDIR/ \
+   tar cJf $TARBALLNAME $WORKINGDIR/ \
   --exclude-vcs         \
   --exclude="Debug"     \
   --exclude="Release"   \
@@ -158,6 +159,7 @@ else
   --exclude="*.BAK"     \
   --exclude="*.bpi"     \
   --exclude="*.bz2"     \
+  --exclude="*.xz"      \
   --exclude="*.deps"    \
   --exclude="*.idb"     \
   --exclude="*.ilc"     \

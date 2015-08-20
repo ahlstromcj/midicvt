@@ -5,7 +5,7 @@
 # \file        README
 # \author      Chris Ahlstrom
 # \date        2014-04-08
-# \update      2015-08-14
+# \update      2015-08-19
 #
 #------------------------------------------------------------------------------
 
@@ -27,7 +27,7 @@ functionality exercised in the ../test_script file.
    tdixie03.mid
    wonworld.mid
 
-This file will be added to the tests.  It is a MIDI file created by
+The following file will be added to the tests.  It is a MIDI file created by
 importing a MIDI file into the nice Seq24 sequencer, laying out each of its
 tracks as a pattern in the Seq24 song editor, and then saving the file.
 
@@ -38,11 +38,22 @@ Currently, "midicvt b4uacuse-seq24.midi" exits with the following error:
    ? Error at offset 80655 (13b0f)
      Error: Garbage at end 'Expecting 'MTrk', but input[0] == '$' [0x24]'
 
-So we have this file in the queue for debugging, when we get time.
-It might be worth upgrading midicvt to convert it to
-readable text (and handle both directions).  Also, midicvt does not
-show "MThd" near the beginning, and it should, and we should be able
-to handle this on the conversion back to MIDI!
+It turns out the Seq24 generate files with non-MIDI-compliant output after
+the last track.  This extra output, called the "proprietary" section, is
+what causes the error.  Sequencer24 has been upgraded to generate a
+MIDI-compliant "proprietary" section.  The following file is written in that
+new format:
+
+   b4uacuse-new-format.midi
+
+Now midicvt can handle that file, even if we use an unknown track tag (e.g.
+"Mjnk") instead of the expected "MTrk".  Also, the options --strict and
+--ignore have been added to midicvt to add control over how it reacts to
+these kinds of "tracks".
+
+Also, midicvt did not show "MThd" (instead of "MFile") near the beginning of
+the output, and it should, and we should be able to handle this on the
+conversion back to MIDI!  This has been fixed.
 
 #*****************************************************************************
 # README (midicvt/tests/midifiles)

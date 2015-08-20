@@ -86,15 +86,19 @@ static const char * const gs_help_usage_2_2 =
    " --version       Show the version information for this program."
    ;
 
+/*
+ * This string is near the GNU 509-character character-constant limit.
+ */
+
 static const char * const gs_help_usage_2_3 =
    " --mfile         Write ASCII using 'MFile' instead of 'MThd' tag.\n"
    " --mthd          Write ASCII using the 'MThd' tag (default).  The program\n"
    "                 can read either tag.\n"
-   " --strict        Require that all tracks are marked with 'MTrk'.  By\n"
-   "                 default, tracks with other names can be processed.\n"
-   " --ignore        Allow non-MTrk chunks, but do not process them.\n"
-   "                 Per the MIDI specification, they should be ignored,\n"
-   "                 but midicvt otherwise treats them like tracks."
+   " --strict        Require that 'MTrk' marks all tracks 'MTrk'.  By default,\n"
+   "                 tracks with other names can be processed.\n"
+   " --ignore        Allow non-MTrk chunks, but don't process them. MIDI\n"
+   "                 specifies that they should be ignored; midicvt otherwise\n"
+   "                 treats them like tracks."
    "\n"
    ;
 

@@ -1,3 +1,7 @@
+Chris Ahlstrom
+Test Results for midicvt
+2015-08-19 to 2015-08-19
+
 The tests results in this directory come from the midicomp and midi2text
 projects.  The latter's text-file results were renamed with the "asc"
 extension.
@@ -11,3 +15,10 @@ In other case, we have to convert to MIDI, and then reconvert to ASCII to
 see that the results are the same.  In many cases, the --m2m option and the
 --compile options restore event bytes that were not in the original (flawed)
 MIDI files.
+
+Oddities:
+
+   In ex1.mid, the time signature event specific is FF 58 02, not
+   FF 58 04.  That is, it is two bytes shorter than the MIDI specification.
+   However, the note that follows is reached correctly.  Perhaps it is a
+   special case?  Something to investigate.
