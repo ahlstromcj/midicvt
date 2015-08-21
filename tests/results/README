@@ -1,6 +1,6 @@
 Chris Ahlstrom
-Test Results for midicvt
-2015-08-19 to 2015-08-19
+Test Results for midicvt and midicvtpp
+2015-08-19 to 2015-08-21
 
 The tests results in this directory come from the midicomp and midi2text
 projects.  The latter's text-file results were renamed with the "asc"
@@ -21,4 +21,7 @@ Oddities:
    In ex1.mid, the time signature event specific is FF 58 02, not
    FF 58 04.  That is, it is two bytes shorter than the MIDI specification.
    However, the note that follows is reached correctly.  Perhaps it is a
-   special case?  Something to investigate.
+   special case?  Something to investigate.  When played by the timidity
+   application, it outputs a message "Invalid time signature".
+
+# vim: ts=3 sw=3 et ft=sh

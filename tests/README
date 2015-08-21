@@ -1,13 +1,6 @@
-#******************************************************************************
-# midicvt/test-files/README
-#------------------------------------------------------------------------------
-##
-# \file        README
-# \author      Chris Ahlstrom
-# \date        2014-04-08
-# \update      2015-08-14
-#
-#------------------------------------------------------------------------------
+Chris Ahlstrom
+Test Files for midicvt and midicvtpp
+2014-04-08 to 2015-08-21
 
 The following two command lines were run in sequence to generate the results
 files in test-files/results:
@@ -23,7 +16,8 @@ The input files are:
 
       The original test file provided with the midicomp project.  It has
       some oddities in it, including a two-parameter version of the time
-      signature event, and missing "note on" bytes for most of the notes.
+      signature event (which is flagged as an "Invalid time signature" by
+      timidity), and missing "note on" bytes for most of the notes.
 
   ex1-recompiled.mid
 
@@ -97,9 +91,4 @@ matches that of midi2text.  Compiling it back from the text file yields:
 This file is a lot smaller than choo2xg.mid, but when both are play via
 timidity, they sound the same.  We haven't checked yet.
 
-#*****************************************************************************
-# README (midicvt/test-files)
-#-----------------------------------------------------------------------------
 # vim: ts=3 sw=3 et ft=sh
-#-----------------------------------------------------------------------------
-

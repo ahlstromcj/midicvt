@@ -181,8 +181,8 @@ static long s_Mf_toberead = 0L;
 static long s_Mf_numbyteswritten = 0L;
 
 /**
- *    Reports an error if the Mf_error callback has been assigned, then
- *    exits with an error-code of 1.
+ *    Reports an error, then calls Mf_error if the Mf_error callback has
+ *    been assigned, then exits with an error-code of 1.
  *
  * \param s
  *    Provides the error message.
@@ -956,49 +956,39 @@ metaevent (int type)
  */
 
 static int
-readmt (char * s)
+readmt (const char * s)
 {
    int result = READMT_EOF;
    int n = 0;
-   char * p = s;
    int c;
+   const char * p = s;
+   cbool_t result_is_set = false;
    while (n++ < 4 && (c = (*Mf_getc)()) != EOF)
    {
-      result = c;                      /* ca 2015-08-19 */
-      if (midicvt_option_strict())
+      if (c != *p++)
       {
-         if (c != *p++)
+         char buff[64];
+         (void) snprintf
+         (
+            buff, sizeof(buff), "Expecting '%s', but input[%d] == '%c' [0x%x]",
+            s, n-1, (char) c, c
+         );
+         if (midicvt_option_strict())
          {
-            char buff[64];
-            (void) snprintf
-            (
-               buff, sizeof(buff),
-               "Expecting '%s', but input[%d] == '%c' [0x%x]",
-               s, n-1, (char) c, c
-            );
-            mferror(buff);
             result = READMT_EOF;
+            mferror(buff);                   /* exit()'s the application */
          }
-      }
-      else if (midicvt_option_ignore())
-      {
-         cbool_t is_set = false;
-         if (c != *p++)
+         else if (midicvt_option_ignore())
          {
-            char buff[64];
-            (void) snprintf
-            (
-               buff, sizeof(buff),
-               "Ignoring non-Mtrk chunk at input[%d] == '%c' [0x%x]",
-               n-1, (char) c, c
-            );
-            if (! is_set)
+            if (! result_is_set)
             {
-               is_set = true;
+               result_is_set = true;
                result = READMT_IGNORE_NON_MTRK;
             }
          }
       }
+      if (! result_is_set)
+         result = c;
    }
    return result;
 }
@@ -1107,17 +1097,14 @@ static int s_chantype [] =
 static cbool_t
 readtrack (void)
 {
-   long lookfor;
-   int c;
-   int type;
-   int c1 = 0;
-   int sysexcontinue = 0;    /* 1 if last message was an unfinished sysex     */
-   int running = 0;          /* 1 when running status used                    */
-   int status = 0;           /* status value (e.g. 0x90==note-on)             */
-   int needed;
-   cbool_t result = readmt("MTrk") != READMT_EOF;
+   int readcode = readmt("MTrk");
+   cbool_t result = readcode != READMT_EOF;
    if (result)
    {
+      cbool_t sysexcontinue = false;   /* last message unfinished sysex?   */
+      cbool_t running = false;         /* true when running status used    */
+      int status = 0;                  /* status (e.g. 0x90==note-on)      */
+      cbool_t ignore = readcode == READMT_IGNORE_NON_MTRK;
       s_Mf_toberead = read32bit();
       if (mfreportable())
       {
@@ -1126,15 +1113,22 @@ readtrack (void)
          mfreport(temp);
       }
       Mf_currtime = 0;
-      if (Mf_starttrack)
-          (void) (*Mf_starttrack)();
-
+      if (! ignore)
+      {
+         if (Mf_starttrack)
+             (void) (*Mf_starttrack)();
+      }
       while (s_Mf_toberead > 0)
       {
+         int c;
+         int c1 = 0;
+         long lookfor;
+         int needed;
+         int type;
          Mf_currtime += readvarinum();    /* delta time                       */
          if (mfreportable())
          {
-            char temp[80];
+            char temp[64];
             snprintf(temp, sizeof(temp), "Delta time = %ld", Mf_currtime);
             mfreport(temp);
          }
@@ -1156,14 +1150,14 @@ readtrack (void)
              *    into c, effectively restoring the Note On byte.
              */
 
-            running = 1;
+            running = true;
             c1 = c;
             c = status;
          }
          else if (c < 0xf0)
          {
             status = c;
-            running = 0;
+            running = false;
          }
          needed = s_chantype[(c >> 4) & 0xf];
          if (needed)                      /* ie. is it a channel message?     */
@@ -1171,7 +1165,8 @@ readtrack (void)
              if (! running)
                  c1 = egetc();
 
-             chanmessage(status, c1, (needed > 1) ? egetc() : 0);
+             if (! ignore)
+                chanmessage(status, c1, (needed > 1) ? egetc() : 0);
              continue;
          }
          switch (c)
@@ -1184,7 +1179,8 @@ readtrack (void)
              while (s_Mf_toberead >= lookfor)           /* not ">" !      */
                  msgadd(egetc());
 
-             metaevent(type);
+             if (! ignore)
+                metaevent(type);
              break;
 
          case 0xf0:                       /* start of system exclusive msg    */
@@ -1196,9 +1192,12 @@ readtrack (void)
                  msgadd(c = egetc());
 
              if (c == 0xf7 || Mf_nomerge == 0)
-                 sysex();
+             {
+                if (! ignore)
+                    sysex();
+             }
              else
-                 sysexcontinue = 1;       /* merge into next message          */
+                 sysexcontinue = true;    /* merge into next message          */
              break;
 
          case 0xf7:                       /* sysex contin. or arbitrary stuff */
@@ -1217,8 +1216,10 @@ readtrack (void)
              }
              else if (c == 0xf7)
              {
-                 sysex();
-                 sysexcontinue = 0;
+                 if (! ignore)
+                    sysex();
+
+                 sysexcontinue = false;
              }
              break;
 
@@ -1228,8 +1229,11 @@ readtrack (void)
              break;
          }
       }
-      if (Mf_endtrack)
-         (void) (*Mf_endtrack)(0, 0);
+      if (! ignore)
+      {
+         if (Mf_endtrack)
+            (void) (*Mf_endtrack)(0, 0);
+      }
    }
    return result;
 }
@@ -1837,25 +1841,33 @@ mf_ticks2sec (unsigned long ticks, int division, unsigned int tempo)
  *    the midicvt_m2m.c module.
  *
  *    A new function was made from readtrack() in order to better avoid
- *    breaking that function for existing functionality.
+ *    breaking that function for existing functionality.  The functionality
+ *    is virtual identical to readtrack().  However, there is one big
+ *    puzzle to figure out... Why does this function have to <i> set </i>
+ *    the current time, rather than just add to it the way readtrack()
+ *    does?
+ *
+ \verbatim
+         Mf_currtime += readvarinum();
+         Mf_currtime  = readvarinum();
+ \endverbatim
  *
  * \return
- *    Returns true if the "MTrk" marker was found.
+ *    Returns true if the "MTrk" marker was found.  Actually, if any marker
+ *    is found, and there is no EOF returned.
  */
 
 static cbool_t
 readtrack_m2m (void)
 {
-   cbool_t result = readmt("MTrk") != READMT_EOF;
+   int readcode = readmt("MTrk");
+   cbool_t result = readcode != READMT_EOF;
    if (result)
    {
-      long lookfor;
-      int c;
-      int type;
-      int c1 = 0;
-      int sysexcontinue = 0;           /* 1 if last msg was unfinished sysex  */
-      int running = 0;                 /* 1 when running status used          */
-      int status = 0;                  /* status value (e.g. 0x90==note-on)   */
+      cbool_t sysexcontinue = false;   /* last msg was unfinished sysex?   */
+      cbool_t running = false;         /* true when running status used    */
+      int status = 0;                  /* status (e.g. 0x90 == note-on)    */
+      cbool_t ignore = readcode == READMT_IGNORE_NON_MTRK;
       s_Mf_toberead = read32bit();
       if (mfreportable())
       {
@@ -1864,16 +1876,26 @@ readtrack_m2m (void)
          mfreport(tmp);
       }
       Mf_currtime = 0;
-      if (Mf_starttrack)
-          (void) (*Mf_starttrack)();
-
+      if (! ignore)
+      {
+         if (Mf_starttrack)
+             (void) (*Mf_starttrack)();
+      }
       while (s_Mf_toberead > 0)
       {
+         int c;
+         int c1 = 0;
+         long lookfor;
          int needed;
-#if 0
-         Mf_currtime += readvarinum();    /* delta time                       */
-#endif
-         Mf_currtime = readvarinum();     /* delta time                       */
+         int type;
+
+         /*
+          * \question
+          *    In readtrack(), this statement uses a '+='.  Here, we have
+          *    to use '=' to get the same result!  Why?
+          */
+
+         Mf_currtime  = readvarinum();    /* delta time;  '=' or '+=' ???     */
          if (mfreportable())
          {
             char temp[80];
@@ -1898,14 +1920,14 @@ readtrack_m2m (void)
              *    into c, effectively restoring the Note On byte.
              */
 
-            running = 1;
+            running = true;
             c1 = c;
             c = status;
          }
          else if (c < 0xf0)
          {
             status = c;
-            running = 0;
+            running = false;
          }
          needed = s_chantype[(c >> 4) & 0xf];
          if (needed)                      /* ie. is it a channel message?     */
@@ -1913,7 +1935,8 @@ readtrack_m2m (void)
              if (! running)
                  c1 = egetc();
 
-             chanmessage(status, c1, (needed > 1) ? egetc() : 0);
+             if (! ignore)
+                chanmessage(status, c1, (needed > 1) ? egetc() : 0);
              continue;
          }
          switch (c)
@@ -1926,7 +1949,8 @@ readtrack_m2m (void)
              while (s_Mf_toberead >= lookfor)           /* not ">" !      */
                  msgadd(egetc());
 
-             metaevent(type);
+             if (! ignore)
+                metaevent(type);
              break;
 
          case 0xf0:                       /* start of system exclusive msg    */
@@ -1938,9 +1962,12 @@ readtrack_m2m (void)
                  msgadd(c = egetc());
 
              if (c == 0xf7 || Mf_nomerge == 0)
+             {
+                if (! ignore)
                  sysex();
+             }
              else
-                 sysexcontinue = 1;       /* merge into next message          */
+                 sysexcontinue = true;    /* merge into next message          */
              break;
 
          case 0xf7:                       /* sysex contin. or arbitrary stuff */
@@ -1959,8 +1986,10 @@ readtrack_m2m (void)
              }
              else if (c == 0xf7)
              {
-                 sysex();
-                 sysexcontinue = 0;
+                 if (! ignore)
+                    sysex();
+
+                 sysexcontinue = false;
              }
              break;
 
@@ -1970,8 +1999,11 @@ readtrack_m2m (void)
              break;
          }
       }
-      if (Mf_endtrack)
-         (*Mf_endtrack)(s_track_header_offset, s_Mf_numbyteswritten);
+      if (! ignore)
+      {
+         if (Mf_endtrack)
+            (*Mf_endtrack)(s_track_header_offset, s_Mf_numbyteswritten);
+      }
    }
    return result;
 }
