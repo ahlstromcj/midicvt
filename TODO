@@ -1,12 +1,27 @@
 Chris Ahlstrom
 TODO List
-2015-08-21 to 2015-08-21
+2015-08-21 to 2015-08-22
 
 Try to get rid of the memory leaks from:
 
    $ valgrind --leak-check=full --show-leak-kinds=all  \
          midicvt/midicvt -c ex1.asc -o e.mid
 
+   Done!  Had to expose yylex_destroy() and make sure it got called.
+
 Then search for more memory leaks.
+
+Also:
+
+   $ ./midicvt -c ex1.asc
+   <binary MIDI bytes>
+   ? Error at offset -1 (0xffffffffffffffff)
+   Error: error seeking during final stage of write
+
+   Done!  Had to avoid fseek(fp, -1, 0).
+
+The test script passed, so hopefully we have not introduced any bugs.
+
+So, another to-do is to add more tests!
 
 # vim: ts=3 sw=3 et ft=sh

@@ -28,7 +28,7 @@
  * \library       midicvt application
  * \author        Chris Ahlstrom and many other authors
  * \date          2014-04-09
- * \updates       2015-08-21
+ * \updates       2015-08-22
  * \version       $Revision$
  * \license       GNU GPL
  *
@@ -1357,7 +1357,7 @@ my_writetrack (void)
          case ARB:
 
             gethex();
-            mf_w_sysex_event(delta,  g_status_buffer, (long) g_status_buflen);
+            mf_w_sysex_event(delta, g_status_buffer, (long) g_status_buflen);
             break;
 
          case TEMPO:
@@ -1365,7 +1365,7 @@ my_writetrack (void)
             if (yylex() != INT)
                syntax();
 
-            mf_w_tempo (delta, yyval);
+            mf_w_tempo(delta, yyval);
             break;
 
          case TIMESIG:
@@ -2040,7 +2040,7 @@ efopen (const char * name, const char * mode)
    if (is_nullptr(f))
    {
       (void) fprintf(stderr, "Cannot open '%s',  %s!\n", name, strerror(errno));
-      exit(1);
+      /////// exit(1);
    }
    return f;
 }
@@ -2226,9 +2226,22 @@ midicvt_close_compile (void)
 {
    if (midicvt_have_input_file())
       fclose(yyin);
+   else if (not_nullptr(yyin))
+      fclose(yyin);
 
+   yyin = nullptr;
    if (midicvt_have_output_file())
       fclose(g_io_file);
+   else if (not_nullptr(g_io_file))
+      fclose(g_io_file);
+
+   g_io_file = nullptr;
+   if (not_nullptr(g_status_buffer))
+   {
+      free(g_status_buffer);
+      g_status_buffer = nullptr;
+   }
+   (void) yylex_destroy();             /* new ca 2015-08-22 */
 }
 
 /**

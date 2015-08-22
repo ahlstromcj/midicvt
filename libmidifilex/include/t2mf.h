@@ -28,7 +28,7 @@
  * \library       libmidifilex
  * \author        Chris Ahlstrom and many other authors
  * \date          2014-04-09
- * \updates       2014-04-20
+ * \updates       2015-08-22
  * \version       $Revision$
  * \license       GNU GPL
  */
@@ -55,6 +55,7 @@ extern "C"
 #endif
 
 extern int yylex (void);
+extern int yylex_destroy ();           /* new ca 2015-08-22, now exposed */
 
 #ifdef __cplusplus
 }                    /* extern "C" */

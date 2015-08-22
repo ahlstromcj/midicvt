@@ -2076,7 +2076,8 @@ static void yy_load_buffer_state  (void)
  * @param b a buffer created with yy_create_buffer()
  *
  */
-    void yy_delete_buffer (YY_BUFFER_STATE  b )
+
+void yy_delete_buffer (YY_BUFFER_STATE  b )
 {
 
    if ( ! b )

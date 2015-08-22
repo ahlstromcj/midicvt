@@ -59,7 +59,7 @@
  * \author        Other authors (see below), with modifications by Chris
  *                Ahlstrom,
  * \date          2014-04-08
- * \updates       2015-08-21
+ * \updates       2015-08-22
  * \version       $Revision$
  * \license       GNU GPL
  *
@@ -1378,13 +1378,19 @@ mf_w_track_chunk
     * track.length = place_marker - offset - (long) sizeof(track);
     */
 
-   if (fseek(fp, offset, 0) < 0)
-      mferror("error seeking during final stage of write");
-
+   if (offset > 0)                     /* do only if valid, avoid exit() */
+   {
+      if (fseek(fp, offset, 0) < 0)
+         mferror("error seeking during final stage of write");
+   }
    trklength = s_Mf_numbyteswritten;
-   write32bit(trkhdr);        /* rewrite track chunk header with right length */
+   write32bit(trkhdr);                 /* rewrite track header w/right length */
    write32bit(trklength);
-   fseek(fp, place_marker, 0);
+   if (place_marker > 0)               /* do only if valid, avoid exit() */
+   {
+      if (fseek(fp, place_marker, 0))
+         mferror("error seeking during final stage of write");
+   }
 }
 
 /**
