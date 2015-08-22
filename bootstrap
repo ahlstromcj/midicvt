@@ -8,7 +8,7 @@
 # \library    	midicvt
 # \author     	Chris Ahlstrom
 # \date       	2014-04-08
-# \update     	2015-08-14
+# \update     	2015-08-21
 # \version    	$Revision$
 # \license    	$XPC_SUITE_GPL_LICENSE$
 #
@@ -33,7 +33,7 @@ export LANG
 CYGWIN=binmode
 export CYGWIN
 
-export MIDICVT_SCRIPT_EDIT_DATE="2015-08-14"
+export MIDICVT_SCRIPT_EDIT_DATE="2015-08-21"
 export MIDICVT_LIBRARY_API_VERSION="0.3"
 export MIDICVT_LIBRARY_VERSION="$MIDICVT_LIBRARY_API_VERSION.0"
 
@@ -77,7 +77,7 @@ M4DIR="m4"
 if [ "$1" == "--help" ] ; then
 
    cat << E_O_F
-Usage: ./bootstrap [options]                                 (0.2-2014-06-02)
+Usage: ./bootstrap [options]                               (0.3.3-2015-08-21)
 
    'bootstrap' sets up GNU automake support for the midicvt project.  It can
    also super-clean the projects.
@@ -178,7 +178,8 @@ fi
 
 if [ $DOFULLCLEAN == "yes" ] ; then
 
-   rm -rf config
+#  rm -rf config
+   rm -f config
    rm -rf include
    rm -rf po
    echo "   All junk files removed."

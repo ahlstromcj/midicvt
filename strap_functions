@@ -565,7 +565,8 @@ function clean_project()
          rm -f install-sh mkinstalldirs missing
          rm -f Makefile.in
          rm -f aux-files/*
-         rm -rf config
+#        rm -rf config
+         rm -f config
          rm -f include/Makefile.in
          rm -f include/stamp-h.in
          rm -f include/Makefile.in
