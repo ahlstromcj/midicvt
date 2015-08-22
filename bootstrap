@@ -8,7 +8,7 @@
 # \library    	midicvt
 # \author     	Chris Ahlstrom
 # \date       	2014-04-08
-# \update     	2015-08-21
+# \update     	2015-08-22
 # \version    	$Revision$
 # \license    	$XPC_SUITE_GPL_LICENSE$
 #
@@ -33,7 +33,7 @@ export LANG
 CYGWIN=binmode
 export CYGWIN
 
-export MIDICVT_SCRIPT_EDIT_DATE="2015-08-21"
+export MIDICVT_SCRIPT_EDIT_DATE="2015-08-22"
 export MIDICVT_LIBRARY_API_VERSION="0.3"
 export MIDICVT_LIBRARY_VERSION="$MIDICVT_LIBRARY_API_VERSION.0"
 
@@ -92,7 +92,8 @@ Usage: ./bootstrap [options]                               (0.3.3-2015-08-21)
 
    The default bootstraps the projects.  Then run 'configure', which sets up
    for a normal release build.  A common option for 'configure' is
-   --enable-debug, which adds --disable-shared and sets --configure.
+   --enable-debug.  However, then generally you want to add --disable-shared to
+   avoid dealing with libtool while debugging.
 E_O_F
 
    exit 1
@@ -106,8 +107,6 @@ fi
 if [ $# -ge 1 ] ; then
 
    while [ "$1" != "" ] ; do
-
-#     echo "- Processing command-line option $1"
 
       case "$1" in
 
@@ -177,13 +176,10 @@ if [ $DOCLEAN == "yes" ] ; then
 fi
 
 if [ $DOFULLCLEAN == "yes" ] ; then
-
-#  rm -rf config
-   rm -f config
+   rm -rf config
    rm -rf include
    rm -rf po
    echo "   All junk files removed."
-
 fi
 
 if [ $DOBOOTSTRAP == "yes" ] ; then
@@ -220,41 +216,32 @@ if [ $DOBOOTSTRAP == "yes" ] ; then
       AC_VER_MINOR=`echo $AC_VER | cut -f2 -d'.' | sed 's/[^0-9]*$//'`
 
       if [ "$AC_VER_MAJOR" -lt "2" ] ; then
-
          echo
          echo "Autoconf 2.13 or greater may be needed to build configure."
          echo "Edit the bootstrap file to ignore this test, if desired."
          echo
          exit $EXIT_ERROR_AUTOCONF_VERSION
-
       fi
 
       if [ "$AC_VER_MINOR" -lt "13" ] ; then
-
          echo
          echo "Autoconf 2.13 or greater may be needed to build configure."
          echo "Edit the bootstrap file to ignore this test, if desired."
          echo
          exit $EXIT_ERROR_AUTOCONF_VERSION_2
-
       fi
 
       if [ "$AC_VER_MINOR" -lt "50" ] ; then
-
          if [ -e configure.ac ] ; then
             if [ ! -e configure.in ] ; then
                ln -s configure.ac configure.in
             fi
          fi
          echo "Some warnings about cross-compiling are normal."
-
       else
-
          rm -f configure.in
          if [ -x configure ] ; then
-
             echo The midicvt configure script already exists.  Replacing it.
-
          fi
       fi
 
@@ -357,7 +344,6 @@ E_O_F
 # autoconf:
 
    cp contrib/config.rpath aux-files
-
    run_cmd ${ACLOCAL} -I ${M4DIR} --install
    run_cmd ${AUTOCONF}
    run_cmd ${AUTOHEADER}
@@ -377,7 +363,6 @@ E_O_F
 # Right now, this is done with the --clean option.
 
    case "$PKGCONFIG" in
-
      yes) ;;
      no) cat << E_O_F
 
@@ -404,7 +389,6 @@ E_O_F
    esac
 
    case "$INSTALL_BAD" in
-
      no) ;;
      yes) cat << E_O_F
 
@@ -436,14 +420,10 @@ E_O_F
 #------------------------------------------------------------------------
 
    if [ "$DOBOOTSTRAP" == "yes" ] ; then
-
       if [ "$DODEBUG" == "yes" ] ; then
-
          echo "Running './configure --enable-debug --disable-shared'..."
          ./configure --enable-debug --disable-shared
-
       else
-
          cat << E_O_F
 
 Run './configure' to configure midicvt to build, './configure --help' for
