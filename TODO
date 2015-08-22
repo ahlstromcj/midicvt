@@ -20,6 +20,32 @@ Also:
 
    Done!  Had to avoid fseek(fp, -1, 0).
 
+More Test Issues Found by Valgrind:
+
+   Warning: invalid file descriptor -1 in syscall dup2()
+
+      ../midicvt/midicvt --mfile -i midifiles/ex1.mid -o tmp/ex1.asc
+      ../midicvt/midicvt --mfile --m2m --input midifiles/ex1.mid \
+            --output tmp/ex1-m2m.mid
+      ../midicvt/midicvt --mfile -t -i midifiles/choo2xg.mid -o tmp/choo2xg.asc
+      ../midicvt/midicvt --mfile --m2m --input midifiles/choo2xg.mid \
+            --output tmp/choo2xg-m2m.mid
+
+   ... And a lot more of that issue.
+
+   Done!  It appears that the call to dup2() in revert_stdout() in the
+   midicvt_base.c module is not necessary, and it errors out every time
+   anyway.  We just commented that call out.
+
+   ../midicvtpp/midicvtpp --mfile -i results/stomtors/stomtors-drum
+   s-16.mid -o tmp/stomtors-drums-16.asc
+
+      HEAP SUMMARY:  in use at exit: 72,704 bytes in 1 blocks
+                     total heap usage: 6 allocs, 5 frees, 76,302 bytes allocated
+
+   The heap issue seems to be an internal thing occurring in dl-init.c, not
+   sure we can do anything about it.
+
 The test script passed, so hopefully we have not introduced any bugs.
 
 So, another to-do is to add more tests!

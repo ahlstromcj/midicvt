@@ -2095,8 +2095,8 @@ redirect_stdout (const char * filename, const char * mode)
    cbool_t result = rc == 0;
    if (result)
    {
-      rc = fgetpos(stdout, &gs_saved_stdout_pos);  /* fails, 'Illegal seek'   */
-      result = true;    /* rc == 0; */
+      rc = fgetpos(stdout, &gs_saved_stdout_pos);  /* fails, 'Illegal seek' */
+      result = true;
       if (result)
       {
          gs_saved_stdout = dup(fileno(stdout));
@@ -2106,19 +2106,19 @@ redirect_stdout (const char * filename, const char * mode)
             g_redirect_file = freopen(filename, mode, stdout);
             result = not_nullptr(g_redirect_file);
             if (! result)
-               error("Failed to freopen() stdout");
+               error("redirect_stdout(): ailed to freopen() stdout");
          }
          else
-            error("Failed to dup() stdout");
+            error("redirect_stdout(): ailed to dup() stdout");
       }
       else
       {
-         error("Failed to get the file-position of stdout:");
+         error("redirect_stdout(): ailed to get the file-position of stdout:");
          fprintf(stderr, "error is '%s'\n", strerror(errno));
       }
    }
    else
-      error("Failed to fflush() stdout for redirection");
+      error("redirect_stdout(): ailed to fflush() stdout for redirection");
 
    return result;
 }
@@ -2129,6 +2129,11 @@ redirect_stdout (const char * filename, const char * mode)
  *
  *    To avoid a memory leak at exit(), this function closes
  *    g_redirect_file if it was assigned a value [i.e. fileno(stdio)].
+ *
+ * \warning
+ *    Currently, the dup2() call is returning error 9, EBADF, a bad file
+ *    descriptor.  We're guessing it is not needed anyway, and commenting
+ *    it out.
  */
 
 static cbool_t
@@ -2142,8 +2147,21 @@ revert_stdout ()
    }
    if (gs_saved_stdout != (-1))
    {
-      (void) dup2(gs_saved_stdout, fileno(stdout));
-      (void) close(gs_saved_stdout);
+      /*
+       * See the warning in the function banner.
+       *
+       * int rcode = dup2(gs_saved_stdout, fileno(stdout));
+       * if (rcode == (-1))
+       * {
+       *    errprintf("revert_stdout(): dup2() failed, errno = %d\n", errno);
+       * }
+       */
+
+      int rcode = close(gs_saved_stdout);
+      if (rcode == (-1))
+      {
+         errprintf("revert_stdout(): close() failed, errno = %d\n", errno);
+      }
       clearerr(stdout);
       if (fsetpos(stdout, &gs_saved_stdout_pos) != 0)
       {
