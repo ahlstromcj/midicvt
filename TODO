@@ -1,0 +1,12 @@
+Chris Ahlstrom
+TODO List
+2015-08-21 to 2015-08-21
+
+Try to get rid of the memory leaks from:
+
+   $ valgrind --leak-check=full --show-leak-kinds=all  \
+         midicvt/midicvt -c ex1.asc -o e.mid
+
+Then search for more memory leaks.
+
+# vim: ts=3 sw=3 et ft=sh

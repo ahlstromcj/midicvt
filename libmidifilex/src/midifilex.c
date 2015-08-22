@@ -59,7 +59,7 @@
  * \author        Other authors (see below), with modifications by Chris
  *                Ahlstrom,
  * \date          2014-04-08
- * \updates       2015-08-20
+ * \updates       2015-08-21
  * \version       $Revision$
  * \license       GNU GPL
  *
@@ -337,7 +337,7 @@ biggermsg (void)
    s_message_size += s_message_increment;
    newmess = (char *) malloc((unsigned) (sizeof(char) * s_message_size));
    if (is_nullptr(newmess))
-       mferror("malloc error!");
+       mferror("biggermsg(): malloc error!");
 
    if (not_nullptr(oldmess))           /* copy old message to larger new one */
    {
@@ -349,7 +349,7 @@ biggermsg (void)
 
        free(oldmess);
    }
-   s_message_buffer = newmess;
+   s_message_buffer = newmess;         /* this is left active at exit!       */
 }
 
 /**
@@ -1242,6 +1242,9 @@ readtrack (void)
  *    Calls readheader(), then calls readtrack() while there is data to be
  *    read.
  *
+ *    Once done, we delete the message buffer to avoid a valgrind leakage
+ *    indication at exit.
+ *
  * \note
  *    This function and mfwrite() are the only non-static functions in this
  *    file?  Not any more!
@@ -1257,6 +1260,11 @@ mfread (void)
    {
       while (readtrack())
           ;
+   }
+   if (not_nullptr(s_message_buffer))
+   {
+      free(s_message_buffer);
+      s_message_buffer = nullptr;
    }
 }
 
@@ -2020,6 +2028,9 @@ readtrack_m2m (void)
  *
  *    Calls readheader(), which works fine with the m2m_header() callback.
  *    then calls readtrack_m2m() while there is data to be read.
+ *
+ *    Once done, we delete the message buffer to avoid a valgrind leakage
+ *    indication at exit.
  */
 
 void
@@ -2028,9 +2039,16 @@ mftransform (void)
    if (Mf_getc == nullptr)
        mferror("mfread() called without setting Mf_getc");
 
-   readheader();
-   while (readtrack_m2m())
-       ;
+   if (readheader() != READMT_EOF)
+   {
+      while (readtrack_m2m())
+          ;
+   }
+   if (not_nullptr(s_message_buffer))
+   {
+      free(s_message_buffer);
+      s_message_buffer = nullptr;
+   }
 }
 
 /*

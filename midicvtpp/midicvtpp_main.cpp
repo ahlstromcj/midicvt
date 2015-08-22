@@ -29,7 +29,7 @@
  * \library       midicvtpp application
  * \author        Chris Ahlstrom
  * \date          2014-04-19
- * \updates       2015-07-22
+ * \updates       2015-08-21
  * \version       $Revision$
  * \license       GNU GPL
  *
@@ -57,7 +57,7 @@
  *    C++-only options are provided.
  */
 
-static const char * const s_help_version = "midicvtpp v 0.3 2015-07-22";
+static const char * const s_help_version = "midicvtpp v 0.3.3 2015-08-21";
 
 /**
  *    Addition help string, which supplements the help for the C program

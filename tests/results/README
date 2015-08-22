@@ -24,4 +24,11 @@ Oddities:
    special case?  Something to investigate.  When played by the timidity
    application, it outputs a message "Invalid time signature".
 
+   When recompiled (or converted with the --m2m option), this file gets
+   fixed.  For a detailed breakdown of the changes, compare the following
+   two files:
+
+      ex1.xxd              An annotated hex dump of the original file.
+      ex1-recompiled.xxd   An annotated hex dump of the "fixed" file.
+
 # vim: ts=3 sw=3 et ft=sh

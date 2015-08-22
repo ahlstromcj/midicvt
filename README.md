@@ -1,4 +1,4 @@
-midicvt 0.2
+midicvt 0.3.3
 
 This project supports MIDI-to-text-to-MIDI conversions like midicomp and
 midi2text (it is derived from those projects), and adds support for direct
@@ -14,6 +14,7 @@ TODO:
 
 Chris Ahlstrom, 2014-06-26
 
-   I am a professional programmer using C and C++, and lately, Java EE.
+   I am a professional programmer using C and C++, and lately, Java.
    My hobbies are writing code, running, and playing soccer.
 
+# vim: ts=3 sw=3 et ft=sh

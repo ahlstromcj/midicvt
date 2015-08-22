@@ -6,7 +6,6 @@
  *    information" page.
  *
  * Date:      2014-05-03
- * Update:    2014-06-01
  *
  *------------------------------------------------------------------------*//**
 
@@ -17,7 +16,7 @@ the ability to directly perform some MIDI file conversions, without the need
 for scripting.
 
 \page       midicvtpp   midicvtpp
-\author     Chris Ahlstrom 2015-08-14
+\author     Chris Ahlstrom 2015-08-21
 
 \section midicvtpp_intro MIDI to MIDI Mode
 
@@ -138,7 +137,9 @@ found in the developer's reference manual,
 
 \subsection midicvtpp_usage_m2m midicvtpp --m2m
 
-The --m2m option provides an INI file to specify how to remap between MIDI
+\subsubsection midicvtpp_usage_m2m_file midicvtpp --m2m mapfile.ini
+
+The --m2m option allows an INI file to specify how to remap between MIDI
 notes, program/patch numbers, and other options.
 
 Here is an example that maps a Yamaha PSS-790's drums to General MIDI drums.
@@ -148,13 +149,48 @@ Here is an example that maps a Yamaha PSS-790's drums to General MIDI drums.
         -o stomtors-drums-10.mid
 \endverbatim
 
+\subsubsection midicvtpp_usage_m2m_nofile midicvtpp --m2m Without a Map-File
+
+Note that one can also provide <i> no </i> mapping file:
+
+\verbatim
+   $ midicvtpp --m2m -i ex1.mid -o ex1-m2m.mid
+\endverbatim
+
+In this case, no remapping occurs.  However, midicvtpp might <i> fix </i>
+the input file, as it does in this case, adding some bytes.
+For a detailed description of this fix, compare the following two files,
+found in the <code>tests/results</code> directory:
+
+\verbatim
+      ex1.xxd              An annotated hex dump of the original file.
+      ex1-recompiled.xxd   An annotated hex dump of the "fixed" file.
+\endverbatim
+
+The command shown above will yield the same results as the following
+commands:
+
+\verbatim
+   $ midicvtpp -i ex1.mid -o ex1.asc
+   $ midicvtpp -c ex1.asc -o ex1-m2m.mid
+\endverbatim
+
 \subsection midicvtpp_usage_reverse midicvtpp --reverse
+
+This option reverses the mapping specified by the --m2m option.
+If a MIDI file arranged for synthesizer A is remapped to an
+arrangement for synthesizer B, then the --reverse option can be used
+to remap the synthesizer B arrangement back to a synthesizer A arrangement.
+
+However, be aware that, if the mapping from A to B isn't one-to-one,
+then remapping back to A will result in a file that is not quite identical
+to A.
 
 \subsection midicvtpp_usage_extract midicvtpp --extract
 
-The --extract option takes any events on the given channel and extracts them
-into the output MIDI file.  Only events that have a channel parameter are
-extracted:
+The --extract option takes any events on the given channel and extracts 
+(removes) them into the output MIDI file.  Only events that have a channel
+parameter are extracted:
 
    -  note on
    -  note off
@@ -163,9 +199,9 @@ extracted:
 
 All other kinds of events pass through to the output file.
 
-Here is an example that extracts the drum parts of a MIDI file written for
-the Yamaha PSS-790 consumer-level synthesizer.  Note the presence of the
---m2m option.
+Here is an example that extracts (removes) the drum parts of a MIDI file
+written for the Yamaha PSS-790 consumer-level synthesizer.  Note the
+presence of the --m2m option.
 
 \verbatim
    $ midicvtpp --m2m --extract 16 stomtors.mid stomtors-drums-16.mid
@@ -178,16 +214,16 @@ events from a single channel to be dropped from the output MIDI file.
 
 \subsection midicvtpp_usage_testing midicvtpp --testing
 
-This option does whatever it does.  Most like it will cause a dump of the
+This option does whatever it does.  Most likely it will cause a dump of the
 maps that were created from the INI file.
 
-\section midicvtpp_spreadsheet The Spreadsheet
+\section midicvtpp_spreadsheet The Remapping Spreadsheet
 
 Open <code>MIDI-Maps.ods</code> to follow this discussion.  This
 document is how I keep track of some of my old equipment, and you are
 welcome to use it and modify it as you see fit for your purposes.
 
-The current tabs are <i>Drums</i>, <i>Patches</i>, and
+The current spreadsheet pages are <i>Drums</i>, <i>Patches</i>, and
 <i>GM_PSS-790_Drums</i>.
 
 <i>Drums</i>.
@@ -214,12 +250,13 @@ our motivation for creating/enhancing the <code>midicvt/midicvtpp</code>
 programs.
 
 <i>Patches</i>.
-This tab correlates the PSS-790 program/patches number with General MIDI
-numbers.  We haven't done anything with them yet, but just you wait!
+This spreadsheet page correlates the PSS-790 program/patches number with
+General MIDI numbers.  We haven't done anything with them yet, but just you
+wait!
 
 <i>GM_PSS-790_Drums</i>.
-This is the tab we've been moving toward for this document.  It shows the
-drum names and notes to correlate GM1 and PSS-790 drums.
+This is the spreadsheet page we've been moving toward for this document.  It
+shows the drum names and notes to correlate GM1 and PSS-790 drums.
 
 The first thing we did was to key in the basic column names and then the
 PSS-790 drum notes.  Then we went over them, assigning the PSS-790 notes to

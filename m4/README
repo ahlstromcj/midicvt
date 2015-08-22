@@ -1,16 +1,9 @@
-#******************************************************************************
-# libwaonc/m4/README
-#------------------------------------------------------------------------------
-##
-# \file        README
-# \author      Chris Ahlstrom
-# \date        2013-10-19
-# \update      2013-10-19
-#
-#------------------------------------------------------------------------------
+Chris Ahlstrom
+Gentoo Build Note
+2013-10-19 to 2015-08-21
 
 Bootstrapping the project on a Gentoo system led to the following notes, and
-we're keeping the new versions.
+we are keeping the new versions.
 
 aclocal-1.11:
 
@@ -21,8 +14,4 @@ aclocal-1.11:
 
 Also of later version was: ax_prefix_config_h.m4
 
-#*****************************************************************************
-# README (libwaonc/m4)
-#-----------------------------------------------------------------------------
 # vim: ts=3 sw=3 et ft=sh
-#-----------------------------------------------------------------------------

@@ -64,7 +64,7 @@
  *    Version string.
  */
 
-static const char * const s_help_version = "midicvt v 0.3 2015-08-14";
+static const char * const s_help_version = "midicvt v 0.3.3 2015-08-21";
 
 /**
  *    Provides the entry-point for the midicvt program.

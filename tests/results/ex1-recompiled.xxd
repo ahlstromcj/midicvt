@@ -1,9 +1,7 @@
 ex1-recompiled.xxd
 
 Derived from ex1.mid by converting ex1.mid to a text file, and compiling
-it back to a MIDI file.  Seems to be incorrectly formatted.  The first
-track should just contain setup information, but it also contains note
-data.  Note data should appear in subsequent tracks.
+it back to a MIDI file.
 
 Header chunk:
 

@@ -1,0 +1,15 @@
+Chris Ahlstrom
+Notes on Documentation
+2015-08-21 to 2015-08-21
+
+We have currently commented out the building of this Doxygen-based
+documentation from the top-level Makefile.am module.  We hardly
+ever need to rebuild the PDF files, whereas we always need to rebuild the
+code for debugging.  It gets tiresome to wait for the PDF files to get
+built, and tiresome to remember to leave the new PDFs out of the
+"git add" command.
+
+For now, we will remember to rebuild the PDF files manually whenever we make
+a notable update to the code or to the *.dox files.
+
+# vim: ts=3 sw=3 et ft=sh

@@ -6,7 +6,7 @@
 # \library     libmidifilex, libmidipp, midicvt, and midicvtpp
 # \author      Chris Ahlstrom
 # \date        2014-04-08
-# \updates     2014-05-20
+# \updates     2014-05-21
 # \version     $Revision$
 # \license     $MIDICVT_SUITE_GPL_LICENSE$
 #
@@ -14,6 +14,10 @@
 #
 #     This makefile provides the skeleton needed to build the library
 #     and application directories using GNU autotools.
+#
+# \note
+#     We currently leave the doc/dox directory out of SUBDIRS, to avoid
+#     building the PDF files over and over.
 #
 #-----------------------------------------------------------------------------
 
@@ -123,11 +127,14 @@ libtool: $(LIBTOOL_DEPS)
 # SUBDIRS
 #-----------------------------------------------------------------------------
 #
-# SUBDIRS = m4 include midicvt man doc pkgconfig po
+# SUBDIRS = man doc pkgconfig po
+#
+#  Note that doc/dox is currently commented out.  Build the documentation
+#  manually by calling the make_dox script.
 #
 #-----------------------------------------------------------------------------
 
-SUBDIRS = m4 libmidifilex midicvt libmidipp midicvtpp doc/dox
+SUBDIRS = m4 libmidifilex midicvt libmidipp midicvtpp # doc/dox
 
 #*****************************************************************************
 # DIST_SUBDIRS

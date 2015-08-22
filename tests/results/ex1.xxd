@@ -1,9 +1,8 @@
 ex1.xxd
 
 The ex1.mid file seems to be an incorrectly-formatted MIDI file.  The
-first track should just contain setup information, but it also contains
-note data.  Note data should appear in subsequent tracks.  Maybe this
-file was original SMF 0 instead of SMF 1.
+time signature is only two bytes.  Also, maybe this file was original SMF 0
+instead of SMF 1.
 
 Header chunk:
 

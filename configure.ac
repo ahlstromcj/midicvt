@@ -6,7 +6,7 @@ dnl \file          configure.ac
 dnl \library       libmidifilex, libmidipp, midicvt, and midicvtpp
 dnl \author        Chris Ahlstrom
 dnl \date          2014-04-08
-dnl \update        2015-08-14
+dnl \update        2015-08-21
 dnl \version       $Revision$
 dnl \license       $MIDICVT_SUITE_GPL_LICENSE$
 dnl
@@ -16,8 +16,8 @@ dnl
 dnl ---------------------------------------------------------------------------
 
 AC_PREREQ(2.60)
-AC_REVISION($Revision: 0.3$)dnl
-AC_INIT(midicvt, [0.3], [ahlstromcj@users.sourceforge.net])
+AC_REVISION($Revision: 0.3.3$)dnl
+AC_INIT(midicvt, [0.3.3], [ahlstromcj@users.sourceforge.net])
 AC_CONFIG_AUX_DIR([aux-files])
 AC_CONFIG_SRCDIR([libmidifilex/src/midifilex.c])
 
@@ -50,7 +50,7 @@ PACKAGE=midicvt
 AC_DEFINE_UNQUOTED(PACKAGE, "$PACKAGE")
 AC_SUBST(PACKAGE)
 
-VERSION="0.3.0"
+VERSION="0.3.3"
 AC_DEFINE_UNQUOTED(VERSION, "$VERSION")
 AC_SUBST(VERSION)
 
@@ -75,7 +75,7 @@ dnl      where 0 is the first.  The runtime loader always uses the library
 dnl      with the highest revision.  If you change any source modules,
 dnl      increment this number.
 dnl
-dnl      age = The number of additional interface supported by this library.
+dnl      age = The number of additional interfaces supported by this library.
 dnl      The age must the less than or equal to 'current'.  If the new
 dnl      interface is a superset of the preceding interface, 'age' must be
 dnl      incremented.
@@ -83,7 +83,7 @@ dnl      incremented.
 MIDICVT_API_MAJOR="0"
 AC_SUBST([MIDICVT_API_MAJOR])
 
-MIDICVT_API_MINOR="1"
+MIDICVT_API_MINOR="3"
 AC_SUBST([MIDICVT_API_MINOR])
 
 MIDICVT_API_PATCH="0"
@@ -260,9 +260,9 @@ dnl            "MIDICVT_" to these values when it generated midicvt-config.h.
 
 AH_TOP(
 
-#define VERSION_DATE_SHORT "2014-06-02"
-#define VERSION "0.2.0"
-#define API_VERSION "0.2"
+#define VERSION_DATE_SHORT "2015-08-21"
+#define VERSION "0.3.3"
+#define API_VERSION "0.3"
 
 )
 

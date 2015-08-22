@@ -10,12 +10,12 @@
  * \library       libmidifilex
  * \author        Chris Ahlstrom
  * \date          2007-02-28
- * \updates       2014-06-02
+ * \updates       2015-08-21
  * \version       $Revision$
  * \license       GNU GPL
  */
 
-#define LIBMIDIFILEX_VERSION "0.2 ca"
+#define LIBMIDIFILEX_VERSION "0.3.3 ca"
 
 #endif   /* LIBMIDIFILEX_VERSION_H */
 

@@ -28,7 +28,7 @@
  * \library       midicvt application
  * \author        Chris Ahlstrom and many other authors
  * \date          2014-04-09
- * \updates       2015-08-14
+ * \updates       2015-08-21
  * \version       $Revision$
  * \license       GNU GPL
  *
@@ -2124,16 +2124,24 @@ redirect_stdout (const char * filename, const char * mode)
 }
 
 /**
- *    Holds the file descriptor for stdout for later restoration.
+ *    Handles the file descriptor for stdout that was saved for later
+ *    restoration.
+ *
+ *    To avoid a memory leak at exit(), this function closes
+ *    g_redirect_file if it was assigned a value [i.e. fileno(stdio)].
  */
 
 static cbool_t
 revert_stdout ()
 {
    cbool_t result = fflush(stdout) == 0;
+   if (not_nullptr(g_redirect_file))
+   {
+      (void) fclose(g_redirect_file);     /* @change ca 2015-08-21 */
+      g_redirect_file = nullptr;
+   }
    if (gs_saved_stdout != (-1))
    {
-      g_redirect_file = nullptr;
       (void) dup2(gs_saved_stdout, fileno(stdout));
       (void) close(gs_saved_stdout);
       clearerr(stdout);
@@ -2197,11 +2205,14 @@ midicvt_setup_compile (void)
          }
       }
       else
-         errprint("could not set up the output MIDI file for compiling");
+      {
+         errprint("midicvt_setup_compile(): could not set up output MIDI file");
+      }
    }
    else
-      errprint("could not set up the input ASCII file for compiling");
-
+   {
+      errprint("midicvt_setup_compile(): could not set up the input ASCII file");
+   }
    return result;
 }
 
@@ -2246,18 +2257,32 @@ midicvt_setup_mfread (void)
          cbool_t ok = redirect_stdout(midicvt_output_file(), "w");
          if (! ok)
          {
-            errprint("could not redirect stdout to the output file");
+            errprint
+            (
+               "midicvt_setup_mfread(): could not redirect stdout to output file"
+            );
             result = false;
          }
       }
       else
       {
+         /*
+          * Hmmm, this results in a leak at exit time, in fdopen().
+          */
+
          g_redirect_file = fdopen(fileno(stdout), "wb");
          if (not_nullptr(g_redirect_file))
             (void) midicvt_set_output_file("stdout");
          else
          {
-            errprint("could not fdopen(stdout) in midicvt_setup_mfread()");
+            /*
+             * If fdopen() returns null, one is supposed to call close()
+             * with the first parameter.  But do we want to close
+             * fileno(stdout)?  Well, we tried, but still get a leak at
+             * exit:  close(fileno(stdout));
+             */
+
+            errprint("midicvt_setup_mfread(): could not fdopen(stdout)");
             result = false;
          }
       }
@@ -2308,14 +2333,18 @@ midicvt_setup_mfread (void)
       }
    }
    else
-      errprint("could not set up the input MIDI file for reading");
-
+   {
+      errprint
+      (
+         "midicvt_setup_mfread(): could not set up input MIDI file for reading"
+      );
+   }
    return result;
 }
 
 /**
  *    Checks g_io_file for an error status, closes this file handle if
- *    necessary, and restores stdout to norml if necessary.
+ *    necessary, and restores stdout to normal if necessary.
  */
 
 void
