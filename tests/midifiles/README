@@ -1,6 +1,6 @@
 Chris Ahlstrom
 Test MIDI Files for midicvt and midicvtpp
-2014-04-08 to 2015-08-21
+2014-04-08 to 2015-09-07
 
 The following files are standard test files for the MIDI conversion
 functionality exercised in the ../test_script file.
@@ -16,9 +16,20 @@ functionality exercised in the ../test_script file.
    example3.mid
    example4.mid
    example5.mid
-   README
    tdixie03.mid
    wonworld.mid
+   mrroboto_with_lyrics.mid
+
+The main feature of the last MIDI file, apart from the fact that it
+credits the wrong music group with the composition, is that it
+contains, in an obfuscated format, lyric events.  When played by
+timidity from the command line, these lyrics appear on the console.
+Yet viewing the file, the lyrics are broken up (due to timing, no doubt).
+Here are the entries for one word from the lyrics (with intermediate
+events removed):
+
+   5856 Meta Lyric "(Se"
+   5904 Meta Lyric "cret, "
 
 The following file will be added to the tests.  It is a MIDI file created by
 importing a MIDI file into the nice Seq24 sequencer, laying out each of its
