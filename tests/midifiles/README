@@ -31,6 +31,18 @@ events removed):
    5856 Meta Lyric "(Se"
    5904 Meta Lyric "cret, "
 
+We used the following command to convert the file b4uacuse-new-format.midi,
+which was arranged for a non-GM synth, the Yamaha PSS-790, into the more
+GM-compliant file b4uacuse-GM-format.midi:
+
+   $ midicvtpp --m2m GM_PSS-790_Multi.ini -i b4uacuse-new-format.midi \
+         -o b4uacuse-GM-format.midi
+
+Played via the following command, it stills seems to need some work, so we
+will check how midicvtpp and the mapping work:
+
+   $ timidity b4uacuse-GM-format.midi
+
 The following file will be added to the tests.  It is a MIDI file created by
 importing a MIDI file into the nice Seq24 sequencer, laying out each of its
 tracks as a pattern in the Seq24 song editor, and then saving the file.
