@@ -59,7 +59,7 @@
  * \author        Other authors (see below), with modifications by Chris
  *                Ahlstrom,
  * \date          2014-04-08
- * \updates       2015-08-22
+ * \updates       2015-10-11
  * \version       $Revision$
  * \license       GNU GPL
  *
@@ -751,6 +751,15 @@ writevarinum (unsigned long value)
  *    is found in msg(), while the length of the message is provided by
  *    msgleng().
  *
+ * \change ca 2015-10-11
+ *    The current version of the test file b4uacuse-GM-format.midi has
+ *    a missing value near the beginning.  Actually, the value isn't
+ *    missing.  It's just that it is a sequence number of 0, which is
+ *    written in the allowed alternate format, "FF 00 00", instead
+ *    of the normal format "FF 00 02 ss ss", where "ss ss" would be
+ *    "00 00".  Anyway, this cause a null msg() return, which we must
+ *    ignore, to avoid a crash.
+ *
  * \param type
  *    Provides the type of meta event.  The following value sets are
  *    handled:
@@ -771,169 +780,172 @@ writevarinum (unsigned long value)
 static void
 metaevent (int type)
 {
-   int leng = msgleng();
    char * m = msg();
-   short int seqnum;                   /* used in case 0x00 */
-   long lv;                            /* used in case 0x51 */
-   switch (type)
+   if (not_nullptr(m))                    /* \change ca 2015-10-11   */
    {
-   case 0x00:
-
-      seqnum = to16bit(m[0], m[1]);
-      if (mfreportable())
+      int leng = msgleng();
+      short int seqnum;                   /* used in case 0x00       */
+      long lv;                            /* used in case 0x51       */
+      switch (type)
       {
-         char temp[64];
-         (void) snprintf
-         (
-            temp, sizeof(temp), "Meta seqnum (type %d [0x%x])=%d [0x%x]",
-            type, type, (int) seqnum, (int) seqnum
-         );
-         mfreport(temp);
+      case 0x00:
+
+         seqnum = to16bit(m[0], m[1]);
+         if (mfreportable())
+         {
+            char temp[64];
+            (void) snprintf
+            (
+               temp, sizeof(temp), "Meta seqnum (type %d [0x%x])=%d [0x%x]",
+               type, type, (int) seqnum, (int) seqnum
+            );
+            mfreport(temp);
+         }
+         if (Mf_seqnum)
+             (void) (*Mf_seqnum)(seqnum);
+         break;
+
+      case 0x01:                         /* Text event           */
+      case 0x02:                         /* Copyright notice     */
+      case 0x03:                         /* Sequence/Track name  */
+      case 0x04:                         /* Instrument name      */
+      case 0x05:                         /* Lyric                */
+      case 0x06:                         /* Marker               */
+      case 0x07:                         /* Cue point            */
+      case 0x08:
+      case 0x09:
+      case 0x0a:
+      case 0x0b:
+      case 0x0c:
+      case 0x0d:
+      case 0x0e:
+      case 0x0f:
+
+         if (mfreportable())
+         {
+            char temp[64];
+            (void) snprintf
+            (
+               temp, sizeof(temp), "Meta text (type=%d [0x%x]), length=%d [0x%x]",
+               type, type, leng, leng
+            );
+            mfreport(temp);
+         }
+         if (Mf_text)                   /* These are all text events             */
+            (void) (*Mf_text)(type, leng, m);
+         break;
+
+      case 0x2f:                         /* End of Track                         */
+
+         if (mfreportable())
+         {
+            char temp[64];
+            (void) snprintf
+            (
+               temp, sizeof(temp), "Meta end-of-track (type=%d [0x%x])",
+               type, type
+            );
+            mfreport(temp);
+         }
+         if (Mf_eot)
+            (void) (*Mf_eot)();
+         break;
+
+      case 0x51:                         /* Set tempo */
+
+         lv = to32bit(0, m[0], m[1], m[2]);
+         if (mfreportable())
+         {
+            char temp[64];
+            (void) snprintf
+            (
+               temp, sizeof(temp),
+               "Meta tempo (type=%d [0x%x]), value=%ld [0x%lx]",
+               type, type, lv, lv
+            );
+            mfreport(temp);
+         }
+         if (Mf_tempo)
+            (void) (*Mf_tempo)(lv);
+         break;
+
+      case 0x54:
+
+         if (mfreportable())
+         {
+            char temp[64];
+            (void) snprintf
+            (
+               temp, sizeof(temp), "Meta SMPTE (type=%d [0x%x])", type, type
+            );
+            mfreport(temp);
+         }
+         if (Mf_smpte)
+            (void) (*Mf_smpte)(m[0], m[1], m[2], m[3], m[4]);
+         break;
+
+      case 0x58:
+
+         if (mfreportable())
+         {
+            char temp[64];
+            (void) snprintf
+            (
+               temp, sizeof(temp), "Meta timesig (type=%d [0x%x])", type, type
+            );
+            mfreport(temp);
+         }
+         if (Mf_timesig)
+            (void) (*Mf_timesig)(m[0], m[1], m[2], m[3]);
+         break;
+
+      case 0x59:
+
+         if (mfreportable())
+         {
+            char temp[64];
+            (void) snprintf
+            (
+               temp, sizeof(temp), "Meta keysig (type=%d [0x%x])", type, type
+            );
+            mfreport(temp);
+         }
+         if (Mf_keysig)
+            (void) (*Mf_keysig)(m[0], m[1]);
+         break;
+
+      case 0x7f:
+
+         if (mfreportable())
+         {
+            char temp[64];
+            (void) snprintf
+            (
+               temp, sizeof(temp),
+               "Meta sqspecific (type=%d [0x%x]), length=%d [0x%x]",
+               type, type, leng, leng
+            );
+            mfreport(temp);
+         }
+         if (Mf_sqspecific)
+            (void) (*Mf_sqspecific)(leng, m);
+         break;
+
+      default:
+
+         if (mfreportable())
+         {
+            char temp[64];
+            (void) snprintf
+            (
+               temp, sizeof(temp), "Meta misc (type=%d [0x%x]), length=%d [0x%x]",
+               type, type, leng, leng
+            );
+            mfreport(temp);
+         }
+         if (Mf_metamisc)
+             (void) (*Mf_metamisc)(type, leng, m);
       }
-      if (Mf_seqnum)
-          (void) (*Mf_seqnum)(seqnum);
-      break;
-
-   case 0x01:                         /* Text event           */
-   case 0x02:                         /* Copyright notice     */
-   case 0x03:                         /* Sequence/Track name  */
-   case 0x04:                         /* Instrument name      */
-   case 0x05:                         /* Lyric                */
-   case 0x06:                         /* Marker               */
-   case 0x07:                         /* Cue point            */
-   case 0x08:
-   case 0x09:
-   case 0x0a:
-   case 0x0b:
-   case 0x0c:
-   case 0x0d:
-   case 0x0e:
-   case 0x0f:
-
-      if (mfreportable())
-      {
-         char temp[64];
-         (void) snprintf
-         (
-            temp, sizeof(temp), "Meta text (type=%d [0x%x]), length=%d [0x%x]",
-            type, type, leng, leng
-         );
-         mfreport(temp);
-      }
-      if (Mf_text)                   /* These are all text events             */
-         (void) (*Mf_text)(type, leng, m);
-      break;
-
-   case 0x2f:                         /* End of Track                         */
-
-      if (mfreportable())
-      {
-         char temp[64];
-         (void) snprintf
-         (
-            temp, sizeof(temp), "Meta end-of-track (type=%d [0x%x])",
-            type, type
-         );
-         mfreport(temp);
-      }
-      if (Mf_eot)
-         (void) (*Mf_eot)();
-      break;
-
-   case 0x51:                         /* Set tempo */
-
-      lv = to32bit(0, m[0], m[1], m[2]);
-      if (mfreportable())
-      {
-         char temp[64];
-         (void) snprintf
-         (
-            temp, sizeof(temp),
-            "Meta tempo (type=%d [0x%x]), value=%ld [0x%lx]",
-            type, type, lv, lv
-         );
-         mfreport(temp);
-      }
-      if (Mf_tempo)
-         (void) (*Mf_tempo)(lv);
-      break;
-
-   case 0x54:
-
-      if (mfreportable())
-      {
-         char temp[64];
-         (void) snprintf
-         (
-            temp, sizeof(temp), "Meta SMPTE (type=%d [0x%x])", type, type
-         );
-         mfreport(temp);
-      }
-      if (Mf_smpte)
-         (void) (*Mf_smpte)(m[0], m[1], m[2], m[3], m[4]);
-      break;
-
-   case 0x58:
-
-      if (mfreportable())
-      {
-         char temp[64];
-         (void) snprintf
-         (
-            temp, sizeof(temp), "Meta timesig (type=%d [0x%x])", type, type
-         );
-         mfreport(temp);
-      }
-      if (Mf_timesig)
-         (void) (*Mf_timesig)(m[0], m[1], m[2], m[3]);
-      break;
-
-   case 0x59:
-
-      if (mfreportable())
-      {
-         char temp[64];
-         (void) snprintf
-         (
-            temp, sizeof(temp), "Meta keysig (type=%d [0x%x])", type, type
-         );
-         mfreport(temp);
-      }
-      if (Mf_keysig)
-         (void) (*Mf_keysig)(m[0], m[1]);
-      break;
-
-   case 0x7f:
-
-      if (mfreportable())
-      {
-         char temp[64];
-         (void) snprintf
-         (
-            temp, sizeof(temp),
-            "Meta sqspecific (type=%d [0x%x]), length=%d [0x%x]",
-            type, type, leng, leng
-         );
-         mfreport(temp);
-      }
-      if (Mf_sqspecific)
-         (void) (*Mf_sqspecific)(leng, m);
-      break;
-
-   default:
-
-      if (mfreportable())
-      {
-         char temp[64];
-         (void) snprintf
-         (
-            temp, sizeof(temp), "Meta misc (type=%d [0x%x]), length=%d [0x%x]",
-            type, type, leng, leng
-         );
-         mfreport(temp);
-      }
-      if (Mf_metamisc)
-          (void) (*Mf_metamisc)(type, leng, m);
    }
 }
 

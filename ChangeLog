@@ -1,0 +1,9 @@
+2015-10-11  Chris Ahlstrom <ahlstromcj@gmail.com>
+
+   * midifilex.c: Fixed a segfault when an "FF 00 00" sequence number was
+	  encountered.  Added more sample files.  Stamped with version 0.3.3.2.
+
+2015-08-10  Chris Ahlstrom <ahlstromcj@gmail.com>
+
+   * *.*: Wasn't keeping a change log early on.  So sorry.
+

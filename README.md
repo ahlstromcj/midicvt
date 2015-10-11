@@ -1,8 +1,10 @@
-midicvt 0.3.3
+midicvt 0.3.3.2
+Chris Ahlstrom
+2015-08-11 to 2015-10-11
 
 This project supports MIDI-to-text-to-MIDI conversions like midicomp and
 midi2text (it is derived from those projects), and adds support for direct
-MIDI-to-MIDI conversions driven by an INI file.
+MIDI-to-MIDI conversions driven by an INI file, using a C++ add-on.
 
 Currently Linux-only, and built by GNU Autotools.
 
@@ -15,6 +17,6 @@ TODO:
 Chris Ahlstrom, 2014-06-26
 
    I am a professional programmer using C and C++, and lately, Java.
-   My hobbies are writing code, running, and playing soccer.
+   My hobbies are writing code, bicycling, running, and playing soccer.
 
 # vim: ts=3 sw=3 et ft=sh

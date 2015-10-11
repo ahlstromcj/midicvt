@@ -1,6 +1,6 @@
 # .gitignore
 #
-# Updates: 2014-06-25 to 2015-07-22
+# Updates: 2014-06-25 to 2015-10-11
 #
 # Also see the following blog about making your local .gitingore files
 # leaner by using global ignore-files for system (i.e. not project-related)
@@ -23,10 +23,13 @@
 
 GOOGLECODE-NOTE
 contrib/tmp
+bootstrap.stamp
 
 # Ignore this by-product:
 
 include/midicvt-config.h
+midicvt/midicvt
+midicvtpp/midicvtpp
 
 # New feature of Doxygen, apparently: doc/dox/doxygen_sqlite3.db
 
@@ -73,7 +76,6 @@ config
 .libs/
 i18n/
 stamp-h1
-
 aclocal.m4
 config.h
 config.h.in
@@ -81,15 +83,12 @@ config.status
 configure
 autom4te.cache/
 Makefile.in.in
-
 ABOUT-NLS
 AUTHORS
 COPYING
 INSTALL
 NEWS
-
-# libtool/
-# cpp/
+libtool
 
 # Valgrind
 
