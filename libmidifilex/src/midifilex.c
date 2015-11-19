@@ -42,11 +42,12 @@
  *          in the article "Introducing Standard MIDI Files", published
  *          in Electronic Musician magazine, April, 1989.
  *
- * Apr 2014 - Chris Ahlstrom <>
+ * Apr 2014 to Nov 2015 - Chris Ahlstrom <>
  *    Convert to modern C conventions, reorganize the code, improve the
  *    documentation, fix bugs, add minor enhancements.  Also added a new
  *    version of mfread(), called mftransform(), to better handle direct
- *    MIDI-to-MIDI conversions.
+ *    MIDI-to-MIDI conversions.  Debugging how some odd MIDI files are
+ *    handled.
  */
 
 /**
@@ -59,7 +60,7 @@
  * \author        Other authors (see below), with modifications by Chris
  *                Ahlstrom,
  * \date          2014-04-08
- * \updates       2015-10-11
+ * \updates       2015-11-18
  * \version       $Revision$
  * \license       GNU GPL
  *
@@ -84,9 +85,7 @@
       Piet van Oostrum, Dept of Computer Science, Utrecht University,
       P.O. Box 80.089, 2508 TB Utrecht, The Netherlands
       email: piet@cs.ruu.nl
-\endverbatim
- *
-\verbatim
+
       Chris Ahlstrom, Charleston SC, USA
       email: ahlstromcj@gmail.com
 \endverbatim
@@ -134,11 +133,7 @@ int (* Mf_error) (const char *)                 = nullptr;
 int (* Mf_report) (const char *)                = nullptr;
 int (* Mf_header) (int, int, int)               = nullptr;
 int (* Mf_starttrack) (void)                    = nullptr;
-int (* Mf_endtrack)
-(
-   long header_offset,
-   unsigned long tracksize
-) = nullptr;
+int (* Mf_endtrack) (long, unsigned long)       = nullptr;
 int (* Mf_on) (int, int, int)                   = nullptr;
 int (* Mf_off) (int, int, int)                  = nullptr;
 int (* Mf_pressure) (int, int, int)             = nullptr;
@@ -193,7 +188,7 @@ mferror (char * s)
 {
    fprintf
    (
-      stderr, "? Error at offset %ld (0x%lx)\n",
+      stderr, "? Error at MIDI file offset %ld [0x%04lx]\n",
       midi_file_offset(), midi_file_offset()
    );
    if (Mf_error)
@@ -225,7 +220,7 @@ mfreport (char * s)
  *    Returns true if the Mf_report function is enabled.
  */
 
-static cbool_t
+static inline cbool_t
 mfreportable (void)
 {
    return not_nullptr(Mf_report) ? true : false ;
@@ -243,9 +238,9 @@ mfreportable (void)
 static void
 badbyte (int c)
 {
-    char buff[32];
-    snprintf(buff, sizeof(buff), "unexpected byte reading track: 0x%02x", c);
-    mferror(buff);
+    char tmp[64];
+    snprintf(tmp, sizeof tmp, "unexpected byte reading track: 0x%02x", c);
+    mferror(tmp);
 }
 
 /**
@@ -268,12 +263,12 @@ eputc (unsigned char c)
     int return_val;
     if (is_nullptr(Mf_putc))
     {
-        mferror("Mf_putc undefined");
-        return (-1);
+        mferror("Mf_putc undefined");           /* actually calls exit()   */
+        return -1;
     }
     return_val = (*Mf_putc)(c);
     if (return_val == EOF)
-        mferror("error writing");
+        mferror("error writing a byte");
 
     ++s_Mf_numbyteswritten;
     return return_val;
@@ -281,7 +276,7 @@ eputc (unsigned char c)
 
 /*
  *    Reads a single character using the Mf_getc() callback.
- *
+ *    This function also decrements s_Mf_toberead, as a side-effect.
  *    This function will call mferror() to abort on EOF.
  *
  * \return
@@ -291,12 +286,18 @@ eputc (unsigned char c)
 static int
 egetc (void)
 {
-    int c = (*Mf_getc)();
-    if (c == EOF)
-        mferror("Premature EOF");
-
-    s_Mf_toberead--;
-    return c;
+   int c = (*Mf_getc)();
+   if (c == EOF)
+   {
+      char tmp[64];
+      snprintf
+      (
+         tmp, sizeof tmp, "Premature EOF with to-be-read = '%ld'", s_Mf_toberead
+      );
+      mferror(tmp);
+   }
+   s_Mf_toberead--;
+   return c;
 }
 
 /**
@@ -382,7 +383,7 @@ msg (void)
  *    Returns the value of s_message_index.
  */
 
-static int
+static inline int
 msgleng (void)
 {
    return s_message_index;
@@ -407,14 +408,14 @@ msgadd (int c)
    s_message_buffer[s_message_index++] = c;
    if (mfreportable())
    {
-      char temp[64];
-      char k = (c >= ' ') ? (char) c : ' ' ;
-      (void) snprintf
+      char tmp[64];
+      char k = (c >= ' ' && c <= '~') ? (char) c : ' ' ;
+      snprintf
       (
-         temp, sizeof(temp),
-         "s_message_buffer[%d] == %c [0x%x]", s_message_index-1, k, c
+         tmp, sizeof tmp, "message buffer[%3d] == %c 0x%02x",
+         s_message_index-1, k, c
       );
-      mfreport(temp);
+      mfreport(tmp);
    }
 }
 
@@ -461,7 +462,7 @@ chanmessage (int status, int c1, int c2)
    int chan = status & 0x0f;
    if (mfreportable())
    {
-      char temp[80];
+      char tmp[80];
       const char * msgtype = "unknown";
       switch (status & 0xf0)
       {
@@ -473,12 +474,12 @@ chanmessage (int status, int c1, int c2)
       case 0xd0: msgtype = "Channel-pressure"; break;
       case 0xe0: msgtype = "Pitchbend";        break;
       }
-      (void) snprintf
+      snprintf
       (
-         temp, sizeof(temp), "%s ch. %d (%d [0x%x], %d [0x%x])",
+         tmp, sizeof tmp, "%s ch. %d (%d [0x%x], %d [0x%x])",
          msgtype, chan, c1, c1, c2, c2
       );
-      mfreport(temp);
+      mfreport(tmp);
    }
    switch (status & 0xf0)
    {
@@ -538,20 +539,21 @@ sysex (void)
 {
    if (mfreportable())
    {
-      char temp[80];
-      (void) snprintf
+      char tmp[64];
+      snprintf
       (
-         temp, sizeof(temp), "Sysex message of length %d [0x%x]",
+         tmp, sizeof tmp, "SysEx message of length %d [0x%x]",
          msgleng(), msgleng()
       );
-      mfreport(temp);
+      mfreport(tmp);
    }
    if (Mf_sysex)
       (void) (*Mf_sysex)(msgleng(), msg());
 }
 
 /**
- *    Read a varying-length number.
+ *    Read a varying-length number, decrementing s_Mf_toberead with every
+ *    character obtained.
  *
  *    A variable-length quantity is a MIDI number that is represented by a
  *    string of bytes where all bytes but the last have bit 7 set.  In
@@ -571,7 +573,7 @@ sysex (void)
 static long
 readvarinum (void)
 {
-   int c = egetc();
+   int c = egetc();                    /* be aware, decrements s_Mf_toberead  */
    long value = c;
    if (c & 0x80)                       /* i.e. bit 7 is set                   */
    {
@@ -632,7 +634,7 @@ to32bit (int c1, int c2, int c3, int c4)
  *    The total value represented by the two parameters is returned.
  */
 
-static short int
+static inline short int
 to16bit (int c1, int c2)
 {
    return ((c1 & 0xff) << 8) + (c2 & 0xff);
@@ -715,10 +717,9 @@ write16bit (int data)
 }
 
 /**
- *    Write multi-length bytes to MIDI format files.
- *    We changed the name of this function from "writevarinum()" to
- *    "writevarinum()" to match "readvarinum()" and cut down on some
- *    confusion.
+ *    Write multi-length bytes to MIDI format files.  We changed the name
+ *    of this function to "writevarinum()" to match "readvarinum()" and
+ *    cut down on some confusion.
  *
  * \param value
  *    Provides the value to be written.
@@ -793,13 +794,13 @@ metaevent (int type)
          seqnum = to16bit(m[0], m[1]);
          if (mfreportable())
          {
-            char temp[64];
-            (void) snprintf
+            char tmp[64];
+            snprintf
             (
-               temp, sizeof(temp), "Meta seqnum (type %d [0x%x])=%d [0x%x]",
+               tmp, sizeof tmp, "Meta seqnum (type %d [0x%x])=%d [0x%x]",
                type, type, (int) seqnum, (int) seqnum
             );
-            mfreport(temp);
+            mfreport(tmp);
          }
          if (Mf_seqnum)
              (void) (*Mf_seqnum)(seqnum);
@@ -823,47 +824,46 @@ metaevent (int type)
 
          if (mfreportable())
          {
-            char temp[64];
-            (void) snprintf
+            char tmp[64];
+            snprintf
             (
-               temp, sizeof(temp), "Meta text (type=%d [0x%x]), length=%d [0x%x]",
+               tmp, sizeof tmp, "Meta text (type=%d [0x%x]), length=%d [0x%x]",
                type, type, leng, leng
             );
-            mfreport(temp);
+            mfreport(tmp);
          }
-         if (Mf_text)                   /* These are all text events             */
+         if (Mf_text)                   /* These are all text events       */
             (void) (*Mf_text)(type, leng, m);
          break;
 
-      case 0x2f:                         /* End of Track                         */
+      case 0x2f:                        /* End of Track                    */
 
          if (mfreportable())
          {
-            char temp[64];
-            (void) snprintf
+            char tmp[64];
+            snprintf
             (
-               temp, sizeof(temp), "Meta end-of-track (type=%d [0x%x])",
+               tmp, sizeof tmp, "Meta end-of-track (type=%d [0x%x])",
                type, type
             );
-            mfreport(temp);
+            mfreport(tmp);
          }
          if (Mf_eot)
             (void) (*Mf_eot)();
          break;
 
-      case 0x51:                         /* Set tempo */
+      case 0x51:                       /* Set tempo                        */
 
          lv = to32bit(0, m[0], m[1], m[2]);
          if (mfreportable())
          {
-            char temp[64];
-            (void) snprintf
+            char tmp[64];
+            snprintf
             (
-               temp, sizeof(temp),
-               "Meta tempo (type=%d [0x%x]), value=%ld [0x%lx]",
+               tmp, sizeof tmp, "Meta tempo (type=%d [0x%x]), value=%ld [0x%lx]",
                type, type, lv, lv
             );
-            mfreport(temp);
+            mfreport(tmp);
          }
          if (Mf_tempo)
             (void) (*Mf_tempo)(lv);
@@ -873,12 +873,9 @@ metaevent (int type)
 
          if (mfreportable())
          {
-            char temp[64];
-            (void) snprintf
-            (
-               temp, sizeof(temp), "Meta SMPTE (type=%d [0x%x])", type, type
-            );
-            mfreport(temp);
+            char tmp[64];
+            snprintf(tmp, sizeof tmp, "Meta SMPTE (type=%d [0x%x])", type, type);
+            mfreport(tmp);
          }
          if (Mf_smpte)
             (void) (*Mf_smpte)(m[0], m[1], m[2], m[3], m[4]);
@@ -888,12 +885,12 @@ metaevent (int type)
 
          if (mfreportable())
          {
-            char temp[64];
-            (void) snprintf
+            char tmp[64];
+            snprintf
             (
-               temp, sizeof(temp), "Meta timesig (type=%d [0x%x])", type, type
+               tmp, sizeof(tmp), "Meta timesig (type=%d [0x%x])", type, type
             );
-            mfreport(temp);
+            mfreport(tmp);
          }
          if (Mf_timesig)
             (void) (*Mf_timesig)(m[0], m[1], m[2], m[3]);
@@ -903,12 +900,12 @@ metaevent (int type)
 
          if (mfreportable())
          {
-            char temp[64];
-            (void) snprintf
+            char tmp[64];
+            snprintf
             (
-               temp, sizeof(temp), "Meta keysig (type=%d [0x%x])", type, type
+               tmp, sizeof(tmp), "Meta keysig (type=%d [0x%x])", type, type
             );
-            mfreport(temp);
+            mfreport(tmp);
          }
          if (Mf_keysig)
             (void) (*Mf_keysig)(m[0], m[1]);
@@ -918,14 +915,14 @@ metaevent (int type)
 
          if (mfreportable())
          {
-            char temp[64];
+            char tmp[64];
             (void) snprintf
             (
-               temp, sizeof(temp),
+               tmp, sizeof tmp,
                "Meta sqspecific (type=%d [0x%x]), length=%d [0x%x]",
                type, type, leng, leng
             );
-            mfreport(temp);
+            mfreport(tmp);
          }
          if (Mf_sqspecific)
             (void) (*Mf_sqspecific)(leng, m);
@@ -935,13 +932,13 @@ metaevent (int type)
 
          if (mfreportable())
          {
-            char temp[64];
+            char tmp[64];
             (void) snprintf
             (
-               temp, sizeof(temp), "Meta misc (type=%d [0x%x]), length=%d [0x%x]",
+               tmp, sizeof tmp, "Meta misc (type=%d [0x%x]), length=%d [0x%x]",
                type, type, leng, leng
             );
-            mfreport(temp);
+            mfreport(tmp);
          }
          if (Mf_metamisc)
              (void) (*Mf_metamisc)(type, leng, m);
@@ -1044,16 +1041,16 @@ readheader (void)
       }
       if (mfreportable())
       {
-         char temp[80];
+         char tmp[80];
          (void) snprintf
          (
-            temp, sizeof(temp),
+            tmp, sizeof tmp,
             "MThd chunk-size=%ld, format=%d [0x%x], "
             "tracks=%d [0x%x], division=%d [0x%x]",
             s_Mf_toberead, format, format,
             ntrks, ntrks, division, division
          );
-         mfreport(temp);
+         mfreport(tmp);
       }
 
       /* flush any extra stuff, in case the length of header is not 6 */
@@ -1080,6 +1077,86 @@ static int s_chantype [] =
 };
 
 /**
+ *    Replaces the following line of code, trying to get easier debugging
+ *    without introducing a nasty side-effect on s_Mf_toberead.
+ */
+
+static long
+get_lookfor ()
+{
+   long temp = s_Mf_toberead;             /* grab it before the side-effect   */
+   long len = readvarinum();              /* has side-effect on s_Mf_toberead */
+   long result = temp - len;
+   return result;
+}
+
+#ifdef USE_GET_LOOKFOR_SYSEX
+
+/**
+ *    A special version of get_lookfor() to use when the F0 SysEx byte has
+ *    been encountered.  We want to try processing stuff like F0 7F.
+ */
+
+static long
+get_lookfor_sysex ()
+{
+   long temp = s_Mf_toberead;             /* grab it before the side-effect   */
+   long len = readvarinum();              /* has side-effect on s_Mf_toberead */
+   long result;
+   if (len >= 0x7D && len <= 0x7F)        /* it is a special SysEx ID         */
+   {
+      result = len;
+   }
+   else
+   {
+      result = temp - len;
+   }
+   return result;
+}
+
+#endif   // USE_GET_LOOKFOR_SYSEX
+
+/**
+ *    Helper code for SysEx continuation errors.
+ */
+
+static void
+continuation_error (int c)
+{
+   char tmp[64];
+   snprintf
+   (
+      tmp, sizeof tmp,
+      "expected continuation of a SysEx, got 0x%02x instead", c
+   );
+   mferror(tmp);
+}
+
+/**
+ *    Helper code for delta-time reporting.
+ */
+
+static void
+delta_time_report (long dtime)
+{
+   char tmp[64];
+   snprintf(tmp, sizeof tmp, "Delta time = %ld [%04lx]", dtime, dtime);
+   mfreport(tmp);
+}
+
+/**
+ *    Helper code for chunk-size reporting.
+ */
+
+static void
+chunk_size_report (long toberead)
+{
+   char tmp[64];
+   snprintf(tmp, sizeof tmp, "MTrk chunk-size=%ld [%04lx]", toberead, toberead);
+   mfreport(tmp);
+}
+
+/**
  *    Reads a track chunk.
  *
  *    First, readmt() is called to verify that "MTrk" was retrieved from
@@ -1093,7 +1170,7 @@ static int s_chantype [] =
  *
  *       -  0xff.  Meta event.
  *       -  0xf0.  System exclusive message.
- *       -  0xf7.  Sysex continuation or arbitrary data.
+ *       -  0xf7.  SysEx continuation or arbitrary data.
  *
  *    A lot of other processing is done (see the code), and then the
  *    Mf_endtrack() calllback is called.
@@ -1119,11 +1196,8 @@ readtrack (void)
       cbool_t ignore = readcode == READMT_IGNORE_NON_MTRK;
       s_Mf_toberead = read32bit();
       if (mfreportable())
-      {
-         char temp[80];
-         snprintf(temp, sizeof(temp), "MTrk chunk-size=%ld", s_Mf_toberead);
-         mfreport(temp);
-      }
+         chunk_size_report(s_Mf_toberead);
+
       Mf_currtime = 0;
       if (! ignore)
       {
@@ -1139,14 +1213,11 @@ readtrack (void)
          int type;
          Mf_currtime += readvarinum();    /* delta time                       */
          if (mfreportable())
-         {
-            char temp[64];
-            snprintf(temp, sizeof(temp), "Delta time = %ld", Mf_currtime);
-            mfreport(temp);
-         }
+            delta_time_report(Mf_currtime);
+
          c = egetc();
          if (sysexcontinue && c != 0xf7)
-             mferror("didn't find expected continuation of a SysEx");
+            continuation_error(c);
 
          if ((c & 0x80) == 0)             /* bit 7 is not set                 */
          {
@@ -1186,10 +1257,13 @@ readtrack (void)
          case 0xff:                       /* meta event                       */
 
              type = egetc();
-             lookfor = s_Mf_toberead - readvarinum();   /* makes no sense */
+             lookfor = get_lookfor();
              msginit();
              while (s_Mf_toberead >= lookfor)           /* not ">" !      */
-                 msgadd(egetc());
+             {
+                 int ch = egetc();
+                 msgadd(ch);
+             }
 
              if (! ignore)
                 metaevent(type);
@@ -1197,30 +1271,49 @@ readtrack (void)
 
          case 0xf0:                       /* start of system exclusive msg    */
 
-             lookfor = s_Mf_toberead - readvarinum();   /* makes no sense */
-             msginit();
-             msgadd(0xf0);
-             while (s_Mf_toberead >= lookfor)           /* not ">" !      */
-                 msgadd(c = egetc());
-
-             if (c == 0xf7 || Mf_nomerge == 0)
+#ifdef USE_GET_LOOKFOR_SYSEX
+             lookfor = get_lookfor_sysex();
+             if (lookfor >= 0x7D && lookfor <= 0x7F)
              {
-                if (! ignore)
-                    sysex();
+                int ch;
+                while ((ch = egetc()) != 0xF7)
+                   ;
              }
              else
-                 sysexcontinue = true;    /* merge into next message          */
+             {
+#else
+                lookfor = get_lookfor();
+                msginit();
+                msgadd(0xf0);
+                while (s_Mf_toberead >= lookfor)           /* not ">" !      */
+                {
+                    c = egetc();
+                    msgadd(c);
+                }
+                if (c == 0xf7 || Mf_nomerge == 0)
+                {
+                   if (! ignore)
+                       sysex();
+                }
+                else
+                    sysexcontinue = true;    /* merge into next message       */
+#endif
+#ifdef USE_GET_LOOKFOR_SYSEX
+             }
+#endif
              break;
 
          case 0xf7:                       /* sysex contin. or arbitrary stuff */
 
-             lookfor = s_Mf_toberead - readvarinum();
+             lookfor = get_lookfor();
              if (! sysexcontinue)
                  msginit();
 
              while (s_Mf_toberead > lookfor)
-                 msgadd(c = egetc());
-
+             {
+                 c = egetc();
+                 msgadd(c);
+             }
              if (! sysexcontinue)
              {
                  if (Mf_arbitrary)
@@ -1353,9 +1446,9 @@ mf_w_track_chunk
    s_laststat = 0;                     /* global variable!!!                  */
    if (mfreportable())
    {
-      char temp[64];
-      snprintf(temp, sizeof(temp), "Writing track chunk %d", which_track);
-      mfreport(temp);
+      char tmp[64];
+      snprintf(tmp, sizeof tmp, "Writing track chunk %d", which_track);
+      mfreport(tmp);
    }
 
    /*
@@ -1422,10 +1515,6 @@ static long s_track_header_offset = 0;
  *
  * \param fp
  *    The output file descriptor.
- *
- * \param wtrack
- *    The function to call to do that actual writing.  Usually, this
- *    function is either Mf_wtempotrack or Mf_wtrack.
  */
 
 void
@@ -1446,9 +1535,9 @@ mf_w_track_start (int which_track, FILE * fp)
    s_laststat = 0;                     /* global variable!!!                  */
    if (mfreportable())
    {
-      char temp[64];
-      snprintf(temp, sizeof(temp), "Writing track chunk %d", which_track);
-      mfreport(temp);
+      char tmp[64];
+      snprintf(tmp, sizeof tmp, "Writing track chunk %d", which_track);
+      mfreport(tmp);
    }
 }
 
@@ -1896,11 +1985,8 @@ readtrack_m2m (void)
       cbool_t ignore = readcode == READMT_IGNORE_NON_MTRK;
       s_Mf_toberead = read32bit();
       if (mfreportable())
-      {
-         char tmp[80];
-         snprintf(tmp, sizeof(tmp), "MTrk chunk-size=%ld", s_Mf_toberead);
-         mfreport(tmp);
-      }
+         chunk_size_report(s_Mf_toberead);
+
       Mf_currtime = 0;
       if (! ignore)
       {
@@ -1923,14 +2009,11 @@ readtrack_m2m (void)
 
          Mf_currtime  = readvarinum();    /* delta time;  '=' or '+=' ???     */
          if (mfreportable())
-         {
-            char temp[80];
-            snprintf(temp, sizeof(temp), "Delta time = %ld", Mf_currtime);
-            mfreport(temp);
-         }
+            delta_time_report(Mf_currtime);
+
          c = egetc();
          if (sysexcontinue && c != 0xf7)
-             mferror("didn't find expected continuation of a sysex");
+            continuation_error(c);
 
          if ((c & 0x80) == 0)             /* bit 7 is not set                 */
          {

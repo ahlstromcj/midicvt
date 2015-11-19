@@ -28,7 +28,7 @@
  * \library       midicvt application
  * \author        Chris Ahlstrom and many other authors
  * \date          2014-04-09
- * \updates       2015-08-22
+ * \updates       2015-11-18
  * \version       $Revision$
  * \license       GNU GPL
  *
@@ -108,6 +108,91 @@
  *       -  <code> FF 58 04 nn dd cc bb</code>. Time Signature.
  *       -  <code> FF 59 02 sf mi </code>.   Key Signature.
  *       -  <code> FF 7F ln tx </code>.   Sequencer-specific binary event.
+ *
+ * System Exclusive Messages:
+ *
+ *    The raw format of a SysEx event to be sent to a MIDI device is
+ *    roughly as follows:
+ *
+ *       -# System-exclusive start byte.  <code> 0xF0 </code>.
+ *       -# Manufacturer's code.  A 7-bit value, highest bit is 0.
+ *       -# Data bytes. A series of 7-bit values.
+ *       -# EOS (End-of-System-exclusive) byte.  <code> 0xF7 </code>.
+ *
+ *    As encoded in a MIDI file, the SysEx message is in the following
+ *    format:
+ *
+ *       -# Delta-time byte.  A typical value is 0x00.
+ *       -# System-exclusive start byte.
+ *       -# A varinum length value that covers all of the following bytes,
+ *          including the SysEx termination marker.
+ *       -# Manufacturer's code.
+ *       -# Data bytes.
+ *       -# EOSysEx byte.
+ *
+ *    Some MIDI devices send a SysEx message as a series of small packets
+ *    with a time-delay between each packet:
+ *
+ *       -# F0 followed by a number of data bytes, but no F0
+ *       -# One or more packets of data bytes that have no F0 or F7.
+ *       -# One last packet that ends with an F7.
+ *
+ *    The MIDI file must encode this single, multi-packet SysEx message as
+ *    a series of smaller SysE essages, with F7 serving as a "SysEx
+ *    Continuation" marker.  So the above multi-packet message becomes:
+ *
+ *       -# Initial packet:
+ *          -# Delta-time byte.
+ *          -# F0 SysEx start byte.
+ *          -# A varinum length value.
+ *          -# Manufacturer's code.
+ *          -# Data bytes.
+ *       -# Continuation packet, one or more:
+ *          -# Delta-time byte.
+ *          -# F0 SysEx start byte.
+ *          -# F7 SysEx continuation byte.
+ *          -# A varinum length value.
+ *          -# Data bytes.
+ *       -# Final packet.
+ *          -# Delta-time byte.
+ *          -# F0 SysEx start byte.
+ *          -# A varinum length value.
+ *          -# Data bytes.
+ *          -# F7 SysEx stop byte.
+ *
+ *    F7 can also serve as an "Escaped" event.  More on that later.
+ *
+ *    Devices will vary somewhat on the format of the information encoded
+ *    in the SysEx message.  Here's one device and its SysEx description:
+ *
+ *       http://www.midi-hardware.com/instrukcje/mpot32sysex20.pdf
+ *
+ *          -# Sys-Ex header: F0
+ *          -# Manufacturer ID for MIDI-hardware.com: 00 20 7A
+ *          -# Product ID (device ID) for MPOT32: 03
+ *          -# Input ID: one byte in range 00..63
+ *          -# The command: one byte in range 01..11
+ *          -# Command's parameters, dependent on what command was used.
+ *          -# Sys-Ex footer: F7
+ *
+ *          An example Sys-Ex string might look like this:
+ *
+ *          F0 00 20 7A 03 02 02 01 01 03 F7
+ *
+ *    Here's another device:
+ *
+ *          -# Sys-Ex header: F0
+ *          -# Manufacturer ID for Roland: 41
+ *          -# Device ID: 10 by default, could be other values to support
+ *             multiple devices in the same MIDI daisy-chain.
+ *          -# Model ID: 42 for a Roland GS synth.
+ *          -# Mode: 12 for sending, 11 for a request for information
+ *          -# Start address for message: 40007F
+ *          -# Data size: Amount of data to send or receive.
+ *          -# Infamous Roland checksum.
+ *          -# Sys-Ex footer: F7
+ *
+ *          F0 41 10 42 12 40007F 00 41 F7
  *
  *    That's all for now.
  */
@@ -777,14 +862,6 @@ my_chanpressure (int chan, int pressure)
  *    format, to standard output.
  *
  *    Command: <code> 0xF0 </code>.
- *
- *    The format of this event is roughly as follows:
- *
- *       -# Delta-time byte.  A typical value is 0x60 (96).
- *       -# System-exclusive byte.  <code> 0xF0 </code>.
- *       -# Manufacturer's code.  A 7-bit value, highest bit is 0.
- *       -# Data bytes. A series of 7-bit values.
- *       -# EOS (End-of-System-exclusive) byte.  <code> 0xF7 </code>.
  *
  * \param leng
  *    Provides the number of bytes in the message.
@@ -1647,7 +1724,7 @@ midicvt_compile (void)
    }
    else
    {
-      fprintf(stderr, "Missing MFile - can't continue\n");
+      fprintf(stderr, "Missing MFile/MTrk token in ASCII file, can't continue\n");
       exit(1);
    }
 }
@@ -2038,10 +2115,8 @@ efopen (const char * name, const char * mode)
       fprintf(stderr, "efopen(%s, %s)\n", name, mode);
 
    if (is_nullptr(f))
-   {
       (void) fprintf(stderr, "Cannot open '%s',  %s!\n", name, strerror(errno));
-      /////// exit(1);
-   }
+
    return f;
 }
 
@@ -2106,19 +2181,19 @@ redirect_stdout (const char * filename, const char * mode)
             g_redirect_file = freopen(filename, mode, stdout);
             result = not_nullptr(g_redirect_file);
             if (! result)
-               error("redirect_stdout(): ailed to freopen() stdout");
+               error("redirect_stdout(): failed to freopen() stdout");
          }
          else
-            error("redirect_stdout(): ailed to dup() stdout");
+            error("redirect_stdout(): failed to dup() stdout");
       }
       else
       {
-         error("redirect_stdout(): ailed to get the file-position of stdout:");
+         error("redirect_stdout(): failed to get the file-position of stdout:");
          fprintf(stderr, "error is '%s'\n", strerror(errno));
       }
    }
    else
-      error("redirect_stdout(): ailed to fflush() stdout for redirection");
+      error("redirect_stdout(): failed to fflush() stdout for redirection");
 
    return result;
 }

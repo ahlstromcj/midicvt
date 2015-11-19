@@ -1,0 +1,213 @@
+SysEx Format and Other Messages
+Chris Ahlstrom
+2015-11-18 to 2015-11-18
+
+First, we list the various message numbers.  We may need to detect some of
+them in midicvt, if just to ignore them. All numbers in hexadecimal format.
+
+System Exclusive Messages
+
+    F0  SOX (Start of System Exclusive Message)
+
+System Common Messages
+
+    F1  MIDI Time Code Quarter Frame
+    F2  Song Position Pointer
+    F3  Song Select
+    F4  ?
+    F5  ?
+    F6  Tune Request
+    F7  EOX (End of System Exclusive)
+
+System Real Time Messages
+
+    F8  Timing Clock (24 per quarter note)
+    F9  ?
+    FA  Start
+    FB  Continue
+    FC  Stop
+    FD  ?
+    FE  Active Sensing
+    FF  System Reset
+
+System Exclusive Format
+
+    F0 <ID bytes> <device ID> ... F7H
+
+In a MIDI file, F0 is followed by a varinum length ("len"), and then the
+bytes that need to be sent:
+
+    F0 len <ID bytes> <device ID> ... F7H
+
+"ID bytes" is either 1 or 3 bytes in length.  00 and 00 00 00 are not to
+be used.  There are three special IDs:
+
+    7D  Non-commercial
+    7E  Non-Real-Time
+    7F  Real-Time
+
+A "device ID" of 7F refers to all devices.
+
+Generic Handshaking Messages
+
+    EOF:                F0 7E <device ID> 7B pp F7
+    Wait:               F0 7E <device ID> 7C pp F7
+    Cancel:             F0 7E <device ID> 7D pp F7
+    NAK:                F0 7E <device ID> 7E pp F7
+    ACK:                F0 7E <device ID> 7F pp F7
+
+    Dump header:        F0 7E <device ID> 01 ... F7
+    Dump request:       F0 7E <device ID> 03 ... F7
+    Loop point TX:      F0 7E <device ID> 05 01 ... F7
+    Loop point req:     F0 7E <device ID> 05 02 ... F7
+    Device inquiry:     F0 7E <device ID> 06 01 F7
+    Dev. inq. response: F0 7E <device ID> 06 02 ... F7
+    File dump:          F0 7E <device ID> 07 <01, 02, or 03> ... F7
+    GM System on:       F0 7E <device ID> 09 01 F7
+    GM System off:      F0 7E <device ID> 09 02 F7
+
+    Bar Marker:         F0 7F <device ID> 03 01 ... F7
+    Time Sig. imm.:     F0 7F <device ID> 03 02 ... F7
+    Time Sig. del.:     F0 7F <device ID> 03 42 ... F7
+    Master volume:      F0 7F <device ID> 04 01 ... F7
+    Master Balance:     F0 7F <device ID> 04 02 ... F7
+
+Sysex:
+
+   F0 varinumlen databytes F7
+
+      varinumlen counts the databytes and F7
+
+   F0 manufacturer-ID-byte ... F7
+
+The midicvt seems to follow the first format, except that it calls the F7
+a "continuation byte"!
+
+Another form of sysex event is provided which does not imply that an F0 should
+be transmitted. This may be used as an "escape" to provide for the transmission
+of things which would not otherwise be legal, including system realtime
+messages, song pointer or select, MIDI Time Code, etc. This uses the F7 code:
+
+F7 <length> <all bytes to be transmitted>
+
+Here is a MIDI File of a multi-packet system exclusive message: suppose the
+bytes F0 43 12 00 were to be sent, followed by a 200-tick delay, followed by
+the bytes 43 12 00 43 12 00, followed by a 100-tick delay, followed by the
+bytes 43 12 00 F7, this would be in the MIDI File:
+
+F0 03 43 12 00
+81 48                      200-tick delta time
+F7 06 43 12 00 43 12 00
+64                         100-tick delta time
+F7 04 43 12 00 F7
+
+The 0xF7 Status byte is dedicated to marking the end of a SysEx message. It
+should never occur without a preceding 0xF0 Status. In the event that a device
+experiences such a condition (ie, maybe the MIDI cable was connected during the
+transmission of a SysEx message), the device should ignore the 0xF7.
+
+Furthermore, although the 0xF7 is supposed to mark the end of a SysEx message,
+in fact, any status (except for Realtime Category messages) will cause a SysEx
+message to be considered "done" (ie, actually "aborted" is a better description
+since such a scenario indicates an abnormal MIDI condition). For example, if a
+0x90 happened to be sent sometime after a 0xF0 (but before the 0xF7), then the
+SysEx message would be considered aborted at that point. It should be noted
+that, like all System Common messages, SysEx cancels any current running
+status. In other words, the next Voice Category message (after the SysEx
+message) must begin with a Status.
+
+http://www.blitter.com/~russtopia/MIDI/~jglatt/tech/midifile/evts.htm:
+
+SYSEX (system exclusive) events (status = F0) are a special case because a
+SYSEX event can be any length. After the F0 status (which is always stored
+-- no running status here), you will find yet another series of variable
+length bytes. Combine them with ReadVarLen() and you will come up with a
+32-bit value that tells you how many more bytes follow which make up this
+SYSEX event. This length does not include the F0 status.
+
+For example, consider the following SYSEX MIDI message:
+
+F0 7F 7F 04 01 7F 7F F7
+
+This would be stored in a MIDI file as the following series of bytes
+(minus the delta-time bytes which would precede it):
+
+F0 07 7F 7F 04 01 7F 7F F7
+
+The 07 above is the variable length quantity (which happens to fit in just
+one byte for this example). It indicates that there are seven, following
+bytes that comprise this SYSEX message.
+
+Really oddball midi units send a system exclusive message as a series of
+small "packets" (with a time delay inbetween transmission of each packet).
+The first packet begins with an F0, but it does not end with an F7. The
+subsequent packets do not start with an F0 nor end with F7. The last
+packet does not start with an F0, but does end with the F7. So, between
+the first packets opening F0 and the last packets closing F7, there is 1
+SYSEX message there. (Note: only extremely poor designs, such as the crap
+marketed by Casio exhibit such horrid behavior). Of course, since a delay
+is needed inbetween each packet, you need to store each packet as a
+separate event with its own time in the MTrk. Also, you need some way of
+knowing which events should not begin with an F0 (ie, all of them except
+the first packet). So, the MIDI file redefines a midi status of F7
+(normally used as an end mark for SYSEX packets) as a way to indicate an
+event that does not begin with F0. If such an event follows an F0 event,
+then it is assumed that the F7 event is the second "packet" of a series.
+
+In this context, it is referred to as a SYSEX CONTINUATION event. Just
+like the F0 type of event, it has a variable length followed by data
+bytes. On the other hand, the F7 event could be used to store MIDI
+REALTIME or MIDI COMMON messages. In this case, after the variable length
+bytes, you should expect to find a MIDI Status byte of F1, F2, F3, F6, F8,
+FA, FB, FC, or FE. (Note that you would not find any such bytes inside of
+a SYSEX CONTINUATION event). When used in this manner, the F7 event is
+referred to as an ESCAPED event.
+
+http://www.gmarts.org/index.php?go=321
+
+    Here is the structure of a system exclusive message:
+
+    Start of Exclusive: F0
+    Manufacturer ID:    00-7D, 7E=Universal non-realtime, 7F=Universal realtime
+    Device number:      00-0F = dev 1 -16, 7F=all
+    Model ID:           00-7F
+    0 or more data bytes
+    Checksum:           00-7F (all data + checksum = 0 for lowest 7 bits)
+    End of Exclusive:   F7
+
+    Here are some common system exclusive messages:
+
+    Set GM Mode ON: F0 7E 7F 09 01 F7
+
+    GM Master Volume: F0 7F 7F 04 01 ll mm F7
+         (ll=LSB, mm=MSB - use 7F 7F for maximum volume)
+
+    GM Master Balance: F0 7F 7F 04 02 ll mm F7
+         (ll=LSB, mm=MSB - use 00 40 for centre balance)
+
+    Roland GS Mode: F0 41 10 42 12 40 00 7F 00 41 F7
+
+https://www.nyu.edu/classes/bello/FMT_files/9_MIDI_code.pdf
+
+    Master volume and balance messages:
+
+    F0 7F devid 04 01/02 data ... F7
+        ^   ^    ^   ^    ^
+        |   |    |   |    |
+        |   |    |   |     ------ 14-bit resolution for parameter
+        |   |    |    ----------- volume or balance
+        |   |     --------------- device control   
+        |    -------------------- device ID
+         ------------------------ universal real-time (MTC)
+                                  7E is universal non-realtime (sample dumps)
+                                  7D is universal non-commercial (ED & R)
+                                  41 = Roland
+                                  43 = Yamaha
+                                  47 = Akai
+
+    Full-frame messages:
+
+    F0 7F chan 01 subID hh mm ss ff F7
+
+# vim: sw=4 ts=4 wm=8 et ft=sh
+

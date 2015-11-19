@@ -8,14 +8,14 @@
  * \library       midicvt application
  * \author        Chris Ahlstrom and many other authors
  * \date          2014-04-09
- * \updates       2015-08-14
+ * \updates       2015-11-18
  * \version       $Revision$
  * \license       GNU GPL
  *
  *    By using this file, we don't have to use flex again to generate
  *    t2mflex.c from t2mf.fl and put up with warning messages.
  *
- *    Of course, you will have to manually,reconstruct the current file if
+ *    Of course, you will have to manually reconstruct the current file if
  *    you decided to change the parsing dictated by the t2mf.fl file, or
  *    edit Makefile.am to re-enable the use of flex.
  *

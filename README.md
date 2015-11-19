@@ -1,10 +1,13 @@
-midicvt 0.3.3.2
+midicvt 0.3.3.3
 Chris Ahlstrom
-2015-08-11 to 2015-10-11
+2015-08-11 to 2015-11-18
 
 This project supports MIDI-to-text-to-MIDI conversions like midicomp and
 midi2text (it is derived from those projects), and adds support for direct
 MIDI-to-MIDI conversions driven by an INI file, using a C++ add-on.
+
+The C++ project can also transform the patch numbers of files, converting the
+to General MIDI (GM) format, for example.
 
 Currently Linux-only, and built by GNU Autotools.
 

@@ -28,7 +28,7 @@
  * \library       midicvt application
  * \author        Chris Ahlstrom
  * \date          2014-04-19
- * \updates       2015-08-19
+ * \updates       2015-11-18
  * \version       $Revision$
  * \license       GNU GPL
  *
@@ -51,7 +51,7 @@
  *    will provide a string, though.
  */
 
-static const char * const gs_help_version = "midicvt v 0.2";
+static const char * const gs_help_version = "midicvt v 0.3";
 
 /**
  *    Help string.  Because of legacy C rules, we have to define 5
@@ -94,8 +94,8 @@ static const char * const gs_help_usage_2_3 =
    " --mfile         Write ASCII using 'MFile' instead of 'MThd' tag.\n"
    " --mthd          Write ASCII using the 'MThd' tag (default).  The program\n"
    "                 can read either tag.\n"
-   " --strict        Require that 'MTrk' marks all tracks 'MTrk'.  By default,\n"
-   "                 tracks with other names can be processed.\n"
+   " --strict        Require that 'MTrk' is the tag for tracks.  By default,\n"
+   "                 tracks with other name-tags can be processed.\n"
    " --ignore        Allow non-MTrk chunks, but don't process them. MIDI\n"
    "                 specifies that they should be ignored; midicvt otherwise\n"
    "                 treats them like tracks."
@@ -343,7 +343,7 @@ midi_file_offset_increment (void)
 
 /**
  *    Provides an optional and simple reporting function to be used by
- *    libmidifile.
+ *    libmidifileex.
  *
  * \param msg
  *    Provides the basic message to be written to standard error.
@@ -358,12 +358,12 @@ report (const char * msg)
 {
    if (midi_file_offset() >= 0)
    {
-      fprintf(stderr, "* [0x%lx]: %s\n", midi_file_offset(), msg);
+      fprintf(stderr, "%04lx: %s\n", midi_file_offset(), msg);
       return 1;
    }
    else
    {
-      fprintf(stderr, "* %s\n", msg);
+      fprintf(stderr, "? %s\n", msg);
       return 0;
    }
 }
