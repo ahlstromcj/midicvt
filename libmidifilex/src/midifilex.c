@@ -60,7 +60,7 @@
  * \author        Other authors (see below), with modifications by Chris
  *                Ahlstrom,
  * \date          2014-04-08
- * \updates       2015-11-18
+ * \updates       2016-02-07
  * \version       $Revision$
  * \license       GNU GPL
  *
@@ -114,6 +114,51 @@
  *
  *    So it seems easier to use the first method, and hack it so it works
  *    correctly whether the output is human-readable or MIDI.
+ *
+ * Running Status:
+ *
+ *    Running status speeds up the sending of MIDI bytes to a
+ *    synthesizer/sequencer by using redundancy where possible.  For
+ *    example, if sending a consecutive group of Note On and Note Off
+ *    messages to a particular channel, some time can be saved by not
+ *    sending the channel status byte after the first time.  Here's an
+ *    example with Note On on channel 1:
+ *
+\verbatim
+      0x90 3C 7F
+      0x90 40 7F
+      0x90 43 F3
+\endverbatim
+ *
+ *    Since no change in status occurs after the first of these three
+ *    events, we can drop the subsequent status bytes:
+ *
+\verbatim
+      0x90 3C 7F
+      40 7F
+      43 F3
+\endverbatim
+ *
+ *    The 0x90 byte is saved in a "running status buffer" (RSB), and is
+ *    filled in by the receiving device.  Here is the sequence of events
+ *    for operating with running status.
+ *
+ *    -# Clear the RSB buffer (RSB = 0) to start.
+ *    -# If a <b>Voice Category Status</b> (VCS) byte is received, then set
+ *       RSB = VCS.  VCS bytes range from 0x80 to 0xEF.  This is binary
+ *       1000000 to 11100000.
+ *    -# If a data byte is received (data bytes range from 0x00 to 0x7F,
+ *       binary 0000000 to 0111111; that is, bit 7 is always 0 in a data byte):
+ *       -# If RSB != 0, first insert the RSB into the incoming data
+ *          stream, then insert the data byte.
+ *       -# If RSB == 0, then just insert the data byte into the incoming data
+ *          stream.
+ *    -# Clear the RSB buffer (RSB = 0) when a System Common Message (SCM)
+ *       status byte is received.  SCM bytes range from 0xF0 to 0xF7.
+ *    -# The message after an SCM <b>must</b> begin with a status byte.
+ *       That is a byte with bit 7 set.
+ *    -# Do no special action when a Realtime Category Message (RCM) byte is
+ *       received.  RCM bytes range from 0xF8 to 0xFF.
  */
 
 #include <stdlib.h>
@@ -444,13 +489,13 @@ msgadd (int c)
  *    (i.e. MIDI channels 1 to 16).
  *
  * \param c1
- *    Provides the first byte of the messsage.  Depending on the message
+ *    Provides the first byte of the message.  Depending on the message
  *    type, this value can be a MIDI note number, a control number (e.g.
  *    the number for a sustain message), a program/patch number, a
  *    pitch-wheel change's first value byte), or a system-common message.
  *
  * \param c2
- *    Provides the second byte of the messsage.  Depending on the message
+ *    Provides the second byte of the message.  Depending on the message
  *    type, this value can be a velocity value or control level value, the
  *    second bye of a pitch-wheel change, or this parameter can be left
  *    unused.
@@ -1157,7 +1202,17 @@ chunk_size_report (long toberead)
 }
 
 /**
- *    Reads a track chunk.
+ *    Saves the offset of the header portion of the current track.
+ *    This value is use only for m2m (MIDI-to-MIDI) processing.
+ */
+
+static long s_track_header_offset = 0;
+
+/**
+ *    Reads a track chunk for MIDI-to-ASCII or for
+ *    MIDI-to-MIDI conversion.
+ *
+ * Legacy:
  *
  *    First, readmt() is called to verify that "MTrk" was retrieved from
  *    the file.  If this succeeds, then this function reads the length of
@@ -1169,30 +1224,58 @@ chunk_size_report (long toberead)
  *    events are checked:
  *
  *       -  0xff.  Meta event.
- *       -  0xf0.  System exclusive message.
- *       -  0xf7.  SysEx continuation or arbitrary data.
+ *       -  0xf0.  System exclusive message. An SCM.
+ *       -  0xf1 to 0xf6.  Various SCM messages.
+ *       -  0xf7.  SysEx continuation or arbitrary data, an SCM.
+ *
+ *    The receipt of an SCM should clear the RSB.
  *
  *    A lot of other processing is done (see the code), and then the
  *    Mf_endtrack() calllback is called.
  *
- * \note
- *    Be sure to compare this function to the new variant,
- *    readtrack_m2m().
+ * M2M:
  *
+ *    This call is a modified version of readtrack() that works better for
+ *    direct MIDI-to-MIDI conversion using the callbacks defined in the
+ *    midicvt_m2m.c module.
+ *
+ *    There is one big puzzle to figure out... Why does this function have
+ *    to <i> set </i> the current time in M2M mode, rather than just add to
+ *    it the way readtrack() does?
+ *
+\verbatim
+         Mf_currtime += readvarinum();    // legacy
+         Mf_currtime  = readvarinum();    // m2m
+\endverbatim
+ *
+ * Running Status:
+ *
+ *    At the code tagged below as "Running Status", we see that the test
+ *    file ex1.mid has the Note On byte missing from the notes after the
+ *    first two.  However, the note value, which is in c, lets us reach
+ *    here, and the code then copies status (which currently holds the
+ *    Note On byte) into c, effectively restoring the Note On byte.  This
+ *    is what running status does.  Also see the documentation on running
+ *    status for this whole module.
+ *
+ * \param is_m2m
+ *    Provides a way to do things slightly differently for the M2M mode.
+ u
  * \return
- *    Returns true if the "MTrk" marker was found.
+ *    Returns true if the "MTrk" marker was found.  Actually, if any marker
+ *    is found, and there is no EOF returned.
  */
 
 static cbool_t
-readtrack (void)
+readtrack (cbool_t is_m2m)
 {
    int readcode = readmt("MTrk");
    cbool_t result = readcode != READMT_EOF;
    if (result)
    {
       cbool_t sysexcontinue = false;   /* last message unfinished sysex?   */
-      cbool_t running = false;         /* true when running status used    */
-      int status = 0;                  /* status (e.g. 0x90==note-on)      */
+      cbool_t running = false;         /* true when running status active  */
+      int status = 0;                  /* 1. Clear RSB (running stat byte) */
       cbool_t ignore = readcode == READMT_IGNORE_NON_MTRK;
       s_Mf_toberead = read32bit();
       if (mfreportable())
@@ -1206,12 +1289,16 @@ readtrack (void)
       }
       while (s_Mf_toberead > 0)
       {
-         int c;
-         int c1 = 0;
-         long lookfor;
-         int needed;
-         int type;
-         Mf_currtime += readvarinum();    /* delta time                       */
+         int c;                           /* current byte or data byte        */
+         int c1 = 0;                      /* saved data byte or               */
+         long lookfor;                    /* how many bytes we looking for?   */
+         int db_needed;                   /* number of data-bytes needed      */
+         int type;                        /* indicates the type of meta-event */
+         if (is_m2m)
+            Mf_currtime = readvarinum();  /* delta time assigned              */
+         else
+            Mf_currtime += readvarinum(); /* delta time used as increment     */
+
          if (mfreportable())
             delta_time_report(Mf_currtime);
 
@@ -1219,37 +1306,29 @@ readtrack (void)
          if (sysexcontinue && c != 0xf7)
             continuation_error(c);
 
-         if ((c & 0x80) == 0)             /* bit 7 is not set                 */
+         if ((c & 0x80) == 0)             /* 3. No bit 7, it is data byte     */
          {
-            if (status == 0)              /* running status?                  */
-                mferror("readtrack(): unexpected running status");
+            if (status == 0)              /* 3.b. running status?             */
+                mferror("readtrack(): unexpected null running status");
 
-            /**
-             * \note
-             *    The test file ex1.mid has the Note On byte missing from
-             *    the notes after the first two!  However, the note value,
-             *    which is in c, lets us reach here, and the code then
-             *    copies status (which currently holds the Note On byte)
-             *    into c, effectively restoring the Note On byte.
-             */
-
-            running = true;
-            c1 = c;
-            c = status;
+            running = true;               /* indicate "running status"        */
+            c1 = c;                       /* save the first data byte         */
+            c = status;                   /* replace data byte with RSB       */
          }
-         else if (c < 0xf0)
+         else if (c < 0xf0)               /* 80 to EF = Voice Category Status */
          {
-            status = c;
-            running = false;
+            status = c;                   /* 2. Set RSB (running status byte) */
+            running = false;              /* turn off running status          */
          }
-         needed = s_chantype[(c >> 4) & 0xf];
-         if (needed)                      /* ie. is it a channel message?     */
+         db_needed = s_chantype[(c >> 4) & 0xf];
+         if (db_needed)                   /* i.e. is it a channel message?    */
          {
-             if (! running)
-                 c1 = egetc();
+             if (! running)               /* not in running status mode?      */
+                 c1 = egetc();            /* get the first data byte          */
 
-             if (! ignore)
-                chanmessage(status, c1, (needed > 1) ? egetc() : 0);
+             if (! ignore)                /* if ok, make message from byte(s) */
+                chanmessage(status, c1, (db_needed > 1) ? egetc() : 0);
+
              continue;
          }
          switch (c)
@@ -1257,19 +1336,18 @@ readtrack (void)
          case 0xff:                       /* meta event                       */
 
              type = egetc();
-             lookfor = get_lookfor();
+             lookfor = get_lookfor();     /* = s_Mf_toberead - readvarinum()  */
              msginit();
              while (s_Mf_toberead >= lookfor)           /* not ">" !      */
              {
                  int ch = egetc();
                  msgadd(ch);
              }
-
              if (! ignore)
                 metaevent(type);
              break;
 
-         case 0xf0:                       /* start of system exclusive msg    */
+         case 0xf0:                       /* SCM: System Exclusive Message    */
 
 #ifdef USE_GET_LOOKFOR_SYSEX
              lookfor = get_lookfor_sysex();
@@ -1282,10 +1360,10 @@ readtrack (void)
              else
              {
 #else
-                lookfor = get_lookfor();
+                lookfor = get_lookfor();  /* = s_Mf_toberead - readvarinum()  */
                 msginit();
                 msgadd(0xf0);
-                while (s_Mf_toberead >= lookfor)           /* not ">" !      */
+                while (s_Mf_toberead >= lookfor)           /* not ">" !       */
                 {
                     c = egetc();
                     msgadd(c);
@@ -1303,9 +1381,22 @@ readtrack (void)
 #endif
              break;
 
-         case 0xf7:                       /* sysex contin. or arbitrary stuff */
+         case 0xf1:                       /* SCM: MIDI Timecode Quarter Frame */
+         case 0xf2:                       /* SCM: Song Position Pointer       */
+         case 0xf3:                       /* SCM: Song Select                 */
+         case 0xf4:                       /* SCM: Undefined and reserved      */
+         case 0xf5:                       /* SCM: Undefined and reserved      */
+         case 0xf6:                       /* SCM: Tune Request                */
 
-             lookfor = get_lookfor();
+            /*
+             * Should these be treated as bad bytes?
+             */
+
+             break;
+
+         case 0xf7:                       /* SCM: End of System Exclusive     */
+
+             lookfor = get_lookfor();     /* = s_Mf_toberead - readvarinum()  */
              if (! sysexcontinue)
                  msginit();
 
@@ -1333,11 +1424,27 @@ readtrack (void)
              badbyte(c);
              break;
          }
-      }
+         bool is_scm = c >= 0xF0 && c <= 0xF7;
+         if (is_scm)
+         {
+            /*
+             * TODO: Disable running status:
+             *
+             * running = false; ?
+             * status = 0;
+             */
+         }
+      }                                /* while (s_Mf_toberead > 0)  */
+
       if (! ignore)
       {
          if (Mf_endtrack)
-            (void) (*Mf_endtrack)(0, 0);
+         {
+            if (is_m2m)
+               (*Mf_endtrack)(s_track_header_offset, s_Mf_numbyteswritten);
+            else
+               (void) (*Mf_endtrack)(0, 0);
+         }
       }
    }
    return result;
@@ -1363,7 +1470,7 @@ mfread (void)
 
    if (readheader() != READMT_EOF)
    {
-      while (readtrack())
+      while (readtrack(false))         /* not in M2M mode */
           ;
    }
    if (not_nullptr(s_message_buffer))
@@ -1497,13 +1604,6 @@ mf_w_track_chunk
          mferror("error seeking during final stage of write");
    }
 }
-
-/**
- *    Saves the offset of the header portion of the current track.
- *    This value is use only for m2m (MIDI-to-MIDI) processing.
- */
-
-static long s_track_header_offset = 0;
 
 /**
  *    Reads and writes track information.
@@ -1949,175 +2049,6 @@ mf_ticks2sec (unsigned long ticks, int division, unsigned int tempo)
 }
 
 /**
- *    Reads a track chunk for MIDI-to-MIDI conversion.
- *
- *    This function is a modified version of readtrack() that works better
- *    for direct MIDI-to-MIDI conversion using the callbacks defined in
- *    the midicvt_m2m.c module.
- *
- *    A new function was made from readtrack() in order to better avoid
- *    breaking that function for existing functionality.  The functionality
- *    is virtual identical to readtrack().  However, there is one big
- *    puzzle to figure out... Why does this function have to <i> set </i>
- *    the current time, rather than just add to it the way readtrack()
- *    does?
- *
- \verbatim
-         Mf_currtime += readvarinum();
-         Mf_currtime  = readvarinum();
- \endverbatim
- *
- * \return
- *    Returns true if the "MTrk" marker was found.  Actually, if any marker
- *    is found, and there is no EOF returned.
- */
-
-static cbool_t
-readtrack_m2m (void)
-{
-   int readcode = readmt("MTrk");
-   cbool_t result = readcode != READMT_EOF;
-   if (result)
-   {
-      cbool_t sysexcontinue = false;   /* last msg was unfinished sysex?   */
-      cbool_t running = false;         /* true when running status used    */
-      int status = 0;                  /* status (e.g. 0x90 == note-on)    */
-      cbool_t ignore = readcode == READMT_IGNORE_NON_MTRK;
-      s_Mf_toberead = read32bit();
-      if (mfreportable())
-         chunk_size_report(s_Mf_toberead);
-
-      Mf_currtime = 0;
-      if (! ignore)
-      {
-         if (Mf_starttrack)
-             (void) (*Mf_starttrack)();
-      }
-      while (s_Mf_toberead > 0)
-      {
-         int c;
-         int c1 = 0;
-         long lookfor;
-         int needed;
-         int type;
-
-         /*
-          * \question
-          *    In readtrack(), this statement uses a '+='.  Here, we have
-          *    to use '=' to get the same result!  Why?
-          */
-
-         Mf_currtime  = readvarinum();    /* delta time;  '=' or '+=' ???     */
-         if (mfreportable())
-            delta_time_report(Mf_currtime);
-
-         c = egetc();
-         if (sysexcontinue && c != 0xf7)
-            continuation_error(c);
-
-         if ((c & 0x80) == 0)             /* bit 7 is not set                 */
-         {
-            if (status == 0)              /* running status?                  */
-                mferror("readtrack_m2m(): unexpected running status");
-
-            /**
-             * \note
-             *    The test file ex1.mid has the Note On byte missing from
-             *    the notes after the first two!  However, the note value,
-             *    which is in c, lets us reach here, and the code then
-             *    copies status (which currently holds the Note On byte)
-             *    into c, effectively restoring the Note On byte.
-             */
-
-            running = true;
-            c1 = c;
-            c = status;
-         }
-         else if (c < 0xf0)
-         {
-            status = c;
-            running = false;
-         }
-         needed = s_chantype[(c >> 4) & 0xf];
-         if (needed)                      /* ie. is it a channel message?     */
-         {
-             if (! running)
-                 c1 = egetc();
-
-             if (! ignore)
-                chanmessage(status, c1, (needed > 1) ? egetc() : 0);
-             continue;
-         }
-         switch (c)
-         {
-         case 0xff:                       /* meta event                       */
-
-             type = egetc();
-             lookfor = s_Mf_toberead - readvarinum();   /* makes no sense */
-             msginit();
-             while (s_Mf_toberead >= lookfor)           /* not ">" !      */
-                 msgadd(egetc());
-
-             if (! ignore)
-                metaevent(type);
-             break;
-
-         case 0xf0:                       /* start of system exclusive msg    */
-
-             lookfor = s_Mf_toberead - readvarinum();   /* makes no sense */
-             msginit();
-             msgadd(0xf0);
-             while (s_Mf_toberead >= lookfor)           /* not ">" !      */
-                 msgadd(c = egetc());
-
-             if (c == 0xf7 || Mf_nomerge == 0)
-             {
-                if (! ignore)
-                 sysex();
-             }
-             else
-                 sysexcontinue = true;    /* merge into next message          */
-             break;
-
-         case 0xf7:                       /* sysex contin. or arbitrary stuff */
-
-             lookfor = s_Mf_toberead - readvarinum();
-             if (! sysexcontinue)
-                 msginit();
-
-             while (s_Mf_toberead > lookfor)
-                 msgadd(c = egetc());
-
-             if (! sysexcontinue)
-             {
-                 if (Mf_arbitrary)
-                     (void) (*Mf_arbitrary)(msgleng(), msg());
-             }
-             else if (c == 0xf7)
-             {
-                 if (! ignore)
-                    sysex();
-
-                 sysexcontinue = false;
-             }
-             break;
-
-         default:
-
-             badbyte(c);
-             break;
-         }
-      }
-      if (! ignore)
-      {
-         if (Mf_endtrack)
-            (*Mf_endtrack)(s_track_header_offset, s_Mf_numbyteswritten);
-      }
-   }
-   return result;
-}
-
-/**
  *    This function provides an alternative to mfread() to better handle
  *    direct MIDI-to-MIDI conversions.
  *
@@ -2142,7 +2073,7 @@ mftransform (void)
 
    if (readheader() != READMT_EOF)
    {
-      while (readtrack_m2m())
+      while (readtrack(true))          /* use M2M mode   */
           ;
    }
    if (not_nullptr(s_message_buffer))
