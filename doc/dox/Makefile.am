@@ -6,7 +6,7 @@
 # \library    	midicvt libraries
 # \author     	Chris Ahlstrom
 # \date       	2014-05-20
-# \update     	2014-05-21
+# \update     	2016-02-08
 # \version    	$Revision$
 # \license    	$XPC_SUITE_GPL_LICENSE$
 #
@@ -71,7 +71,7 @@ html/*: docs
 # Can't use pushd/popd because they are bash builtins and are not available,
 # except inside a script.
 
-docs: dox-stamp
+docs: dox-stamp doxy-reference.cfg doxy-userman.cfg
 	$(srcdir)/make_dox $(srcdir) reference
 	$(srcdir)/make_dox clean
 	$(srcdir)/make_dox $(srcdir) userman
