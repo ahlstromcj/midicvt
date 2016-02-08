@@ -60,7 +60,7 @@
  * \author        Other authors (see below), with modifications by Chris
  *                Ahlstrom,
  * \date          2014-04-08
- * \updates       2016-02-07
+ * \updates       2016-02-08
  * \version       $Revision$
  * \license       GNU GPL
  *
@@ -1424,6 +1424,7 @@ readtrack (cbool_t is_m2m)
              badbyte(c);
              break;
          }
+#ifdef USE_THIS_CODE
          bool is_scm = c >= 0xF0 && c <= 0xF7;
          if (is_scm)
          {
@@ -1434,6 +1435,7 @@ readtrack (cbool_t is_m2m)
              * status = 0;
              */
          }
+#endif
       }                                /* while (s_Mf_toberead > 0)  */
 
       if (! ignore)
