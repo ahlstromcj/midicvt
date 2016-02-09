@@ -57,7 +57,7 @@
  *    C++-only options are provided.
  */
 
-static const char * const s_help_version = "midicvtpp v 0.3.3.4 2016-02-08";
+static const char * const s_help_version = "midicvtpp v 0.3.3.5 2016-02-09";
 
 /**
  *    Addition help string, which supplements the help for the C program

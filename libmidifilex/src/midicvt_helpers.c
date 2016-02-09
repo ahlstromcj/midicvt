@@ -28,7 +28,7 @@
  * \library       midicvt application
  * \author        Chris Ahlstrom
  * \date          2014-04-19
- * \updates       2015-11-18
+ * \updates       2016-02-09
  * \version       $Revision$
  * \license       GNU GPL
  *
@@ -51,7 +51,7 @@
  *    will provide a string, though.
  */
 
-static const char * const gs_help_version = "midicvt v 0.3";
+static const char * const gs_help_version = "midicvt v 0.3.3.5";
 
 /**
  *    Help string.  Because of legacy C rules, we have to define 5
@@ -662,3 +662,4 @@ midicvt_parse (int argc, char * argv [], const char * version)
  *
  * vim: sw=3 ts=3 wm=8 et ft=c
  */
+

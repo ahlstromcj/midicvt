@@ -1,9 +1,151 @@
+2016-02-08  Chris Ahlstrom <ahlstromcj@gmail.com>
+
+	* bootstrap, configure.ac, doc/dox/Makefile.am,
+	doc/dox/doxy-reference.cfg, doc/dox/doxy-userman.cfg,
+	m4/libtool.m4, m4/ltoptions.m4, m4/ltsugar.m4, m4/ltversion.m4,
+	m4/lt~obsolete.m4, midicvt/midicvt_main.c,
+	midicvtpp/midicvtpp_main.cpp, libmidifilex/src/midifilex.c:
+	Consolidated readtrack() and readtrack_m2m(), and added running status
+	comments.  Changed version info, updated PDF manuals. Added a seq24
+	test MIDI file, click_4_4.midi.
+
+2015-11-18  Chris Ahlstrom <ahlstromcj@gmail.com>
+
+	* README.md, configure.ac, contrib/Dixie04.txt,
+	contrib/sysex-format.txt, doc/dox/doxy-reference.cfg,
+	doc/dox/doxy-userman.cfg, libmidifilex/dox/midi_functions.dox,
+	libmidifilex/include/VERSION.h, libmidifilex/src/midicvt_base.c,
+	libmidifilex/src/midicvt_helpers.c, libmidifilex/src/midifilex.c,
+	libmidifilex/src/t2m_no_flex.c, midicvt/midicvt_main.c,
+	midicvtpp/midicvtpp_main.cpp: Some experiments with handling generic
+	handshaking messages in weird Yamaha Dixie04.mid file.
+
+2015-11-16  Chris Ahlstrom <ahlstromcj@gmail.com>
+
+	* : Fixed a couple MIDI files for Sequencer64 compatibility.
+
 2015-10-11  Chris Ahlstrom <ahlstromcj@gmail.com>
 
-   * midifilex.c: Fixed a segfault when an "FF 00 00" sequence number was
+	* midifilex.c: Fixed a segfault when an "FF 00 00" sequence number was
 	  encountered.  Added more sample files.  Stamped with version 0.3.3.2.
+
+2015-09-07  Chris Ahlstrom <ahlstromcj@gmail.com>
+
+	* tests/midifiles/README, tests/results/mrroboto_with_lyrics.asc: 
+	Added a MIDI file containing lyrics.
+	Added a preliminary GM-compliant version
+	of the b4uacuse MIDI file.
+
+2015-08-22  Chris Ahlstrom <ahlstromcj@gmail.com>
+
+	* TODO, libmidifilex/include/t2mf.h,
+	libmidifilex/src/midicvt_base.c, libmidifilex/src/midifilex.c,
+	libmidifilex/src/t2m_no_flex.c: Fixed flex leaks and a file-offset
+	issue.  Removed unneeded dup2() call causing valgrind error.
+
+2015-08-22  Chris Ahlstrom <ahlstromcj@gmail.com>
+
+	* bootstrap, strap_functions: Finally found the brain fart that
+	removed the git config.
+
+2015-08-21  Chris Ahlstrom <ahlstromcj@gmail.com>
+
+	* Makefile.am, README.md, TODO, configure.ac,
+	contrib/yoshimi/README, debian/README, doc/dox/README,
+	doc/dox/midicvt_midi_to_midi.dox,
+	libmidifilex/dox/midi_functions.dox,
+	libmidifilex/include/VERSION.h, libmidifilex/src/midicvt_base.c,
+	libmidifilex/src/midifilex.c, m4/README, midicvt/midicvt_main.c,
+	midicvtpp/midicvtpp_main.cpp, tests/results/README,
+	tests/results/ex1-recompiled.xxd, tests/results/ex1.xxd: Fixed the
+	--ignore option and some memory leaks shown by valgrind.
+
+2015-08-20  Chris Ahlstrom <ahlstromcj@gmail.com>
+
+	* libmidifilex/include/midicvt_globals.h,
+	libmidifilex/src/midicvt_base.c,
+	libmidifilex/src/midicvt_helpers.c, libmidifilex/src/midifilex.c,
+	pack, tests/midifiles/README, tests/results/README, tests/test_script:
+	Fixed premature EOF issue, test script shows valgrind issues.
+	Interim check-in.
+
+2015-08-19  Chris Ahlstrom <ahlstromcj@gmail.com>
+
+	* doc/dox/midicvt_usage.dox,
+	libmidifilex/include/midicvt_globals.h,
+	libmidifilex/src/midicvt_globals.c,
+	libmidifilex/src/midicvt_helpers.c, libmidifilex/src/midifilex.c: 
+	Adding the --ignore option in progress.
+
+2015-08-18  Chris Ahlstrom <ahlstromcj@gmail.com>
+
+	* libmidifilex/include/midicvt_globals.h,
+	libmidifilex/src/midicvt_base.c,
+	libmidifilex/src/midicvt_globals.c,
+	libmidifilex/src/midicvt_helpers.c, libmidifilex/src/midifilex.c: 
+	Made midicvt forgiving of unknown track names.
+
+2015-08-16  Chris Ahlstrom <ahlstromcj@gmail.com>
+
+	* doc/seq24-trailer.txt, libmidifilex/src/midifilex.c,
+	tests/midifiles/b4uacuse-seq24.asc,
+	tests/results/b4uacuse-seq24.asc: Changed writevarlen() to
+	writevarinum() for consistency.
+
+2015-08-15  Chris Ahlstrom <ahlstromcj@gmail.com>
+
+	* doc/seq24-trailer.txt, libmidifilex/src/midicvt_base.c,
+	tests/midifiles/b4uacuse-seq24.asc, tests/test_script: Adding
+	--mfile option to make test-script work.
+
+2015-08-14  Chris Ahlstrom <ahlstromcj@gmail.com>
+
+	* bootstrap, configure.ac, doc/dox/doxy-reference.cfg,
+	doc/dox/doxy-userman.cfg, doc/dox/mainpage-reference.dox,
+	doc/dox/mainpage-userman.dox, doc/dox/midicvt_file_format.dox,
+	doc/dox/midicvt_license.dox, doc/dox/midicvt_midi_to_midi.dox,
+	doc/dox/midicvt_usage.dox, libmidifilex/include/midicvt_globals.h,
+	libmidifilex/src/Makefile.am, libmidifilex/src/lex.yy.c,
+	libmidifilex/src/midicvt_base.c,
+	libmidifilex/src/midicvt_globals.c,
+	libmidifilex/src/midicvt_helpers.c, libmidifilex/src/midifilex.c,
+	libmidifilex/src/t2m_no_flex.c, libmidifilex/src/t2mf.fl,
+	midicvt/midicvt_main.c, tests/README, tests/midifiles/README,
+	tests/results/ex1-mthd.asc, tests/test_script: Added ability to
+	read/write ASCII tag of MThd to replace MFile.
 
 2015-08-10  Chris Ahlstrom <ahlstromcj@gmail.com>
 
-   * *.*: Wasn't keeping a change log early on.  So sorry.
+	* *.*: Wasn't keeping a change log early on.  So sorry.
+
+2015-07-22  Chris Ahlstrom <ahlstromcj@gmail.com>
+
+	* .gitignore, include/midicvt-config.h,
+	libmidifilex/src/midifilex.c, midicvt/midicvt_main.c,
+	midicvtpp/midicvtpp_main.cpp, tests/midifiles/README: Added error
+	offset to messages.
+
+2015-07-03  C. Ahlstrom <ahlstromcj@gmail.com>
+
+	* : Merge pull request #1 from marado/master debian/changelog - fix its format
+
+2014-10-05  Chris Ahlstrom <ahlstromcj@gmail.com>
+
+	* .gitignore, contrib/scripts/seq-session: Added seq-session script.
+
+2014-07-24  Chris Ahlstrom <ahlstromcj@gmail.com>
+
+	* contrib/pss-790/ancestor.txt, contrib/pss-790/cbflite.txt,
+	contrib/pss-790/old_love.txt, midicvtpp/s.asc,
+	midicvtpp/stomtors-m2m.asc, midicvtpp/stomtors-multi.asc,
+	tests/inifiles/GM_PSS-790_Multi.ini: Added MID files for PSS-70,
+	Timidity, deleted junk.
+
+2014-06-26  Chris Ahlstrom <ahlstromcj@gmail.com>
+
+	* .gitignore, LICENSE: Added the git-ignore and LICENSE files.
+
+2014-06-26  Chris Ahlstrom <ahlstromcj@gmail.com>
+
+	* Initial commit of midicvt 0.2 prior to push.
 

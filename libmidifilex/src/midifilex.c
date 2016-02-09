@@ -213,8 +213,9 @@ int Mf_nomerge = 0;
 
 long Mf_currtime = 0L;
 
-/*
- * private stuff
+/**
+ *    Private book-keeping global (static) variables for the number of
+ *    bytes expected in an event, and the number of bytes written..
  */
 
 static long s_Mf_toberead = 0L;
@@ -284,7 +285,11 @@ static void
 badbyte (int c)
 {
     char tmp[64];
-    snprintf(tmp, sizeof tmp, "unexpected byte reading track: 0x%02x", c);
+    snprintf
+    (
+      tmp, sizeof tmp,
+      "unexpected/unhandled byte reading track: 0x%02x", c
+   );
     mferror(tmp);
 }
 
@@ -319,7 +324,7 @@ eputc (unsigned char c)
     return return_val;
 }
 
-/*
+/**
  *    Reads a single character using the Mf_getc() callback.
  *    This function also decrements s_Mf_toberead, as a side-effect.
  *    This function will call mferror() to abort on EOF.
@@ -462,6 +467,23 @@ msgadd (int c)
       );
       mfreport(tmp);
    }
+}
+
+/*
+ *    Combines egetc() and msgadd().
+ *
+ * \return
+ *    Returns the character read by the Mf_getc() callback.
+ */
+
+static int
+msg_getc (void)
+{
+   int c = egetc();
+   if (c != EOF)
+      msgadd(c);
+
+   return c;
 }
 
 /**
@@ -996,7 +1018,11 @@ metaevent (int type)
  *
  *    Characters are read via the Mf_getc() callback function.  If the
  *    characters read do not match the expected string, then a fatal error
- *    occurs.
+ *    occurs, if midicvt_option_strict() is true.  If it is false, tracks
+ *    with other chunk names can be processed.
+ *
+ *    If midicvt_option_ignore() is true, non-MTrk chunks are allowed, but
+ *    ignored.
  *
  * \param s
  *    Provides the string that is expected to be read from the file.
@@ -1214,21 +1240,22 @@ static long s_track_header_offset = 0;
  *
  * Legacy:
  *
- *    First, readmt() is called to verify that "MTrk" was retrieved from
- *    the file.  If this succeeds, then this function reads the length of
- *    the header (32 bits).  This value is saved in the global variable
- *    s_Mf_toberead.  Then Mf_currtime is set to 0.  The Mf_starttrack()
- *    callback is called.
+ *    First, readmt() is called to verify that "MTrk" (or an unknown
+ *    chunk) was retrieved from the file.  If this succeeds, then this
+ *    function reads the length of the track (32 bits).  This value is
+ *    saved in the global variable s_Mf_toberead.  Then Mf_currtime is set
+ *    to 0.  The Mf_starttrack() callback is called.
  *
  *    While s_Mf_toberead is non-zero, a byte is read and the following
  *    events are checked:
  *
  *       -  0xff.  Meta event.
  *       -  0xf0.  System exclusive message. An SCM.
- *       -  0xf1 to 0xf6.  Various SCM messages.
+ *       -  0xf1 to 0xf6.  Various SCM messages, ignored at present.
  *       -  0xf7.  SysEx continuation or arbitrary data, an SCM.
  *
- *    The receipt of an SCM should clear the RSB.
+ *    The receipt of an SCM should clear the RSB.  (See the top of the
+ *    module for the meaning of the abbreviations.)
  *
  *    A lot of other processing is done (see the code), and then the
  *    Mf_endtrack() calllback is called.
@@ -1240,7 +1267,7 @@ static long s_track_header_offset = 0;
  *    midicvt_m2m.c module.
  *
  *    There is one big puzzle to figure out... Why does this function have
- *    to <i> set </i> the current time in M2M mode, rather than just add to
+ *    to <i> set </i> the current time in M2M mode, rather than add to
  *    it the way readtrack() does?
  *
 \verbatim
@@ -1257,6 +1284,10 @@ static long s_track_header_offset = 0;
  *    Note On byte) into c, effectively restoring the Note On byte.  This
  *    is what running status does.  Also see the documentation on running
  *    status for this whole module.
+ *
+ *    Note the "running" boolean.  If false, this indicates that we just
+ *    got a status byte and are saving it for a possible usage as running
+ *    status.  If true, we have an RSB already, and now have a data byte.
  *
  * \param is_m2m
  *    Provides a way to do things slightly differently for the M2M mode.
@@ -1277,7 +1308,7 @@ readtrack (cbool_t is_m2m)
       cbool_t running = false;         /* true when running status active  */
       int status = 0;                  /* 1. Clear RSB (running stat byte) */
       cbool_t ignore = readcode == READMT_IGNORE_NON_MTRK;
-      s_Mf_toberead = read32bit();
+      s_Mf_toberead = read32bit();     /* TODO:  sanity check re file size */
       if (mfreportable())
          chunk_size_report(s_Mf_toberead);
 
@@ -1290,7 +1321,7 @@ readtrack (cbool_t is_m2m)
       while (s_Mf_toberead > 0)
       {
          int c;                           /* current byte or data byte        */
-         int c1 = 0;                      /* saved data byte or               */
+         int c1 = 0;                      /* saved data byte                  */
          long lookfor;                    /* how many bytes we looking for?   */
          int db_needed;                   /* number of data-bytes needed      */
          int type;                        /* indicates the type of meta-event */
@@ -1306,9 +1337,9 @@ readtrack (cbool_t is_m2m)
          if (sysexcontinue && c != 0xf7)
             continuation_error(c);
 
-         if ((c & 0x80) == 0)             /* 3. No bit 7, it is data byte     */
+         if ((c & 0x80) == 0)             /* 00 to 7F, it is a data byte      */
          {
-            if (status == 0)              /* 3.b. running status?             */
+            if (status == 0)              /* have running status byte?        */
                 mferror("readtrack(): unexpected null running status");
 
             running = true;               /* indicate "running status"        */
@@ -1317,13 +1348,13 @@ readtrack (cbool_t is_m2m)
          }
          else if (c < 0xf0)               /* 80 to EF = Voice Category Status */
          {
-            status = c;                   /* 2. Set RSB (running status byte) */
+            status = c;                   /* Set RSB (running status byte)    */
             running = false;              /* turn off running status          */
          }
-         db_needed = s_chantype[(c >> 4) & 0xf];
+         db_needed = s_chantype[(c >> 4) & 0xf];   /* look up # of data bytes */
          if (db_needed)                   /* i.e. is it a channel message?    */
          {
-             if (! running)               /* not in running status mode?      */
+             if (! running)               /* just saved a status byte?        */
                  c1 = egetc();            /* get the first data byte          */
 
              if (! ignore)                /* if ok, make message from byte(s) */
@@ -1338,13 +1369,12 @@ readtrack (cbool_t is_m2m)
              type = egetc();
              lookfor = get_lookfor();     /* = s_Mf_toberead - readvarinum()  */
              msginit();
-             while (s_Mf_toberead >= lookfor)           /* not ">" !      */
-             {
-                 int ch = egetc();
-                 msgadd(ch);
-             }
+             while (s_Mf_toberead >= lookfor)               /* not ">" !!     */
+                 (void) msg_getc();
+
              if (! ignore)
                 metaevent(type);
+
              break;
 
          case 0xf0:                       /* SCM: System Exclusive Message    */
@@ -1364,10 +1394,8 @@ readtrack (cbool_t is_m2m)
                 msginit();
                 msgadd(0xf0);
                 while (s_Mf_toberead >= lookfor)           /* not ">" !       */
-                {
-                    c = egetc();
-                    msgadd(c);
-                }
+                    c = msg_getc();
+
                 if (c == 0xf7 || Mf_nomerge == 0)
                 {
                    if (! ignore)
@@ -1388,10 +1416,7 @@ readtrack (cbool_t is_m2m)
          case 0xf5:                       /* SCM: Undefined and reserved      */
          case 0xf6:                       /* SCM: Tune Request                */
 
-            /*
-             * Should these be treated as bad bytes?
-             */
-
+             badbyte(c);
              break;
 
          case 0xf7:                       /* SCM: End of System Exclusive     */
@@ -1401,10 +1426,8 @@ readtrack (cbool_t is_m2m)
                  msginit();
 
              while (s_Mf_toberead > lookfor)
-             {
-                 c = egetc();
-                 msgadd(c);
-             }
+                 c = msg_getc();
+
              if (! sysexcontinue)
              {
                  if (Mf_arbitrary)
@@ -1424,18 +1447,6 @@ readtrack (cbool_t is_m2m)
              badbyte(c);
              break;
          }
-#ifdef USE_THIS_CODE
-         bool is_scm = c >= 0xF0 && c <= 0xF7;
-         if (is_scm)
-         {
-            /*
-             * TODO: Disable running status:
-             *
-             * running = false; ?
-             * status = 0;
-             */
-         }
-#endif
       }                                /* while (s_Mf_toberead > 0)  */
 
       if (! ignore)

@@ -10,12 +10,12 @@
  * \library       libmidifilex
  * \author        Chris Ahlstrom
  * \date          2007-02-28
- * \updates       2015-11-18
+ * \updates       2016-02-09
  * \version       $Revision$
  * \license       GNU GPL
  */
 
-#define LIBMIDIFILEX_VERSION "0.3.3.3"
+#define LIBMIDIFILEX_VERSION "0.3.3.5"
 
 #endif   /* LIBMIDIFILEX_VERSION_H */
 
@@ -24,3 +24,4 @@
  *
  * vim: sw=3 ts=3 wm=8 et ft=c
  */
+
