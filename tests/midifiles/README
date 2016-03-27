@@ -1,10 +1,11 @@
 Chris Ahlstrom
 Test MIDI Files for midicvt and midicvtpp
-2014-04-08 to 2015-09-07
+2014-04-08 to 2016-03-27
 
 The following files are standard test files for the MIDI conversion
 functionality exercised in the ../test_script file.
 
+   allofarow.mid (not yet included, but causes issues in Sequencer64 project)
    choo2xg.mid
    CountryStrum.mid
    Dixie031.mid
