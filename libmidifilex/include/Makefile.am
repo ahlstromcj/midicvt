@@ -10,7 +10,7 @@
 # \version     $Revision$
 # \license     $XPC_SUITE_GPL_LICENSE$
 #
-#   	This module provides an Automake makefile for the XPC library's
+#   	This module provides an Automake makefile for the library's
 #     ./include/midicvt directory.
 #
 # \note
@@ -161,9 +161,6 @@ show:
 
 #******************************************************************************
 # Makefile.am (midicvt/include)
-#------------------------------------------------------------------------------
-# Local Variables:
-# End:
 #------------------------------------------------------------------------------
 # vim: ts=3 sw=3 noet ft=automake
 #------------------------------------------------------------------------------

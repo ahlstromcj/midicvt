@@ -29,7 +29,7 @@
  * \library       midicvtpp application
  * \author        Chris Ahlstrom
  * \date          2014-04-19
- * \updates       2016-02-08
+ * \updates       2016-04-15
  * \version       $Revision$
  * \license       GNU GPL
  *
@@ -48,6 +48,7 @@
 #include <midicvt_globals.h>           /* encapsulates global variables       */
 #include <midicvt_m2m.h>               /* provides alternate callbacks        */
 #include <midimapper.hpp>              /* class midipp::midimapper            */
+#include "midicvt-config.h"            /* VERSION information                 */
 
 /**
  *    Provides the version string for this program.
@@ -57,7 +58,9 @@
  *    C++-only options are provided.
  */
 
-static const char * const s_help_version = "midicvtpp v 0.3.3.5 2016-02-09";
+static const char * const s_help_version =
+   "midicvtpp v " MIDICVT_VERSION " " MIDICVT_VERSION_DATE_SHORT
+   ;
 
 /**
  *    Addition help string, which supplements the help for the C program
@@ -67,7 +70,7 @@ static const char * const s_help_version = "midicvtpp v 0.3.3.5 2016-02-09";
 static const char * const gs_help_usage_1 =
    "midicvtpp adds functionality to midicvt:\n"
    "\n"
-   " --csv-drums f  Convert a CSV (comma-separated values) file to a sectioned\n"
+   " --csv-drums f   Convert a CSV (comma-separated values) file to a sectioned\n"
    "                 INI drum file.  Option -o/--output specifies the full name\n"
    "                 of the output file.  The default is 'out.ini', not stdout.\n"
    " --csv-patches f Convert a CSV file to a sectioned INI patch/program file.\n"
@@ -341,12 +344,6 @@ main (int argc, char * argv [])
       midipp::csvarray csv(name, s_csv_in_filename);
       if (csv.is_valid())
       {
-         /*
-          * No longer supported here:
-          *
-          * ok = midipp::write_simple_file(s_ini_out_filename, csv);
-          */
-
          bool ok = midipp::write_sectioned_drum_file(s_ini_out_filename, csv);
          if (! ok)
             return 1;
@@ -439,3 +436,4 @@ main (int argc, char * argv [])
  *
  * vim: sw=3 ts=3 wm=8 et ft=cpp
  */
+

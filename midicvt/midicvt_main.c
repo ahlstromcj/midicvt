@@ -29,7 +29,7 @@
  * \library       midicvt application
  * \author        Major modifications by Chris Ahlstrom
  * \date          2014-04-09
- * \updates       2016-02-08
+ * \updates       2016-04-15
  * \version       $Revision$
  * \license       GNU GPL
  *
@@ -59,12 +59,15 @@
 #include <midicvt_helpers.h>           /* provides flex and help-text support */
 #include <midicvt_globals.h>           /* encapsulates global variables       */
 #include <midicvt_m2m.h>               /* provides alternate callbacks        */
+#include "midicvt-config.h"            /* VERSION information                 */
 
 /**
  *    Version string.
  */
 
-static const char * const s_help_version = "midicvt v 0.3.3.5 2016-02-09";
+static const char * const s_help_version =
+   "midicvt v " MIDICVT_VERSION " " MIDICVT_VERSION_DATE_SHORT
+   ;
 
 /**
  *    Provides the entry-point for the midicvt program.

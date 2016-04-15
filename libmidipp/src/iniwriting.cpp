@@ -7,7 +7,7 @@
  * \library       libmidipp
  * \author        Chris Ahlstrom
  * \date          2014-04-23
- * \updates       2014-05-21
+ * \updates       2016-04-03
  * \version       $Revision$
  * \license       $XPC_SUITE_GPL_LICENSE$
  *
@@ -40,7 +40,7 @@ namespace midipp
 static const std::string s_explanatory_header =
 "# This file provides easy-to-use settings for remapping some MIDI events\n"
 "# so that a MIDI file for a specific device plays back in General MIDI (GM).\n"
-"# This file consists of one unnamed scction and a number of named sections\n"
+"# This file consists of one unnamed section and a number of named sections\n"
 "# as described below.  Note that the 'name' values can be empty, if you don't\n"
 "# want to key them in.\n"
 "#\n"

@@ -6,7 +6,7 @@ dnl \file          configure.ac
 dnl \library       libmidifilex, libmidipp, midicvt, and midicvtpp
 dnl \author        Chris Ahlstrom
 dnl \date          2014-04-08
-dnl \update        2016-02-09
+dnl \update        2016-04-15
 dnl \version       $Revision$
 dnl \license       $MIDICVT_SUITE_GPL_LICENSE$
 dnl
@@ -50,7 +50,7 @@ PACKAGE=midicvt
 AC_DEFINE_UNQUOTED(PACKAGE, "$PACKAGE")
 AC_SUBST(PACKAGE)
 
-VERSION="0.3.3.5"
+VERSION="0.3.3.6"
 AC_DEFINE_UNQUOTED(VERSION, "$VERSION")
 AC_SUBST(VERSION)
 
@@ -182,6 +182,9 @@ AC_SUBST(midicvtlibdir)
 midicvtdocdir="${datadir}/doc/midicvt-${MIDICVT_API_VERSION}"
 AC_SUBST(midicvtdocdir)
 
+midicvtdatadir="${datadir}/midicvt-${MIDICVT_API_VERSION}"
+AC_SUBST(midicvtdatadir)
+
 midicvtdoxygendir="${datadir}/doc/midicvt-${MIDICVT_API_VERSION}"
 AC_SUBST(midicvtdoxygendir)
 
@@ -260,8 +263,8 @@ dnl            "MIDICVT_" to these values when it generated midicvt-config.h.
 
 AH_TOP(
 
-#define VERSION_DATE_SHORT "2016-02-09"
-#define VERSION "0.3.3.5"
+#define VERSION_DATE_SHORT "2016-04-15"
+#define VERSION "0.3.3.6"
 #define API_VERSION "0.3"
 
 )
@@ -364,6 +367,7 @@ AC_CONFIG_FILES([
  libmidipp/src/Makefile
  midicvt/Makefile
  midicvtpp/Makefile
+ data/Makefile
  doc/dox/Makefile
  ])
 

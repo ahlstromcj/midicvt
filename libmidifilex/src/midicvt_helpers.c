@@ -28,7 +28,7 @@
  * \library       midicvt application
  * \author        Chris Ahlstrom
  * \date          2014-04-19
- * \updates       2016-02-09
+ * \updates       2016-04-14
  * \version       $Revision$
  * \license       GNU GPL
  *
@@ -51,7 +51,7 @@
  *    will provide a string, though.
  */
 
-static const char * const gs_help_version = "midicvt v 0.3.3.5";
+static const char * const gs_help_version = "midicvt v 0.3.3.6";
 
 /**
  *    Help string.  Because of legacy C rules, we have to define 5
@@ -92,13 +92,11 @@ static const char * const gs_help_usage_2_2 =
 
 static const char * const gs_help_usage_2_3 =
    " --mfile         Write ASCII using 'MFile' instead of 'MThd' tag.\n"
-   " --mthd          Write ASCII using the 'MThd' tag (default).  The program\n"
-   "                 can read either tag.\n"
+   " --mthd          Write ASCII using 'MThd' (default).  Either can be read.\n"
    " --strict        Require that 'MTrk' is the tag for tracks.  By default,\n"
    "                 tracks with other name-tags can be processed.\n"
-   " --ignore        Allow non-MTrk chunks, but don't process them. MIDI\n"
-   "                 specifies that they should be ignored; midicvt otherwise\n"
-   "                 treats them like tracks."
+   " --ignore        Allow, but don't process,  non-MTrk chunks. MIDI says to\n"
+   "                 ignore them; midicvt otherwise treats them as tracks.\n"
    "\n"
    ;
 
@@ -115,11 +113,9 @@ static const char * const gs_help_usage_3 =
 static const char * const gs_help_usage_4 =
    "    midicvt -c midi.asc midi.mid         Create a MIDI version.\n"
    "    midicvt -c midi.asc -o midi.mid      Create a MIDI version.\n"
-   "\n"
    "    midicvt midi.mid | somefilter | midicvt -c -o midi2.mid\n"
    "\n"
-   " It is recommended to always use -i/--input and -o/--output to specify\n"
-   " the input and output file-names.\n"
+   "Recommended: use -i/--input and -o/--output to specify the file-names.\n"
    ;
 
 /**
