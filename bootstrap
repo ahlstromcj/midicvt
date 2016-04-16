@@ -78,7 +78,7 @@ M4DIR="m4"
 if [ "$1" == "--help" ] ; then
 
    cat << E_O_F
-Usage: ./bootstrap [options]                               (0.3.3.6-2016-04-15)
+Usage: ./bootstrap [options]                               (0.3.3.7-2016-04-16)
 
    'bootstrap' sets up GNU automake support for the midicvt project.  It can
    also super-clean the projects.

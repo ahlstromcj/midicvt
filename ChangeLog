@@ -1,5 +1,52 @@
+2016-04-16  Chris Ahlstrom <ahlstromcj@gmail.com>
+
+	* README.md, bootstrap, configure.ac, data/GM_PSS-790_Multi.ini,
+	data/Makefile.am, doc/dox/doxy-reference.cfg,
+	Modify csv conversion and INI files to quote the drum and patch names.
+
+2016-04-15  Chris Ahlstrom <ahlstromcj@gmail.com>
+
+	* Makefile.am, bootstrap, configure.ac, data/Makefile.am,
+	doc/dox/Makefile.am, doc/dox/doxy-reference.cfg,
+	doc/dox/doxy-userman.cfg: The Doxygen documentation and a sample INI
+	file can now be built and installed.
+	* README.md, bootstrap, configure.ac, data/GM_PSS-790_Multi.ini,
+	data/Makefile.am, doc/dox/doxy-reference.cfg,
+	libmidifilex/include/Makefile.am, libmidifilex/include/VERSION.h,
+	libmidifilex/src/midicvt_helpers.c, libmidipp/src/iniwriting.cpp,
+	man/midicvt.1, midicvt/midicvt_main.c,
+	midicvtpp/midicvtpp_main.cpp, tests/inifiles/GM_PSS-790_Drums.ini,
+	tests/inifiles/GM_PSS-790_Multi.ini,
+	tests/inifiles/GM_PSS-790_Patches.ini: Trying to get INI files to
+	install to prefix/share, still not working.
+
+2016-03-27  Chris Ahlstrom <ahlstromcj@gmail.com>
+
+	* tests/midifiles/README, tests/results/allofarow.asc: Added
+	allofarow.mid, as it exposed a bug in my Sequencer64 project.
+
+2016-02-09  Chris Ahlstrom <ahlstromcj@gmail.com>
+
+	* ChangeLog, README.md, bootstrap, configure.ac,
+	doc/dox/Makefile.am, doc/dox/doxy-reference.cfg,
+	doc/dox/doxy-userman.cfg, libmidifilex/include/VERSION.h,
+	libmidifilex/src/midicvt_helpers.c, libmidifilex/src/midifilex.c,
+	midicvt/midicvt_main.c, midicvtpp/midicvtpp_main.cpp: Minor
+	optimization to egetc() and msgadd().
+
 2016-02-08  Chris Ahlstrom <ahlstromcj@gmail.com>
 
+	* : Added a seq24 test MIDI file.
+	* bootstrap, configure.ac, doc/dox/Makefile.am,
+	doc/dox/doxy-reference.cfg, doc/dox/doxy-userman.cfg,
+	m4/libtool.m4, m4/ltoptions.m4, m4/ltsugar.m4, m4/ltversion.m4,
+	m4/lt~obsolete.m4, midicvt/midicvt_main.c,
+	midicvtpp/midicvtpp_main.cpp: Changed version info, updated PDF
+	manuals.
+	* libmidifilex/src/midifilex.c: Dang, commented out experimental
+	code that broke the build.
+	* libmidifilex/src/midifilex.c: Consolidated readtrack() and
+	readtrack_m2m(), and added running status comments.
 	* bootstrap, configure.ac, doc/dox/Makefile.am,
 	doc/dox/doxy-reference.cfg, doc/dox/doxy-userman.cfg,
 	m4/libtool.m4, m4/ltoptions.m4, m4/ltsugar.m4, m4/ltversion.m4,

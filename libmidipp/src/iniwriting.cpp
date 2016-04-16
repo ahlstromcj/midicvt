@@ -7,7 +7,7 @@
  * \library       libmidipp
  * \author        Chris Ahlstrom
  * \date          2014-04-23
- * \updates       2016-04-03
+ * \updates       2016-04-16
  * \version       $Revision$
  * \license       $XPC_SUITE_GPL_LICENSE$
  *
@@ -64,6 +64,9 @@ static const std::string s_explanatory_header =
 "#  gm-note.         Provides the GM note number, same as the section number.\n"
 "#  dev-name.        Provides device name for the drum assigned to this note.\n"
 "#  dev-note.        MIDI note to convert gm-note to for GM-compliant playback.\n"
+"#  gm-equiv.        Provides a name for the intended replacement.  In some\n"
+"#                   cases, there is no GM drum equivalent, so we use something\n"
+"#                   close enough.\n"
 "#\n"
 "# The patch/program section:\n"
 "#\n"
@@ -205,19 +208,19 @@ write_sectioned_drum_file
          csvarray::Fields::const_iterator field = row->begin();
 
          output
-   << "[ " << DRUM_SECTION << " " << field[DRUM_INDEX_GM_NOTE] << " ]" << _NL
-   << _NL
-   << DRUM_LABEL_GM_NAME   << " = " << field[DRUM_INDEX_GM_NAME]  << _NL
-   << DRUM_LABEL_GM_NOTE   << " = " << field[DRUM_INDEX_GM_NOTE]  << _NL
-   << DRUM_LABEL_DEV_NAME  << " = " << field[DRUM_INDEX_DEV_NAME] << _NL
-   << DRUM_LABEL_DEV_NOTE  << " = " << field[DRUM_INDEX_DEV_NOTE] << _NL
+<< "[ " << DRUM_SECTION << " " << field[DRUM_INDEX_GM_NOTE] << " ]"     << _NL
+<< _NL
+<< DRUM_LABEL_GM_NAME   << " = \"" << field[DRUM_INDEX_GM_NAME] << "\"" << _NL
+<< DRUM_LABEL_GM_NOTE   << " = " << field[DRUM_INDEX_GM_NOTE]           << _NL
+<< DRUM_LABEL_DEV_NAME  << " = \"" << field[DRUM_INDEX_DEV_NAME] << "\""<< _NL
+<< DRUM_LABEL_DEV_NOTE  << " = " << field[DRUM_INDEX_DEV_NOTE]          << _NL
             ;
 
          if (field->size() > DRUM_INDEX_GM_EQUIV)
          {
             output
                << DRUM_LABEL_GM_EQUIV
-               << " = " << field[DRUM_INDEX_GM_EQUIV] << _NL
+               << " = \"" << field[DRUM_INDEX_GM_EQUIV] << "\""<< _NL
                ;
          }
          output << _NL;
@@ -289,19 +292,19 @@ write_sectioned_patch_file
          csvarray::Fields::const_iterator field = row->begin();
 
          output
-   << "[ " << PATCH_SECTION << " " << field[PATCH_INDEX_GM_PATCH] << " ]" << _NL
-   << _NL
-   << PATCH_LABEL_GM_NAME     << " = " << field[PATCH_INDEX_GM_NAME]   << _NL
-   << PATCH_LABEL_GM_PATCH    << " = " << field[PATCH_INDEX_GM_PATCH]  << _NL
-   << PATCH_LABEL_DEV_NAME    << " = " << field[PATCH_INDEX_DEV_NAME]  << _NL
-   << PATCH_LABEL_DEV_PATCH   << " = " << field[PATCH_INDEX_DEV_PATCH] << _NL
+<< "[ " << PATCH_SECTION << " " << field[PATCH_INDEX_GM_PATCH] << " ]" << _NL
+<< _NL
+<< PATCH_LABEL_GM_NAME   << " = \"" << field[PATCH_INDEX_GM_NAME] << "\""  << _NL
+<< PATCH_LABEL_GM_PATCH  << " = " << field[PATCH_INDEX_GM_PATCH]           << _NL
+<< PATCH_LABEL_DEV_NAME  << " = \"" << field[PATCH_INDEX_DEV_NAME] << "\"" << _NL
+<< PATCH_LABEL_DEV_PATCH << " = " << field[PATCH_INDEX_DEV_PATCH]          << _NL
          ;
 
          if (field->size() > PATCH_INDEX_GM_EQUIV)
          {
             output
                << PATCH_LABEL_GM_EQUIV
-               << " = " << field[PATCH_INDEX_GM_EQUIV] << _NL
+               << " = \"" << field[PATCH_INDEX_GM_EQUIV] << "\"" << _NL
                ;
          }
          output << _NL;
