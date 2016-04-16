@@ -6,7 +6,7 @@
 # \library     libmidifilex, libmidipp, midicvt, and midicvtpp
 # \author      Chris Ahlstrom
 # \date        2014-04-08
-# \updates     2014-05-21
+# \updates     2016-04-15
 # \version     $Revision$
 # \license     $MIDICVT_SUITE_GPL_LICENSE$
 #
@@ -129,12 +129,14 @@ libtool: $(LIBTOOL_DEPS)
 #
 # SUBDIRS = man doc pkgconfig po
 #
-#  Note that doc/dox is currently commented out.  Build the documentation
-#  manually by calling the make_dox script.
+#  Note that doc/dox is not commented out.  If you do not want to Build the
+#  documentation, then comment out the "doc/dox" specification.  You can still
+#  make the documentation manually by calling the make_dox script, in that
+#  case.
 #
 #-----------------------------------------------------------------------------
 
-SUBDIRS = m4 libmidifilex midicvt libmidipp midicvtpp # doc/dox
+SUBDIRS = m4 libmidifilex midicvt libmidipp midicvtpp data doc/dox
 
 #*****************************************************************************
 # DIST_SUBDIRS

@@ -68,6 +68,7 @@ prefix = @prefix@
 datadir = @datadir@
 datarootdir = @datarootdir@
 pkgdatadir = @pkgdatadir@
+midicvtdatadir = @midicvtdatadir@
 
 # datarootdir = $(prefix)/share
 
@@ -101,8 +102,6 @@ builddir = @abs_top_builddir@
 #------------------------------------------------------------------------------
 
 install-data-local:
-	mkdir -p $(DESTDIR)$(midicvtdocdir)
-	cp -r -p $(top_builddir)/doc/*.pdf $(DESTDIR)$(midicvtdocdir)
 	mkdir -p $(DESTDIR)$(midicvtdatadir)
 	cp -r -p $(top_builddir)/data/*.ini $(DESTDIR)$(midicvtdatadir)
 
@@ -111,8 +110,7 @@ install-data-local:
 #------------------------------------------------------------------------------
 
 uninstall-hook:
-	@echo "Note:  You may want to remove $(midicvtdocdir) manually."
-	@echo "       You may want to remove $(midicvtdatadir) manually."
+	rm -rf $(DESTDIR)$(midicvtdatadir)
 
 #******************************************************************************
 # Makefile.am (midicvt/include)

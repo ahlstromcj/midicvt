@@ -6,7 +6,7 @@
 # \library    	midicvt libraries
 # \author     	Chris Ahlstrom
 # \date       	2014-05-20
-# \update     	2016-02-09
+# \update     	2016-04-15
 # \version    	$Revision$
 # \license    	$XPC_SUITE_GPL_LICENSE$
 #
@@ -35,6 +35,7 @@ EXTRA_DIST = make_dox doxy*.cfg
 
 top_srcdir = @top_srcdir@
 srcdir = @srcdir@
+midicvtdocdir = @midicvtdocdir@
 
 #*******************************************************************************
 # Doxygen documentation
@@ -93,26 +94,20 @@ clean:
 # 	   method doesn't work because /usr/bin/install will only install files,
 # 	   and automake doesn't give it the switch needed to install directories.
 #
+#		cp -r -p $(top_builddir)/doc/dox/html $(midicvtdocdir)
+#
 #------------------------------------------------------------------------------
 
 install-data-local:
-	mkdir -p $(xpcdoxygendir)
-	cp -r -p $(top_builddir)/doc/dox/html $(xpcdoxygendir)
-	cp -r -p $(top_builddir)/doc/dox/pdf $(xpcdoxygendir)
+	mkdir -p $(DESTDIR)$(midicvtdocdir)
+	cp -r -p $(top_builddir)/doc/*.pdf $(DESTDIR)$(midicvtdocdir)
 
 #*******************************************************************************
 # uninstall-hook
 #-------------------------------------------------------------------------------
-#
-#     We'd like to remove /usr/local/share/doc/xpccut-1.1/html if it is
-#     empty, and then remove /usr/local/share/doc/xpccut-1.1 too, if empty.
-#		However, we don't have a good way to do it yet.
-#
-#-------------------------------------------------------------------------------
 
 uninstall-hook:
-	@echo "Note:  you may want to remove $(docdir) manually"
-	@echo "Note:  you may want to remove $(xpcdocdir) manually"
+	rm -rf $(DESTDIR)$(midicvtdocdir)
 
 #******************************************************************************
 # Makefile.am (dox)

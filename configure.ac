@@ -19,7 +19,8 @@ AC_PREREQ(2.60)
 AC_REVISION($Revision: 0.3$)dnl
 AC_INIT(midicvt, [0.3.3], [ahlstromcj@gmail.com])
 AC_CONFIG_AUX_DIR([aux-files])
-AC_CONFIG_SRCDIR([libmidifilex/src/midifilex.c])
+
+dnl AC_CONFIG_SRCDIR([libmidifilex/src/midifilex.c])
 
 dnl Do we need the following?  No, but it cleans up a lot of warning messages.
 
@@ -27,7 +28,7 @@ AC_CANONICAL_SYSTEM
 
 dnl See http://www.delorie.com/gnu/docs/automake/automake_24.html
 
-AM_INIT_AUTOMAKE
+AM_INIT_AUTOMAKE([dist-bzip2])
 AC_CONFIG_HEADER([include/config.h])
 
 dnl Prepends "MIDICVT_" to a lot of the macro definitions, for a better
@@ -354,7 +355,12 @@ AH_BOTTOM(
    /* Bottom of header config */
 )
 
-dnl ./gmidicvt
+dnl Set up the Makefiles.  First, add Doxygen support conditionally, not using
+dnl doc/dox/Makefile.  Then do the rest.
+
+AM_CONDITIONAL([HAVE_DOXYGEN],
+    [test -n "$DOXYGEN"])AM_COND_IF([HAVE_DOXYGEN],
+    [AC_CONFIG_FILES([doc/dox/Makefile])])
 
 AC_CONFIG_FILES([
  Makefile
@@ -368,7 +374,6 @@ AC_CONFIG_FILES([
  midicvt/Makefile
  midicvtpp/Makefile
  data/Makefile
- doc/dox/Makefile
  ])
 
 AC_OUTPUT
@@ -382,8 +387,7 @@ Do 'make dist', etc. to create gzip and other archives.
 
 E_O_F
 
-dnl ***************************************************************************
 dnl configure.ac (midicvt)
-dnl ---------------------------------------------------------------------------
+dnl
 dnl vim: ts=3 sw=3 et ft=config
-dnl ---------------------------------------------------------------------------
+
