@@ -74,8 +74,6 @@ EXTERN_C_END
 namespace midipp
 {
 
-#ifdef MIDICVT_ANNOTATIONS
-
 /**
  *    Principal constructor for the annotation class.
  *
@@ -106,8 +104,6 @@ annotation::annotation
 {
    // no other code
 }
-
-#endif   // MIDICVT_ANNOTATIONS
 
 /**
  *    This constructor creates an unnamed, no-change mapping object.
@@ -260,11 +256,9 @@ midimapper::read_maps (const std::string & filename)
             const initree::Section & section = ici->second;
             if (! section.name().empty())       // if not the unnamed section
             {
-#ifdef MIDICVT_ANNOTATIONS
                std::string gmvaluename;
                std::string devvaluename;
                std::string gmname;
-#endif
                int gmvalue = NOT_ACTIVE;
                int devvalue = NOT_ACTIVE;
                gm_ini_section_t sect = INI_SECTION_UNKNOWN;
@@ -308,7 +302,6 @@ midimapper::read_maps (const std::string & filename)
                   if (sci != section.end())
                      devvalue = atoi(sci->second.c_str());
 
-#ifdef MIDICVT_ANNOTATIONS
                   sci = section.find(DRUM_LABEL_GM_NAME);
                   if (sci != section.end())
                      gmvaluename = sci->second;
@@ -320,7 +313,6 @@ midimapper::read_maps (const std::string & filename)
                   sci = section.find(DRUM_LABEL_GM_EQUIV);
                   if (sci != section.end())
                      gmname = sci->second;
-#endif
                }
                else if (sect == INI_SECTION_PATCH)
                {
@@ -332,7 +324,6 @@ midimapper::read_maps (const std::string & filename)
                   if (sci != section.end())
                      devvalue = atoi(sci->second.c_str());
 
-#ifdef MIDICVT_ANNOTATIONS
                   sci = section.find(PATCH_LABEL_GM_NAME);
                   if (sci != section.end())
                      gmvaluename = sci->second;
@@ -344,7 +335,6 @@ midimapper::read_maps (const std::string & filename)
                   sci = section.find(PATCH_LABEL_GM_EQUIV);
                   if (sci != section.end())
                      gmname = sci->second;
-#endif
                }
                result = active(gmvalue, devvalue);
                if (result)
@@ -354,20 +344,14 @@ midimapper::read_maps (const std::string & filename)
                      int temp = gmvalue;
                      gmvalue = devvalue;
                      devvalue = temp;
-#ifdef MIDICVT_ANNOTATIONS
                      std::string stemp = gmvaluename;
                      gmvaluename = devvaluename;
                      devvaluename = stemp;
                      gmname = devvaluename;
-#endif
                   }
 
-#ifdef MIDICVT_ANNOTATIONS
                   annotation an(devvalue, gmvaluename, devvaluename, gmname);
                   midimap_pair p = std::make_pair(gmvalue, an);
-#else
-                  midimap_pair p = std::make_pair(gmvalue, devvalue);
-#endif
                   midimap_result resultpair;
                   if (sect == INI_SECTION_DRUM)
                      resultpair = m_drum_map.insert(p);
@@ -651,18 +635,12 @@ midimapper::repitch (int channel, int input)
 {
    if (channel == m_device_channel)
    {
-#ifdef MIDICVT_ANNOTATIONS
       iterator ni = m_drum_map.find(input);
       if (ni != m_drum_map.end())
       {
          input = ni->second.value();
          ni->second.increment_count();
       }
-#else
-      const_iterator ni = m_drum_map.find(input);
-      if (ni != m_drum_map.end())
-         input = ni->second;
-#endif
    }
    return input;
 }
@@ -762,19 +740,12 @@ midimapper::rechannel (int channel)
 int
 midimapper::repatch (int program)
 {
-#ifdef MIDICVT_ANNOTATIONS
    iterator ni = m_patch_map.find(program);
    if (ni != m_patch_map.end())
    {
       program = ni->second.value();
       ni->second.increment_count();
    }
-#else
-   const_iterator ni = m_patch_map.find(program);
-   if (ni != m_patch_map.end())
-      program = ni->second;
-#endif
-
    return program;
 }
 
@@ -835,29 +806,21 @@ show_maps
    );
    if (! container.drum_map().empty())
    {
-#ifdef MIDICVT_ANNOTATIONS
       const char * fpformat = 
          "- %4d: Note  #%2d  %-24s ---> #%2d  %-24s (%s)\n";
-#else
-      const char * fpformat = "-    Note #%2d  ---> #%2d\n" ;
-#endif
 
       int testcounter = 0;
       midipp::midimapper::const_iterator mi = container.drum_map().begin();
       for ( ; mi != container.drum_map().end(); ++mi)
       {
-#ifdef MIDICVT_ANNOTATIONS
          std::string gmname;
          std::string devname;
          std::string equivname;
-#endif
          int gm;
          int dev;
          bool show_it = full_output;
-#ifdef MIDICVT_ANNOTATIONS
          if (! full_output)
             show_it = mi->second.count() > 0;
-#endif
 
          if (show_it)
          {
@@ -870,32 +833,20 @@ show_maps
             if (container.map_reversed())
             {
                dev = mi->first;
-#ifdef MIDICVT_ANNOTATIONS
                gm = mi->second.value();
                gmname = mi->second.value_name();
-#else
-               gm = mi->second;
-#endif
             }
             else
             {
 #endif
-
-               gm = mi->first;
-#ifdef MIDICVT_ANNOTATIONS
-               dev = mi->second.value();
-               gmname = mi->second.key_name();
-               devname = mi->second.value_name();
-               equivname = mi->second.gm_name();
-#else
-               dev = mi->second;
-#endif
-
+            gm = mi->first;
+            dev = mi->second.value();
+            gmname = mi->second.key_name();
+            devname = mi->second.value_name();
+            equivname = mi->second.gm_name();
 #if 0
             }
 #endif
-
-#ifdef MIDICVT_ANNOTATIONS
             fprintf
             (
                stderr, fpformat,
@@ -903,9 +854,6 @@ show_maps
                dev, devname.c_str(),
                equivname.c_str()
             );
-#else
-            fprintf(stderr, fpformat, gm, dev);
-#endif
             ++testcounter;
          }
       }
@@ -921,29 +869,21 @@ show_maps
    );
    if (! container.patch_map().empty())
    {
-#ifdef MIDICVT_ANNOTATIONS
       const char * fpformat = 
          "- %4d: Patch #%3d %-24s ---> #%3d %-24s (%s)\n";
-#else
-      const char * fpformat = "-    Patch #%3d  ---> #%3d\n" ;
-#endif
 
       int testcounter = 0;
       midipp::midimapper::const_iterator mi = container.patch_map().begin();
       for ( ; mi != container.patch_map().end(); ++mi)
       {
-#ifdef MIDICVT_ANNOTATIONS
          std::string gmname;
          std::string devname;
          std::string equivname;
-#endif
          int gm;
          int dev;
          bool show_it = full_output;
-#ifdef MIDICVT_ANNOTATIONS
          if (! full_output)
             show_it = mi->second.count() > 0;
-#endif
 
          if (show_it)
          {
@@ -961,18 +901,13 @@ show_maps
             {
 #endif
                gm = mi->first;
-#ifdef MIDICVT_ANNOTATIONS
                dev = mi->second.value();
                gmname = mi->second.key_name();
                devname = mi->second.value_name();
                equivname = mi->second.gm_name();
-#else
-               dev = mi->second;
-#endif
 #if 0
             }
 #endif
-#ifdef MIDICVT_ANNOTATIONS
             fprintf
             (
                stderr, fpformat,
@@ -980,9 +915,6 @@ show_maps
                dev, devname.c_str(),
                equivname.c_str()
             );
-#else
-            fprintf(stderr, fpformat, gm, dev);
-#endif
             ++testcounter;
          }
       }

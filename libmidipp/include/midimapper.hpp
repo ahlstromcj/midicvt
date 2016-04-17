@@ -91,16 +91,8 @@
 #include <map>
 #include <string>
 
-/**
- *    If turned on, the debug and summary output is more human readable.
- */
-
-#define MIDICVT_ANNOTATIONS
-
 namespace midipp
 {
-
-#ifdef MIDICVT_ANNOTATIONS
 
 /**
  *    This class is meant to extend the map of values with additional data
@@ -227,8 +219,6 @@ public:
 
 };       // class annotation
 
-#endif   // MIDICVT_ANNOTATIONS
-
 /**
  *    This class provides for some basic remappings to be done to MIDI
  *    files, using the old and new facilities of libmidifilex.
@@ -267,18 +257,10 @@ private:
     *    another set of values.
     */
 
-#ifdef MIDICVT_ANNOTATIONS
    typedef std::map<int, annotation> midimap;
    typedef std::map<int, annotation>::iterator iterator;
    typedef std::map<int, annotation>::const_iterator const_iterator;
    typedef std::pair<int, annotation> midimap_pair;
-#else
-   typedef std::map<int, int> midimap;
-   typedef std::map<int, int>::iterator iterator;
-   typedef std::map<int, int>::const_iterator const_iterator;
-   typedef std::pair<int, int> midimap_pair;
-#endif
-
    typedef std::pair<iterator, bool> midimap_result;
    typedef std::pair<std::map<int, int>::iterator, bool> intmap_result;
 

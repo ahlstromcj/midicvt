@@ -67,7 +67,7 @@ static const char * const gs_help_usage_1 =
    ;
 
 static const char * const gs_help_usage_2_1 =
-   " -2  --m2m       Convert MIDI to MIDI (testing only in midicvt).\n"
+   " -2  --m2m       Convert MIDI to MIDI (midicvtpp only).\n"
    " -c  --compile   Flag to compile ASCII input into MIDI/SMF.\n"
    " -d  --debug     Send any debug output to stderr.\n"
    " -f  --fold [N]  Fold SysEx and SeqSpec data at N (default 80) columns.\n"
@@ -224,6 +224,14 @@ midicvt_input_file ()
 
 /**
  *    Sets the input file-name.
+ *
+ * \warning
+ *    There is an issue here.  If we do not provide a "-i" option to
+ *    specifiy the input MIDI file, the file specified by the "--m2m"
+ *    option will be treated as the input file, even though it is an "ini"
+ *    file.  We will consider putting a check here to allow only MIDI file
+ *    extensions (".mid", ".midi", ".smf*").  Better is to find out what
+ *    is happening here.
  *
  * \param inputfile
  *    Provides the full path specification for the input file.
@@ -491,12 +499,25 @@ midicvt_parse (int argc, char * argv [], const char * version)
           *    We shouldn't bypass any argument in the C processing of
           *    --m2m.
           *
-          * if ((option_index + 1) < argc)
-          * {
-          *    if (argv[option_index+1][0] != '-')
-          *       option_index++;         // skip m2m filename here
-          * }
+          * \change ca 2016-04-17
+          *    But if we process this argument, it becomes the input MIDI
+          *    file, and the following MIDI file argument, if not preceded
+          *    by "-i", is the file-name, and it gets truncated.  Very
+          *    nasty!  Skip this argument.
           */
+
+          if ((option_index + 1) < argc)
+          {
+             if (argv[option_index+1][0] != '-')
+             {
+                option_index++;        // skip m2m filename here in C scan
+             }
+             else
+             {
+               errprint("--m2m option requires a file-name");
+               break;
+             }
+          }
       }
       else if (check_option(argv[option_index], "-i", "--input"))
       {
