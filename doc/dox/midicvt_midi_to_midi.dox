@@ -16,7 +16,7 @@ the ability to directly perform some MIDI file conversions, without the need
 for scripting.
 
 \page       midicvtpp   midicvtpp
-\author     Chris Ahlstrom 2015-08-21
+\author     Chris Ahlstrom 2016-04-17
 
 \section midicvtpp_intro MIDI to MIDI Mode
 
@@ -46,7 +46,9 @@ file.  It describes how we make them.  Here are the broad steps:
       file.
    -# Run the <code>--m2m</code> option to convert a MIDI file into a
       remapped MIDI file.  The <code>--reverse</code> can be used to remap
-      in the opposite direction.
+      in the opposite direction.  However, note that often the reverse
+      mapping will not work, since it is fairly common that the GM-to-device
+      mapping is not one-to-one, and the key (input) value must be unique.
    -# Test the new MIDI file.
 
 A spreadsheet is used because it is a very convenient way to cut-and-paste
@@ -87,7 +89,9 @@ information that applies to <i>midicvt</i>, as it is also part of
 
 The following options require the --m2m option:
 
- --reverse       Reverse the mapping specified by --m2m.
+ --reverse       Reverse the mapping specified by --m2m.  Not all mappings
+                 can be fully reversed; unique key values are required in
+                 both directions.
  --extract n     Write only channel events from channel n, n = 1 to 16.
  --reject n      Write only channel events not from channel n.
  --testing       Only the programmer knows what this one does. :-D
@@ -102,6 +106,58 @@ We use a spreadsheet because it makes it easier to lay out a bunch of notes
 and note names, and sort them as needed.
 We export the notes to a CSV file to make it easier to import the notes into
 an INI file.
+Note that sample CSV files are found in the
+<code>midicvt/tests/csvfiles</code> project directory.
+
+Let's look at a couple of entries in a "drum" CSV file to be sure of what it
+means.  Here are the first five entries from
+<code>GM_PSS-790_Drums.csv</code>.
+
+\verbatim
+	Acoustic Bass Drum,35,N/A,35,Acoustic Bass Drum
+	Bass Drum 1,36,C1 Bass Drum Reverb,36,Bass Drum 1
+	Side Stick,37,Triangle Mute,80,Mute Triangle
+	Acoustic Snare,38,Synth Snare,40,Electric Snare
+	Hand Clap,39,Triangle Open,81,Open Triangle
+\endverbatim
+
+The first line is straightforward.  GM note 35 is GM drum
+"Acoustic Bass Drum".  There is no drum note 35 for the PSS-790, so it is N/A;
+the drum note 35 is not likely to appear in a MIDI tune formatted for the
+PSS-790 anyway.  Therefore, we simply map 35 to 35, no change in value.
+35 is meant to produce "Acoustic Bass Drum" as the GM equivalent.
+
+In the second line, GM note 36 is GM drum "Bass Drum 1".
+PSS-790 note 36 is "Bass Drum Reverb".  Not the same sound, but it is close
+enough, so no conversion to get close to GM equivalent "Bass Drum 1".
+
+The third line is tricky.  GM note 37 is GM drum "Side Stick".
+The PSS-790 has no "Side Stick" sound at all.
+PSS-790 note 37 is "Triangle Mute".  So we want to convert any drum note
+37 in a PSS-790 MIDI file to the "Triangle Mute" GM note value, which is
+80.  It's official name in GM format is "Mute Triangle".
+
+So let us summarize the entries in this CSV record:
+
+   -# Name of the input note in GM terms. "Side Stick".
+   -# Value of the input note.  37.
+   -# Name of the closest PSS-790 drum to approximate GM's "Side Stick".
+      "Triangle Mute".
+   -# GM output note that produces the sound that approximates "Triangle Mute".
+      80.
+   -# Official GM name of the approximating GM sound. "Mute Triangle".
+
+So, when converting a PSS-790 MIDI tune to a GM MIDI tune, drum note
+37 is converted to value 80.
+
+In the fourth line, input note 38 is the PSS-790's "Synth Snare",
+which is best represented by GM note 40, GM's "Electric Snare".
+
+In the fifth line, input note 39 is the PSS-790's "Triangle Open",
+which is best represented by GM note 81, GM's "Open Triangle".
+
+The CSV representation is a bit tricky.  It even confused us when we came back
+to do some upgrading, which is why we wrote this additional material.
 
 For example, in the <code>tests</code> directory, we ran the following
 command to create <code>GM_PSS-790_Drums.ini</code>:
@@ -223,8 +279,8 @@ Open <code>MIDI-Maps.ods</code> to follow this discussion.  This
 document is how I keep track of some of my old equipment, and you are
 welcome to use it and modify it as you see fit for your purposes.
 
-The current spreadsheet pages are <i>Drums</i>, <i>Patches</i>, and
-<i>GM_PSS-790_Drums</i>.
+The current spreadsheet pages (tabs) are <i>Drums</i>, <i>Patches</i>, and
+<i>GM_PSS-790_Drums</i>, <i>GM_PSS-790_Patches</i>, and couple more tabs.
 
 <i>Drums</i>.
 The first column shows the frequency of the corresponding MIDI keys shown in
@@ -268,13 +324,6 @@ one GM note.  We had to re-assign some of the notes.
 
 Once satisfied, we could take the data on this page and save it in
 comma-separated value format.  See the next section.
-
-\section midicvtpp_csv The CSV File
-
-MORE TO COME
-
-Note that sample CSV files are found in the
-<code>midicvt/tests/csvfiles</code> project directory.
 
 \section midicvtpp_ini The INI File
 

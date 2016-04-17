@@ -28,7 +28,7 @@
  * \library       midicvt application
  * \author        Chris Ahlstrom and many other authors
  * \date          2014-04-09
- * \updates       2015-11-18
+ * \updates       2016-04-17
  * \version       $Revision$
  * \license       GNU GPL
  *
@@ -538,9 +538,9 @@ my_header (int format, int ntrks, int division)
    {
       printf(usemfile ? MFILE_FORMAT_3 : MTHD_FORMAT_3, format, ntrks, division);
    }
-   if (format > 2)
+   if (format < 0 || format > 2)
    {
-      fprintf(stderr, "Can't deal with format %d files\n", format);
+      fprintf(stderr, "Can't deal with format %d or missing files\n", format);
       exit(1);
    }
    g_status_beat = g_status_clicks = division;

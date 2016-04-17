@@ -8,7 +8,7 @@
 # \library    	libimidifilex, libmidipp, midicvt, midicvtpp
 # \author     	Chris Ahlstrom
 # \date       	2014-05-09
-# \updates     2015-08-22
+# \updates     2016-04-17
 # \version    	$Revision$
 # \license    	$XPC_SUITE_GPL_LICENSE$
 #
@@ -652,17 +652,14 @@ $MIDICVT -i tmp/stomtors-multi.mid -o tmp/stomtors-multi.asc
 #-----------------------------------------------------------------------------
 
 rm -rf tmp
-
-echo "All tests PASSED."
 if [ "$DO_VALGRIND" == "no" ] ; then
    echo "Don't forget to run './test_script --valgrind' as well."
+
+echo "All tests PASSED."
 fi
 
 #*****************************************************************************
 # test_script (midicvt/tests)
-#------------------------------------------------------------------------------
-# Local Variables:
-# End:
 #-----------------------------------------------------------------------------
 # vim: ts=3 sw=3 ft=sh
-#----------------------------------------------------------------------------
+#-----------------------------------------------------------------------------

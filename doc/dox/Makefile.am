@@ -6,7 +6,7 @@
 # \library    	midicvt libraries
 # \author     	Chris Ahlstrom
 # \date       	2014-05-20
-# \update     	2016-04-15
+# \update     	2016-04-17
 # \version    	$Revision$
 # \license    	$XPC_SUITE_GPL_LICENSE$
 #
@@ -71,11 +71,17 @@ html/*: docs
 #
 # Can't use pushd/popd because they are bash builtins and are not available,
 # except inside a script.
+#
+# docs: dox-stamp doxy-reference.cfg doxy-userman.cfg
 
-docs: dox-stamp doxy-reference.cfg doxy-userman.cfg
-	$(srcdir)/make_dox $(srcdir) reference
-	$(srcdir)/make_dox clean
-	$(srcdir)/make_dox $(srcdir) userman
+docs: doxy-reference.cfg doxy-userman.cfg
+	-echo "We no long automatically rebuild the documentation, it takes too long."
+	-echo "Rebuild it by running make_dox three times, with options 'reference',"
+	-echo "'clean', and then 'userman'."
+
+#	$(srcdir)/make_dox $(srcdir) reference
+#	$(srcdir)/make_dox clean
+#	$(srcdir)/make_dox $(srcdir) userman
 
 dox-stamp: $(EXTRA_DIST)
 	touch dox-stamp

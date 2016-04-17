@@ -28,7 +28,7 @@
  * \library       midicvt application
  * \author        Chris Ahlstrom and many other authors
  * \date          2014-04-27
- * \updates       2014-05-20
+ * \updates       2016-04-17
  * \version       $Revision$
  * \license       GNU GPL
  *
@@ -173,7 +173,7 @@ m2m_header (int format, int ntrks, int division)
 
    if (format < 0 || format > 2)
    {
-      fprintf(stderr, "Can't deal with format %d files\n", format);
+      fprintf(stderr, "Can't deal with format %d or missing files\n", format);
       exit(1);
    }
    else

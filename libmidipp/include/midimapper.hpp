@@ -31,7 +31,7 @@
  * \library       libmidipp
  * \author        Chris Ahlstrom
  * \date          2014-04-24
- * \updates       2014-05-21
+ * \updates       2016-04-17
  * \version       $Revision$
  * \license       GNU GPL
  *
@@ -91,8 +91,143 @@
 #include <map>
 #include <string>
 
+/**
+ *    If turned on, the debug and summary output is more human readable.
+ */
+
+#define MIDICVT_ANNOTATIONS
+
 namespace midipp
 {
+
+#ifdef MIDICVT_ANNOTATIONS
+
+/**
+ *    This class is meant to extend the map of values with additional data
+ *    that can be written out to summarize some information about the MIDI
+ *    remapping that was done.  Instead of just the integer value to use,
+ *    this class holds the names of the items on both ends of the mapping,
+ *    plus a usage count.  We also added the "GM equivalent" name to this
+ *    class as well.
+ */
+
+class annotation
+{
+
+private:
+
+   /**
+    *    The integer value to which the incoming (key) value is to be
+    *    mapped.
+    */
+
+   const int m_value;
+
+   /**
+    *    The name of the drum note or patch represented by the key value.
+    */
+
+   const std::string m_key_name;
+
+   /**
+    *    The name of the drum note or patch represented by the integer
+    *    value.
+    */
+
+   const std::string m_value_name;
+
+   /**
+    *    The name of the GM drum note or patch that is replacing the
+    *    device's drum note of patch.  Sometimes there is no exact
+    *    replacement, so it is good to know what GM sound is replacing the
+    *    device's sound.
+    */
+
+   const std::string m_gm_name;
+
+   /**
+    *    The number of times this particular mapping was performed in the
+    *    MIDI remapping operation.
+    */
+
+   int m_remap_count;
+
+private:
+
+   annotation ();                      /* hide the default constructor */
+
+public:
+
+   annotation
+   (
+      int value,
+      const std::string & keyname,
+      const std::string & valuename,
+      const std::string & gmname
+   );
+
+   /*
+    * The default copy constructor and principal assignment operators
+    * should suffice.
+    */
+
+   /**
+    * \getter m_value
+    */
+
+   int value () const
+   {
+      return m_value;
+   }
+
+   /**
+    * \getter m_key_name
+    */
+
+   const std::string & key_name () const
+   {
+      return m_key_name;
+   }
+
+   /**
+    * \getter m_value_name
+    */
+
+   const std::string & value_name () const
+   {
+      return m_value_name;
+   }
+
+   /**
+    * \getter m_gm_name
+    */
+
+   const std::string & gm_name () const
+   {
+      return m_gm_name;
+   }
+
+   /**
+    * \setter m_remap_count
+    */
+
+   void increment_count ()
+   {
+      ++m_remap_count;
+   }
+
+   /**
+    * \getter m_remap_count
+    */
+
+   int count () const
+   {
+      return m_remap_count;
+   }
+
+};       // class annotation
+
+#endif   // MIDICVT_ANNOTATIONS
 
 /**
  *    This class provides for some basic remappings to be done to MIDI
@@ -109,6 +244,13 @@ namespace midipp
 class midimapper
 {
 
+   friend void show_maps
+   (
+      const std::string & tag,
+      const midipp::midimapper & container,
+      bool full_output
+   );
+
 public:
 
    /**
@@ -117,6 +259,28 @@ public:
     */
 
    static const int NOT_ACTIVE = -1;
+
+private:
+
+   /**
+    *    Provides the type of the map between one set of values and
+    *    another set of values.
+    */
+
+#ifdef MIDICVT_ANNOTATIONS
+   typedef std::map<int, annotation> midimap;
+   typedef std::map<int, annotation>::iterator iterator;
+   typedef std::map<int, annotation>::const_iterator const_iterator;
+   typedef std::pair<int, annotation> midimap_pair;
+#else
+   typedef std::map<int, int> midimap;
+   typedef std::map<int, int>::iterator iterator;
+   typedef std::map<int, int>::const_iterator const_iterator;
+   typedef std::pair<int, int> midimap_pair;
+#endif
+
+   typedef std::pair<iterator, bool> midimap_result;
+   typedef std::pair<std::map<int, int>::iterator, bool> intmap_result;
 
 private:
 
@@ -259,7 +423,7 @@ private:
     *    converted from GM mapping to device mapping.
     */
 
-   std::map<int, int> m_drum_map;
+   midimap m_drum_map;
 
    /**
     *    Provides the mapping between patches (programs).  If
@@ -272,11 +436,12 @@ private:
     *    mapping.
     */
 
-   std::map<int, int> m_patch_map;
+   midimap m_patch_map;
 
    /**
     *    Provides the mapping between channels (optional).  If
     *    m_map_reversed is true, then the mapping of channels is reversed.
+    *    There's no need for channel names with this one.
     */
 
    std::map<int, int> m_channel_map;
@@ -438,7 +603,7 @@ public:
     *    wasn't working properly!!!
     */
 
-   const std::map<int, int> & drum_map () const
+   const midimap & drum_map () const
    {
       return m_drum_map;
    }
@@ -448,7 +613,7 @@ public:
     *    Returns a reference to the patch map.
     */
 
-   const std::map<int, int> & patch_map () const
+   const midimap & patch_map () const
    {
       return m_patch_map;
    }
@@ -480,17 +645,22 @@ private:
 
 };
 
-}                 // namespace midipp
-
 /*
- * Global symbols
+ * Free functions in the midipp namespace.
  */
 
 extern void show_maps
 (
    const std::string & tag,
-   const midipp::midimapper & container
+   const midipp::midimapper & container,
+   bool full_output = true
 );
+
+}                 // namespace midipp
+
+/*
+ * Global functions.
+ */
 
 extern void midimap_init (midipp::midimapper & mm);
 

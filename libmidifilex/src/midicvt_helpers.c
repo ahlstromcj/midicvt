@@ -28,7 +28,7 @@
  * \library       midicvt application
  * \author        Chris Ahlstrom
  * \date          2014-04-19
- * \updates       2016-04-16
+ * \updates       2016-04-17
  * \version       $Revision$
  * \license       GNU GPL
  *
@@ -574,6 +574,11 @@ midicvt_parse (int argc, char * argv [], const char * version)
       }
       else if
       (
+         /*
+          * Although not implemented in the C code, these options are
+          * implemented in the C++ code, and so are legal.
+          */
+
          check_option(argv[option_index], "", "--csv-drum") ||
          check_option(argv[option_index], "", "--csv-drums") ||
          check_option(argv[option_index], "", "--csv-patch") ||
@@ -581,6 +586,7 @@ midicvt_parse (int argc, char * argv [], const char * version)
          check_option(argv[option_index], "", "--extract") ||
          check_option(argv[option_index], "", "--reject") ||
          check_option(argv[option_index], "", "--reverse") ||
+         check_option(argv[option_index], "", "--summarize") ||
          check_option(argv[option_index], "", "--testing")
       )
       {

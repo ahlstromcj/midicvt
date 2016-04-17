@@ -7,7 +7,7 @@
  * \library       libmidipp
  * \author        Chris Ahlstrom
  * \date          2014-04-23
- * \updates       2016-04-16
+ * \updates       2016-04-17
  * \version       $Revision$
  * \license       $XPC_SUITE_GPL_LICENSE$
  *
@@ -38,6 +38,8 @@ namespace midipp
  */
 
 static const std::string s_explanatory_header =
+"# midicvtpp v 0.4.0\n"
+"#\n"
 "# This file provides easy-to-use settings for remapping some MIDI events\n"
 "# so that a MIDI file for a specific device plays back in General MIDI (GM).\n"
 "# This file consists of one unnamed section and a number of named sections\n"
@@ -46,36 +48,45 @@ static const std::string s_explanatory_header =
 "#\n"
 "# The unnamed section:\n"
 "#\n"
-"#  file-style.      The format of the INI file.  Values: 'sectioned' (only).\n"
-"#  setup-name.      Provides a name for the setup, for information only.\n"
-"#  map-type.        Types of maps in this file: 'drum', 'patch', or 'multi'.\n"
-"#  gm-channel.      Indicates the drum channel for GM.   Usually 10.\n"
-"#  dev-channel.     Drum channel for the device.  Some use channel 16.\n"
-"#  extract-channel. Channel to write to MIDI file.  Other channels dropped.\n"
-"#  reject-channel.  Channel for events to be dropped from the new MIDI file.\n"
-"#  reverse.         Reverse mapping. Usually better as a command-line option.\n"
-"#  testing.         Do the latest developer test.  Command-line preferred.\n"
+"#  file-style       The format of the INI file.  Values: 'sectioned' (only).\n"
+"#  setup-name       Provides a name for the setup, for information only.\n"
+"#  map-type         Types of maps in this file: 'drum', 'patch', or 'multi'.\n"
+"#  gm-channel       Indicates the drum channel for GM.  Usually 10.\n"
+"#  dev-channel      Drum channel for the device.  Some use channel 16.\n"
+"#  extract-channel  Channel to write to MIDI file.  Other channels dropped.\n"
+"#  reject-channel   Channel for events to be dropped from the new MIDI file.\n"
+"#  reverse          Reverse mapping. Usually better as a command-line option.\n"
+"#  testing          Do the latest developer test.  Command-line preferred.\n"
 "#\n"
 "# The drum section:\n"
 "#\n"
-"#  [Drum 35].  Marks a drum-change section, one per instrument.\n"
+"#  [Drum 35].  Marks a GM drum-change section, one per instrument.\n"
 "#\n"
-"#  gm-name.         Provides the GM name for the drum assigned to this note.\n"
-"#  gm-note.         Provides the GM note number, same as the section number.\n"
-"#  dev-name.        Provides device name for the drum assigned to this note.\n"
-"#  dev-note.        MIDI note to convert gm-note to for GM-compliant playback.\n"
-"#  gm-equiv.        Provides a name for the intended replacement.  In some\n"
-"#                   cases, there is no GM drum equivalent, so we use something\n"
-"#                   close enough.\n"
+"#  gm-name          GM name for the drum assigned to the input note.\n"
+"#  gm-note          Input note number, same as the section number.\n"
+"#  dev-name         The device's name for the drum represented by the input\n"
+"#                   note.\n"
+"#  dev-note         GM MIDI note value whose GM sound best matches the sound\n"
+"#                   described by dev-name.  The gm-note value is converted to\n"
+"#                   the dev-note value (unless reverse mapping is activated).\n"
+"#  gm-equiv         Provides the GM name for the intended replacement. In some\n"
+"#                   cases, there is no exact GM drum equivalent, so we use\n"
+"#                   a GM drum that is close enough to the device's drum.\n"
 "#\n"
 "# The patch/program section:\n"
 "#\n"
-"#  [Patch 35].      Marks a patch-change section, one per program.\n"
+"#  [Patch 35].      Marks a GM patch-change section, one per program.\n"
 "#\n"
-"#  gm-name.         The name of the patch/program in the GM layout.\n"
-"#  gm-patch.        MIDI patch number corresponding to the named instrument.\n"
-"#  dev-name.        Name of the device patch corresponding to this MIDI note.\n"
-"#  dev-patch.       MIDI patch number to which this patch number is converted.\n"
+"#  gm-name          GM name of the input patch/program in the input MIDI file.\n"
+"#  gm-patch         Input patch number representing the named GM instrument.\n"
+"#  dev-name         Name of the device patch corresponding to th GM MIDI note.\n"
+"#  dev-patch        GM patch number which best matches the device's sound for\n"
+"#                   the input patch number.  The gm-patch number is converted\n"
+"#                   to this patch number to reconstruct the device's sound as\n"
+"#                   well as possible.\n"
+"#  gm-equiv         Provides the GM name for the intended replacement. In some\n"
+"#                   cases, there is no exact GM patch equivalent, so we use\n"
+"#                   a GM patch that is close enough to the device's patch.\n"
 ;
 
 /**

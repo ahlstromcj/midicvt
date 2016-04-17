@@ -28,7 +28,7 @@
  * \library       libmidipp
  * \author        Chris Ahlstrom
  * \date          2014-04-24
- * \updates       2014-05-21
+ * \updates       2016-04-17
  * \version       $Revision$
  * \license       GNU GPL
  *
@@ -73,6 +73,41 @@ EXTERN_C_END
 
 namespace midipp
 {
+
+#ifdef MIDICVT_ANNOTATIONS
+
+/**
+ *    Principal constructor for the annotation class.
+ *
+ * \param value
+ *    The integer value to which the incoming (key) value is to be
+ *    mapped.
+ *
+ * \param keyname
+ *    The name of the drum note or patch represented by the key value.
+ *
+ * \param valuename
+ *    The name of the drum note or patch represented by the integer
+ *    value.
+ */
+
+annotation::annotation
+(
+   int value,
+   const std::string & keyname,
+   const std::string & valuename,
+   const std::string & gmname
+) :
+   m_value        (value),
+   m_key_name     (keyname),
+   m_value_name   (valuename),
+   m_gm_name      (gmname),
+   m_remap_count  (0)
+{
+   // no other code
+}
+
+#endif   // MIDICVT_ANNOTATIONS
 
 /**
  *    This constructor creates an unnamed, no-change mapping object.
@@ -181,15 +216,21 @@ midimapper::midimapper
  *    section is treated differently:  The "gm-channel" and
  *    "dev-channel" values are looked up and set.
  *
- *    Inserts the pair of (gm_note, device_note), depending on the
+ *    Inserts the pair of (gm_note, gm_device_note), depending on the
  *    m_map_reversed flag.  If false (the normal case), then we want the
- *    key to be the gm_note, and the value to be the device_note.  That
- *    is, given a MIDI file scored for a non-GM device, we want the notes
- *    to be remapped to the notes that GM needs to make a the sound
- *    intended by the device-note.
+ *    key to be the gm_note, and the value to be the gm_device_note value
+ *    that best matches the device's original sound.  That is, given a
+ *    MIDI file scored for a non-GM device, we want the notes to be
+ *    remapped to the notes that GM needs to make a the sound intended by
+ *    the device-note.
  *
  *    If the m_map_reversed flag is true, then we want to take a GM MIDI
  *    file and re-map it for the corresponding device note.
+ *
+ *    std::map::insert<> returns a pair of values:  an iterator into the
+ *    map, and a boolean value for success/failure.  If the insertion
+ *    fails, the pair is already in the map.  We tell the user about this,
+ *    but do not treat it as a fatal error.
  *
  * \param filename
  *    Provides the full path specification of the file to be read.
@@ -212,14 +253,18 @@ midimapper::read_maps (const std::string & filename)
 
       if (result)
       {
-         initree::const_iterator ici;
          m_drum_map.clear();
          m_patch_map.clear();
-         for (ici = it.begin(); ici != it.end(); ici++)
+         for (initree::const_iterator ici = it.begin(); ici != it.end(); ++ici)
          {
             const initree::Section & section = ici->second;
             if (! section.name().empty())       // if not the unnamed section
             {
+#ifdef MIDICVT_ANNOTATIONS
+               std::string gmvaluename;
+               std::string devvaluename;
+               std::string gmname;
+#endif
                int gmvalue = NOT_ACTIVE;
                int devvalue = NOT_ACTIVE;
                gm_ini_section_t sect = INI_SECTION_UNKNOWN;
@@ -228,7 +273,9 @@ midimapper::read_maps (const std::string & filename)
                   0, DRUM_SECTION.size(), DRUM_SECTION
                );
                if (c == 0)
+               {
                   sect = INI_SECTION_DRUM;
+               }
                else
                {
                   c = section.name().compare
@@ -260,6 +307,20 @@ midimapper::read_maps (const std::string & filename)
                   sci = section.find(DRUM_LABEL_DEV_NOTE);
                   if (sci != section.end())
                      devvalue = atoi(sci->second.c_str());
+
+#ifdef MIDICVT_ANNOTATIONS
+                  sci = section.find(DRUM_LABEL_GM_NAME);
+                  if (sci != section.end())
+                     gmvaluename = sci->second;
+
+                  sci = section.find(DRUM_LABEL_DEV_NAME);
+                  if (sci != section.end())
+                     devvaluename = sci->second;
+
+                  sci = section.find(DRUM_LABEL_GM_EQUIV);
+                  if (sci != section.end())
+                     gmname = sci->second;
+#endif
                }
                else if (sect == INI_SECTION_PATCH)
                {
@@ -270,6 +331,20 @@ midimapper::read_maps (const std::string & filename)
                   sci = section.find(PATCH_LABEL_DEV_PATCH);
                   if (sci != section.end())
                      devvalue = atoi(sci->second.c_str());
+
+#ifdef MIDICVT_ANNOTATIONS
+                  sci = section.find(PATCH_LABEL_GM_NAME);
+                  if (sci != section.end())
+                     gmvaluename = sci->second;
+
+                  sci = section.find(PATCH_LABEL_DEV_NAME);
+                  if (sci != section.end())
+                     devvaluename = sci->second;
+
+                  sci = section.find(PATCH_LABEL_GM_EQUIV);
+                  if (sci != section.end())
+                     gmname = sci->second;
+#endif
                }
                result = active(gmvalue, devvalue);
                if (result)
@@ -279,34 +354,37 @@ midimapper::read_maps (const std::string & filename)
                      int temp = gmvalue;
                      gmvalue = devvalue;
                      devvalue = temp;
+#ifdef MIDICVT_ANNOTATIONS
+                     std::string stemp = gmvaluename;
+                     gmvaluename = devvaluename;
+                     devvaluename = stemp;
+                     gmname = devvaluename;
+#endif
                   }
 
-                  /*
-                   * std::map::insert<> returns a pair of values:  an
-                   * iterator into the map, and a boolean value for
-                   * success/failure.  If the insertion fails, the pair is
-                   * already in the map.  We tell the user about this, but
-                   * do not treat it as a fatal error.
-                   */
-
-                  std::pair<std::map<int, int>::iterator, bool> result_pair;
-                  std::pair<int, int> p = std::make_pair(gmvalue, devvalue);
+#ifdef MIDICVT_ANNOTATIONS
+                  annotation an(devvalue, gmvaluename, devvaluename, gmname);
+                  midimap_pair p = std::make_pair(gmvalue, an);
+#else
+                  midimap_pair p = std::make_pair(gmvalue, devvalue);
+#endif
+                  midimap_result resultpair;
                   if (sect == INI_SECTION_DRUM)
-                     result_pair = m_drum_map.insert(p);
+                     resultpair = m_drum_map.insert(p);
                   else if (sect == INI_SECTION_PATCH)
-                     result_pair = m_patch_map.insert(p);
+                     resultpair = m_patch_map.insert(p);
 
-                  result = result_pair.second;
+                  result = resultpair.second;
                   if (result)
                   {
-                     m_record_count++;
+                     ++m_record_count;
                   }
                   else
                   {
                      char temp[80];
                      snprintf
                      (
-                        temp, sizeof(temp), "note pair (%d,%d) not inserted",
+                        temp, sizeof temp, "value pair (%d, %d) not inserted",
                         gmvalue, devvalue
                      );
                      errprint(temp);
@@ -315,7 +393,7 @@ midimapper::read_maps (const std::string & filename)
                }
                else
                {
-                  errprint("missing note value");
+                  errprint("missing value value");
                   break;
                }
             }
@@ -344,6 +422,13 @@ midimapper::read_maps (const std::string & filename)
  *    file.  Note than an unnamed section is treated differently:  The
  *    "gm_channel" and "device_channel" values are looked up and set.
  *
+ * \change ca 2016-04-17
+ *    We no longer error and break if an unnamed-section value tag is not
+ *    present.  It should merely disable the functionality of that tag,
+ *    not the whole remapping file.  Note that this functionality was
+ *    never part of the unit test, and we ought to fix that lack at some
+ *    point.
+ *
  * \param it
  *    Provides the tree of INI name/value pairs to analyze.
  *
@@ -359,13 +444,11 @@ midimapper::read_unnamed_section (const initree & it)
    bool result = it.size() > 0;
    if (result)
    {
-      initree::const_iterator ici;
-
       /*
        * Can we speed this up by calling find("")?
        */
 
-      for (ici = it.begin(); ici != it.end(); ici++)
+      for (initree::const_iterator ici = it.begin(); ici != it.end(); ++ici)
       {
          const initree::Section & section = ici->second;
          if (section.name().empty())               // if the unnamed section
@@ -373,22 +456,30 @@ midimapper::read_unnamed_section (const initree & it)
             initree::Section::const_iterator sci;
             sci = section.find(GM_INI_GM_CHANNEL);
             if (sci != section.end())
+            {
                m_gm_channel = atoi(sci->second.c_str()) - 1;
+            }
             else
             {
-               result = false;
-               break;
+               /*
+                * \change ca 2016-04-17
+                * result = false;
+                * break;
+                */
             }
-
             sci = section.find(GM_INI_DEV_CHANNEL);
             if (sci != section.end())
+            {
                m_device_channel = atoi(sci->second.c_str()) - 1;
+            }
             else
             {
-               result = false;
-               break;
+               /*
+                * \change ca 2016-04-17
+                * result = false;
+                * break;
+                */
             }
-
             sci = section.find(GM_INI_FILE_STYLE);
             if (sci != section.end())
                m_file_style = sci->second;
@@ -399,7 +490,6 @@ midimapper::read_unnamed_section (const initree & it)
                if (sci != section.end())
                   m_setup_name = sci->second;
             }
-
             sci = section.find(GM_INI_MAP_TYPE);
             if (sci != section.end())
                m_map_type = sci->second;
@@ -417,7 +507,6 @@ midimapper::read_unnamed_section (const initree & it)
                   }
                }
             }
-
             sci = section.find(GM_INI_REJECT_CHANNEL);
             if (sci != section.end())
             {
@@ -431,7 +520,6 @@ midimapper::read_unnamed_section (const initree & it)
                   }
                }
             }
-
             sci = section.find(GM_INI_REVERSE);
             if (sci != section.end())
                m_map_reversed = sci->second == "true";
@@ -514,13 +602,13 @@ midimapper::read_channel_section (const initree & it)
                            inchannel = outchannel;
                            outchannel = temp;
                         }
-                        std::pair<std::map<int, int>::iterator, bool> res_pair;
+
                         std::pair<int, int> p = std::make_pair
                         (
                            inchannel, outchannel
                         );
-                        res_pair = m_channel_map.insert(p);
-                        result = res_pair.second;
+                        intmap_result respair = m_channel_map.insert(p);
+                        result = respair.second;
                      }
                   }
                }
@@ -563,9 +651,18 @@ midimapper::repitch (int channel, int input)
 {
    if (channel == m_device_channel)
    {
-      std::map<int, int>::const_iterator ni = m_drum_map.find(input);
+#ifdef MIDICVT_ANNOTATIONS
+      iterator ni = m_drum_map.find(input);
+      if (ni != m_drum_map.end())
+      {
+         input = ni->second.value();
+         ni->second.increment_count();
+      }
+#else
+      const_iterator ni = m_drum_map.find(input);
       if (ni != m_drum_map.end())
          input = ni->second;
+#endif
    }
    return input;
 }
@@ -665,32 +762,46 @@ midimapper::rechannel (int channel)
 int
 midimapper::repatch (int program)
 {
-   std::map<int, int>::const_iterator ni = m_patch_map.find(program);
+#ifdef MIDICVT_ANNOTATIONS
+   iterator ni = m_patch_map.find(program);
+   if (ni != m_patch_map.end())
+   {
+      program = ni->second.value();
+      ni->second.increment_count();
+   }
+#else
+   const_iterator ni = m_patch_map.find(program);
    if (ni != m_patch_map.end())
       program = ni->second;
+#endif
 
    return program;
 }
 
-}                 // namespace midipp
-
 /**
  *    Writes out the contents of the pitch-map container out to stderr.
- *
  *    We can't write to stdout because that is often redirected to a file.
- *
- *    This implementation is a for_each style of looping through the
+ *    This implementation is a for_each style of looping through each
  *    container.
  *
  * \param tag
  *    Identifies the object in the human-readable output.
  *
  * \param container
- *    The stringmap through which iteration is done for showing.
+ *    The midimapper through which iteration is done for showing.
+ *
+ * \param full_output
+ *    Defaults to true, which means to show everything.  If false,
+ *    map entries not used in the conversion are not shown.
  */
 
 void
-show_maps (const std::string & tag, const midipp::midimapper & container)
+show_maps
+(
+   const std::string & tag,
+   const midipp::midimapper & container,
+   bool full_output
+)
 {
    fprintf
    (
@@ -724,32 +835,79 @@ show_maps (const std::string & tag, const midipp::midimapper & container)
    );
    if (! container.drum_map().empty())
    {
-      const char * fpformat = container.map_reversed() ?
-         "-    Out note #%d <--- In #%d\n" :
-         "-    In note #%d  ---> Out #%d\n" ;
+#ifdef MIDICVT_ANNOTATIONS
+      const char * fpformat = 
+         "- %4d: Note  #%2d  %-24s ---> #%2d  %-24s (%s)\n";
+#else
+      const char * fpformat = "-    Note #%2d  ---> #%2d\n" ;
+#endif
 
       int testcounter = 0;
-      std::map<int, int>::const_iterator mi;
-      for
-      (
-         mi = container.drum_map().begin();
-         mi != container.drum_map().end(); ++mi
-      )
+      midipp::midimapper::const_iterator mi = container.drum_map().begin();
+      for ( ; mi != container.drum_map().end(); ++mi)
       {
+#ifdef MIDICVT_ANNOTATIONS
+         std::string gmname;
+         std::string devname;
+         std::string equivname;
+#endif
          int gm;
          int dev;
-         if (container.map_reversed())
+         bool show_it = full_output;
+#ifdef MIDICVT_ANNOTATIONS
+         if (! full_output)
+            show_it = mi->second.count() > 0;
+#endif
+
+         if (show_it)
          {
-            gm = mi->second;
-            dev = mi->first;
+            /*
+             * Not sure why we're reversing these here.  They were already
+             * reversed when the containers were created.
+             */
+
+#if 0
+            if (container.map_reversed())
+            {
+               dev = mi->first;
+#ifdef MIDICVT_ANNOTATIONS
+               gm = mi->second.value();
+               gmname = mi->second.value_name();
+#else
+               gm = mi->second;
+#endif
+            }
+            else
+            {
+#endif
+
+               gm = mi->first;
+#ifdef MIDICVT_ANNOTATIONS
+               dev = mi->second.value();
+               gmname = mi->second.key_name();
+               devname = mi->second.value_name();
+               equivname = mi->second.gm_name();
+#else
+               dev = mi->second;
+#endif
+
+#if 0
+            }
+#endif
+
+#ifdef MIDICVT_ANNOTATIONS
+            fprintf
+            (
+               stderr, fpformat,
+               mi->second.count(), gm, gmname.c_str(),
+               dev, devname.c_str(),
+               equivname.c_str()
+            );
+#else
+            fprintf(stderr, fpformat, gm, dev);
+#endif
+            ++testcounter;
          }
-         else
-         {
-            gm = mi->first;
-            dev = mi->second;
-         }
-         fprintf(stderr, fpformat, gm, dev);
-         ++testcounter;
       }
       fprintf(stderr, "-    %d drum records dumped\n", testcounter);
    }
@@ -763,76 +921,122 @@ show_maps (const std::string & tag, const midipp::midimapper & container)
    );
    if (! container.patch_map().empty())
    {
-      const char * fpformat = container.map_reversed() ?
-         "-    Out patch #%d <--- In #%d\n" :
-         "-    In patch #%d ---> Out #%d\n" ;
+#ifdef MIDICVT_ANNOTATIONS
+      const char * fpformat = 
+         "- %4d: Patch #%3d %-24s ---> #%3d %-24s (%s)\n";
+#else
+      const char * fpformat = "-    Patch #%3d  ---> #%3d\n" ;
+#endif
 
       int testcounter = 0;
-      std::map<int, int>::const_iterator mi;
-      for
-      (
-         mi = container.patch_map().begin();
-         mi != container.patch_map().end(); ++mi
-      )
+      midipp::midimapper::const_iterator mi = container.patch_map().begin();
+      for ( ; mi != container.patch_map().end(); ++mi)
       {
+#ifdef MIDICVT_ANNOTATIONS
+         std::string gmname;
+         std::string devname;
+         std::string equivname;
+#endif
          int gm;
          int dev;
-         if (container.map_reversed())
+         bool show_it = full_output;
+#ifdef MIDICVT_ANNOTATIONS
+         if (! full_output)
+            show_it = mi->second.count() > 0;
+#endif
+
+         if (show_it)
          {
-            gm = mi->second;
-            dev = mi->first;
+            /*
+             * Not sure why we're reversing these here.  They were already
+             * reversed when the containers were created.
+             */
+#if 0
+            if (container.map_reversed())
+            {
+               gm = mi->second;
+               dev = mi->first;
+            }
+            else
+            {
+#endif
+               gm = mi->first;
+#ifdef MIDICVT_ANNOTATIONS
+               dev = mi->second.value();
+               gmname = mi->second.key_name();
+               devname = mi->second.value_name();
+               equivname = mi->second.gm_name();
+#else
+               dev = mi->second;
+#endif
+#if 0
+            }
+#endif
+#ifdef MIDICVT_ANNOTATIONS
+            fprintf
+            (
+               stderr, fpformat,
+               mi->second.count(), gm, gmname.c_str(),
+               dev, devname.c_str(),
+               equivname.c_str()
+            );
+#else
+            fprintf(stderr, fpformat, gm, dev);
+#endif
+            ++testcounter;
          }
-         else
-         {
-            gm = mi->first;
-            dev = mi->second;
-         }
-         fprintf(stderr, fpformat, gm, dev);
-         ++testcounter;
       }
       fprintf(stderr, "-    %d patch records dumped\n", testcounter);
    }
-   fprintf
-   (
-      stderr,
-      "- Channel map:\n"
-      "-    Size:                     %d\n"
-      ,
-      int(container.channel_map().size())
-   );
-   if (! container.channel_map().empty())
+   if (full_output)
    {
-      const char * fpformat = container.map_reversed() ?
-         "-    Out channel #%d <--- In #%d\n" :
-         "-    In channel #%d ---> Out #%d\n" ;
-
-
-      int testcounter = 0;
-      std::map<int, int>::const_iterator mi;
-      for
+      fprintf
       (
-         mi = container.channel_map().begin();
-         mi != container.channel_map().end(); ++mi
-      )
+         stderr,
+         "- Channel map:\n"
+         "-    Size:                     %d\n"
+         ,
+         int(container.channel_map().size())
+      );
+      if (! container.channel_map().empty())
       {
-         int in;
-         int out;
-         if (container.map_reversed())
+         const char * fpformat = "-    Channel #%2d ---> #%2d\n" ;
+
+         /*
+          * Currently the channel map is never reversed.
+          *
+          * "-    Out channel #%d <--- In  #%d\n" :
+          */
+
+         int testcounter = 0;
+         std::map<int, int>::const_iterator mi = container.channel_map().begin();
+         for ( ; mi != container.channel_map().end(); ++mi)
          {
-            in = mi->second;
-            out = mi->first;
+            int in;
+            int out;
+#if 0
+            if (container.map_reversed())
+            {
+               in = mi->second;
+               out = mi->first;
+            }
+            else
+            {
+#endif
+               in = mi->first;
+               out = mi->second;
+#if 0
+            }
+#endif
+            fprintf(stderr, fpformat, in + 1, out + 1);
+            ++testcounter;
          }
-         else
-         {
-            in = mi->first;
-            out = mi->second;
-         }
-         fprintf(stderr, fpformat, in + 1, out + 1);
-         ++testcounter;
+         fprintf(stderr, "-    %d channel records dumped\n", testcounter);
       }
-      fprintf(stderr, "-    %d channel records dumped\n", testcounter);
    }
 }
+
+}                 // namespace midipp
 
 /**
  *    Holds the single pointer to the midipp::midimapper object the caller

@@ -29,7 +29,7 @@
  * \library       midicvtpp application
  * \author        Chris Ahlstrom
  * \date          2014-04-19
- * \updates       2016-04-15
+ * \updates       2016-04-17
  * \version       $Revision$
  * \license       GNU GPL
  *
@@ -81,9 +81,12 @@ static const char * const gs_help_usage_1 =
    "\n"
    "The following options require the --m2m option:\n"
    "\n"
-   " --reverse       Reverse the mapping specified by --m2m.\n"
+   " --reverse       Reverse the mapping specified by --m2m. Not all mappings.\n"
+   "                 can be fully reversed; unique key values are required in\n"
+   "                 both directions.\n"
    " --extract n     Write only channel events from channel n, n = 1 to 16.\n"
    " --reject n      Write only channel events not from channel n.\n"
+   " --summarize     Show a summary count of the conversions that occurred.\n"
    " --testing       Only the programmer knows what this one does. :-D\n"
    "\n"
    ;
@@ -171,6 +174,15 @@ static int s_filter_channel = -1;
 static bool s_rejection_on = false;
 
 /**
+ *    Indicates that we want summary output, which is set using the
+ *    --summarize option.  This output is similar to
+ *    that produced by the --debug option, but only shows values that were
+ *    actually converted during the MIDI mapping.
+ */
+
+static bool s_summarize_conversion = false;
+
+/**
  *    Parses midicvtpp the command-line for options.
  *
  *    First, calls midicvt_parse() to get the midicvt options, and then
@@ -225,6 +237,10 @@ midicvtpp_parse (int argc, char * argv [])
          else if (check_option(argv[option_index], "", "--reverse"))
          {
             s_m2m_reversal = true;
+         }
+         else if (check_option(argv[option_index], "", "--summarize"))
+         {
+            s_summarize_conversion = true;
          }
          else if (check_option(argv[option_index], "", "--extract"))
          {
@@ -402,6 +418,8 @@ main (int argc, char * argv [])
             {
                midimap_init(m);        /* hook it in and set it all up        */
                mftransform();          /* a new version of mfread()           */
+               if (s_summarize_conversion)
+                  show_maps("Conversions", m, false);
             }
             midicvt_close_mfread();
          }

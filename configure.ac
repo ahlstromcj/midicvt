@@ -16,8 +16,8 @@ dnl
 dnl ---------------------------------------------------------------------------
 
 AC_PREREQ(2.60)
-AC_REVISION($Revision: 0.3$)dnl
-AC_INIT(midicvt, [0.3.3], [ahlstromcj@gmail.com])
+AC_REVISION($Revision: 0.4$)dnl
+AC_INIT(midicvt, [0.4.0], [ahlstromcj@gmail.com])
 AC_CONFIG_AUX_DIR([aux-files])
 
 dnl AC_CONFIG_SRCDIR([libmidifilex/src/midifilex.c])
@@ -51,7 +51,7 @@ PACKAGE=midicvt
 AC_DEFINE_UNQUOTED(PACKAGE, "$PACKAGE")
 AC_SUBST(PACKAGE)
 
-VERSION="0.3.3.7"
+VERSION="0.4.0.0"
 AC_DEFINE_UNQUOTED(VERSION, "$VERSION")
 AC_SUBST(VERSION)
 
@@ -265,8 +265,8 @@ dnl            "MIDICVT_" to these values when it generated midicvt-config.h.
 AH_TOP(
 
 #define VERSION_DATE_SHORT "2016-04-16"
-#define VERSION "0.3.3.7"
-#define API_VERSION "0.3"
+#define VERSION "0.4.0.0"
+#define API_VERSION "0.4"
 
 )
 
