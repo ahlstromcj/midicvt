@@ -28,7 +28,7 @@
  * \library       midicvt application
  * \author        Chris Ahlstrom
  * \date          2014-04-19
- * \updates       2016-04-17
+ * \updates       2016-04-18
  * \version       $Revision$
  * \license       GNU GPL
  *
@@ -51,7 +51,7 @@
  *    will provide a string, though.
  */
 
-static const char * const gs_help_version = "midicvt v 0.3.3.7";
+static const char * const gs_help_version = "midicvt v 0.4.0.0";
 
 /**
  *    Help string.  Because of legacy C rules, we have to define 5

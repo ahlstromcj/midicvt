@@ -1,0 +1,35 @@
+midipp::midimap 'Conversions':
+   INI style:               'sectioned'
+   Setup name:              'midicvtpp'
+   Map type:                'multi'
+   Record count:             179
+   GM channel:               10
+   Device channel:           17
+   Filter channel:           1
+   Extract channel:          false
+   Reject channel:           false
+   Reverse map:              false
+Drum/note map:
+   Size:                     51
+ 786: Note  #38  Acoustic Snare           ---> #40  Synth Snare              (Electric Snare)
+ 782: Note  #44  Pedal Hi-Hat             ---> #35  Bass Drum Low            (Acoustic Bass Drum)
+ 790: Note  #45  Low Tom                  ---> #36  Bass Drum High           (Bass Drum 1)
+ 604: Note  #49  Crash Cymbal 1           ---> #40  Snare High               (Electric Snare)
+  10: Note  #50  High Tom                 ---> #47  Tom Mid                  (Low-Mid Tom)
+   2: Note  #51  Ride Cymbal 1            ---> #37  Rim Shot 2               (Side Stick)
+  70: Note  #52  Chinese Cymbal           ---> #38  Snare Low                (Acoustic Snare)
+1296: Note  #57  Crash Cymbal 2           ---> #42  High Hat Closed          (Closed Hi-Hat)
+ 470: Note  #60  Hi Bongo                 ---> #49  C3 Crash Cymbal          (Crash Cymbal 1)
+   6: Note  #61  Low Bongo                ---> #55  Splash Cymbal            (Splash Cymbal)
+ 166: Note  #62  Mute Hi Conga            ---> #51  Ride Cymbal Cup          (Ride Cymbal 1)
+  14: Note  #63  Open Hi Conga            ---> #59  Ride Cymbal Edge         (Ride Cymbal 2)
+   12 drum records dumped
+Patch/program map:
+   Size:                     128
+   2: Patch #  0 Acoustic Grand Piano     ---> # 62 Synth Brass 1            (Synth Brass 1)
+   1: Patch # 12 Marimba                  ---> # 26 Jazz Guitar              (Elec. Guitar (jazz))
+   1: Patch # 25 Acoustic Guitar (steel)  ---> #  3 Honkytonk Piano          (Honky-tonk Piano)
+   1: Patch # 38 Synth Bass 1             ---> # 33 Elec Bass                (Elec. Bass (finger))
+   1: Patch # 72 Piccolo                  ---> # 25 12-string Guitar         (Acou. Guitar (steel))
+   1: Patch # 87 Lead 8 (bass + lead)     ---> # 69 Flugelhorn               (English Horn)
+   6 patch records dumped

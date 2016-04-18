@@ -16,7 +16,7 @@ the ability to directly perform some MIDI file conversions, without the need
 for scripting.
 
 \page       midicvtpp   midicvtpp
-\author     Chris Ahlstrom 2016-04-17
+\author     Chris Ahlstrom 2016-04-18
 
 \section midicvtpp_intro MIDI to MIDI Mode
 
@@ -94,7 +94,48 @@ The following options require the --m2m option:
                  both directions.
  --extract n     Write only channel events from channel n, n = 1 to 16.
  --reject n      Write only channel events not from channel n.
+ --summarize     Show a summary count of the conversions that occurred.
  --testing       Only the programmer knows what this one does. :-D
+\endverbatim
+
+The <code>--summarize</code> option is new with version 0.4.  It
+causes a summary of the conversions made to be dumped to <code>stderr</code>.
+Here is an excerpt of the output:
+
+\verbatim
+Drum/note map:
+   Size:                     51
+ 786: Note  #38  Acoustic Snare       ---> #40  Synth Snare    (Electric Snare)
+ 782: Note  #44  Pedal Hi-Hat         ---> #35  Bass Drum Low  (Acoustic Bass Drum)
+   . . .
+Patch/program map:
+   Size:                     128
+   2: Patch #  0 Acoustic Grand Piano ---> # 62 Synth Brass 1  (Synth Brass 1)
+   1: Patch # 12 Marimba              ---> # 26 Jazz Guitar    (Elec. Guitar (jazz))
+   . . .
+\endverbatim
+
+To get a permanent copy of this output, redirect <code>stderr</code> to a file:
+
+\verbatim
+   $ midicvtpp/midicvtpp --summarize --m2m tests/inifiles/GM_PSS-790_Multi.ini \
+         tests/midifiles/b4uacuse.mid b.mid 2> annotate.txt
+\endverbatim
+
+One can also go in the reverse direction:
+
+\verbatim
+   $ midicvtpp/midicvtpp --reverse  --summarize \
+         --m2m tests/inifiles/GM_PSS-790_Multi.ini \
+         b.mid b-reverse.mid 2> annotate-reverse.txt
+\endverbatim
+
+Since reverse mappings might not have unique mapped value, unless one is very
+careful, the output will likely be preceded by a number of errors:
+
+\verbatim
+   ? value pair (35, 44) not inserted
+   ? value pair (36, 45) not inserted
 \endverbatim
 
 \subsection midicvtpp_usage_csv_drums midicvtpp --csv-drums
@@ -134,9 +175,8 @@ enough, so no conversion to get close to GM equivalent "Bass Drum 1".
 The third line is tricky.  GM note 37 is GM drum "Side Stick".
 The PSS-790 has no "Side Stick" sound at all.
 PSS-790 note 37 is "Triangle Mute".  So we want to convert any drum note
-37 in a PSS-790 MIDI file to the "Triangle Mute" GM note value, which is
-80.  It's official name in GM format is "Mute Triangle".
-
+37 in a PSS-790 MIDI file to the "Triangle Mute" GM note value, which is 80.
+It's official name in GM format is "Mute Triangle".
 So let us summarize the entries in this CSV record:
 
    -# Name of the input note in GM terms. "Side Stick".

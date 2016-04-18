@@ -777,19 +777,19 @@ show_maps
    fprintf
    (
       stderr,
-      "- midipp::midimap '%s':\n"
-      "-    INI style:               '%s'\n"
-      "-    Setup name:              '%s'\n"
-      "-    Map type:                '%s'\n"
-      "-    Record count:             %d\n"
-      "-    GM channel:               %d\n"
-      "-    Device channel:           %d\n"
-      "-    Filter channel:           %d\n"
-      "-    Extract channel:          %s\n"
-      "-    Reject channel:           %s\n"
-      "-    Reverse map:              %s\n"
-      "- Drum/note map:\n"
-      "-    Size:                     %d\n"
+      "midipp::midimap '%s':\n"
+      "   INI style:               '%s'\n"
+      "   Setup name:              '%s'\n"
+      "   Map type:                '%s'\n"
+      "   Record count:             %d\n"
+      "   GM channel:               %d\n"
+      "   Device channel:           %d\n"
+      "   Filter channel:           %d\n"
+      "   Extract channel:          %s\n"
+      "   Reject channel:           %s\n"
+      "   Reverse map:              %s\n"
+      "Drum/note map:\n"
+      "   Size:                     %d\n"
       ,
       tag.c_str(),
       container.file_style().c_str(),
@@ -807,7 +807,7 @@ show_maps
    if (! container.drum_map().empty())
    {
       const char * fpformat = 
-         "- %4d: Note  #%2d  %-24s ---> #%2d  %-24s (%s)\n";
+         "%4d: Note  #%2d  %-24s ---> #%2d  %-24s (%s)\n";
 
       int testcounter = 0;
       midipp::midimapper::const_iterator mi = container.drum_map().begin();
@@ -857,20 +857,20 @@ show_maps
             ++testcounter;
          }
       }
-      fprintf(stderr, "-    %d drum records dumped\n", testcounter);
+      fprintf(stderr, "   %d drum records dumped\n", testcounter);
    }
    fprintf
    (
       stderr,
-      "- Patch/program map:\n"
-      "-    Size:                     %d\n"
+      "Patch/program map:\n"
+      "   Size:                     %d\n"
       ,
       int(container.patch_map().size())
    );
    if (! container.patch_map().empty())
    {
       const char * fpformat = 
-         "- %4d: Patch #%3d %-24s ---> #%3d %-24s (%s)\n";
+         "%4d: Patch #%3d %-24s ---> #%3d %-24s (%s)\n";
 
       int testcounter = 0;
       midipp::midimapper::const_iterator mi = container.patch_map().begin();
@@ -918,7 +918,7 @@ show_maps
             ++testcounter;
          }
       }
-      fprintf(stderr, "-    %d patch records dumped\n", testcounter);
+      fprintf(stderr, "   %d patch records dumped\n", testcounter);
    }
    if (full_output)
    {
@@ -932,7 +932,7 @@ show_maps
       );
       if (! container.channel_map().empty())
       {
-         const char * fpformat = "-    Channel #%2d ---> #%2d\n" ;
+         const char * fpformat = "   Channel #%2d ---> #%2d\n" ;
 
          /*
           * Currently the channel map is never reversed.
@@ -963,7 +963,7 @@ show_maps
             fprintf(stderr, fpformat, in + 1, out + 1);
             ++testcounter;
          }
-         fprintf(stderr, "-    %d channel records dumped\n", testcounter);
+         fprintf(stderr, "   %d channel records dumped\n", testcounter);
       }
    }
 }
