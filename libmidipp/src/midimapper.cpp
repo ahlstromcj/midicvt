@@ -783,8 +783,8 @@ show_maps
       "   Setup name:              '%s'\n"
       "   Map type:                '%s'\n"
       "   Record count:             %d\n"
-      "   GM channel:               %d\n"
-      "   Device channel:           %d\n"
+      "   GM drum channel:          %d\n"
+      "   Device drum channel:      %d\n"
       "   Filter channel:           %d\n"
       "   Extract channel:          %s\n"
       "   Reject channel:           %s\n"
@@ -799,7 +799,7 @@ show_maps
       container.record_count(),
       container.gm_channel(),             // accessor adds 1 automatically
       container.device_channel(),         // ditto
-      container.filter_channel(),         // tritto
+      container.filter_channel(),         // tritto, unless NOT_ACTIVE
       bool_to_cstr(container.extract()),
       bool_to_cstr(container.reject()),
       bool_to_cstr(container.map_reversed()),

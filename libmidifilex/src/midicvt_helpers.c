@@ -28,7 +28,7 @@
  * \library       midicvt application
  * \author        Chris Ahlstrom
  * \date          2014-04-19
- * \updates       2016-04-18
+ * \updates       2016-04-19
  * \version       $Revision$
  * \license       GNU GPL
  *
@@ -510,7 +510,7 @@ midicvt_parse (int argc, char * argv [], const char * version)
           {
              if (argv[option_index+1][0] != '-')
              {
-                option_index++;        // skip m2m filename here in C scan
+                option_index++;        /* skip m2m filename here in C scan */
              }
              else
              {

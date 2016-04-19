@@ -60,7 +60,7 @@
  * \author        Other authors (see below), with modifications by Chris
  *                Ahlstrom,
  * \date          2014-04-08
- * \updates       2016-02-08
+ * \updates       2016-04-19
  * \version       $Revision$
  * \license       GNU GPL
  *
@@ -1185,7 +1185,7 @@ get_lookfor_sysex ()
    return result;
 }
 
-#endif   // USE_GET_LOOKFOR_SYSEX
+#endif   /* USE_GET_LOOKFOR_SYSEX */
 
 /**
  *    Helper code for SysEx continuation errors.
