@@ -28,7 +28,7 @@
  * \library       libmidipp
  * \author        Chris Ahlstrom
  * \date          2014-04-24
- * \updates       2016-04-17
+ * \updates       2016-04-19
  * \version       $Revision$
  * \license       GNU GPL
  *
@@ -181,11 +181,12 @@ midimapper::midimapper
    m_device_channel  (NOT_ACTIVE),
    m_filter_channel
    (
-      filter_channel != NOT_ACTIVE ? filter_channel - 1 : NOT_ACTIVE
+      (filter_channel > 0 && filter_channel <= 16) ?
+         filter_channel - 1 : NOT_ACTIVE
    ),
    m_extraction_on
    (
-      filter_channel != NOT_ACTIVE && filter_channel <= 16
+      filter_channel > 0 && filter_channel <= 16
    ),
    m_rejection_on    (m_extraction_on && reject_it),
    m_map_reversed    (reverse_it),
@@ -796,12 +797,12 @@ show_maps
       container.setup_name().c_str(),
       container.map_type().c_str(),
       container.record_count(),
-      container.gm_channel(),
-      container.device_channel() + 1,
-      container.filter_channel() + 1,
-      container.extract() ? "true" : "false",
-      container.reject() ? "true" : "false",
-      container.map_reversed() ? "true" : "false",
+      container.gm_channel(),             // accessor adds 1 automatically
+      container.device_channel(),         // ditto
+      container.filter_channel(),         // tritto
+      bool_to_cstr(container.extract()),
+      bool_to_cstr(container.reject()),
+      bool_to_cstr(container.map_reversed()),
       int(container.drum_map().size())
    );
    if (! container.drum_map().empty())

@@ -31,7 +31,7 @@
  * \library       libmidipp
  * \author        Chris Ahlstrom
  * \date          2014-04-24
- * \updates       2016-04-17
+ * \updates       2016-04-19
  * \version       $Revision$
  * \license       GNU GPL
  *
@@ -543,11 +543,15 @@ public:
 
    /**
     * @getter m_filter_channel
-    */
+    */ 
 
    int filter_channel () const
    {
-      return m_filter_channel + 1;
+      int result = m_filter_channel;
+      if (m_filter_channel >= 0 && m_filter_channel < 16)
+         result = m_filter_channel + 1;
+
+      return result;
    }
 
    /**

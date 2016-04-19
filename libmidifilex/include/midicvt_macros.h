@@ -10,7 +10,7 @@
  * \library       libmidifilex
  * \author        Chris Ahlstrom and other authors; see documentation
  * \date          2013-11-17
- * \updates       2014-04-20
+ * \updates       2016-04-19
  * \version       $Revision$
  * \license       GNU GPL
  *
@@ -21,7 +21,7 @@
  *       -  Language-support macros.
  *       -  Error and information output macros.
  *
- * Copyright (C) 2013-2013 Chris Ahlstrom <ahlstrom@users.sourceforge.net>
+ * Copyright (C) 2013-2016 Chris Ahlstrom <ahlstrom@users.sourceforge.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -166,6 +166,12 @@ typedef bool cbool_t;
 #ifndef __cplus_plus
 #define true     1
 #endif
+
+/**
+ *    Provides an easy way to convert a boolean to a string.
+ */
+
+#define bool_to_cstr(x)       ((x) ? "true" : "false")
 
 /**
  *    Provides an error reporting macro (which happens to match Chris's XPC

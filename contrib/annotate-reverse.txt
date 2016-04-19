@@ -63,8 +63,8 @@ midipp::midimap 'Conversions':
    Map type:                'multi'
    Record count:             120
    GM channel:               16
-   Device channel:           11
-   Filter channel:           1
+   Device channel:           10
+   Filter channel:           -1
    Extract channel:          false
    Reject channel:           false
    Reverse map:              true
