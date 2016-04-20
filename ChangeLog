@@ -1,7 +1,43 @@
+2016-04-19  Chris Ahlstrom <ahlstrom@centiped>
+
+	* libmidifilex/src/midicvt_helpers.c, libmidifilex/src/midifilex.c,
+	libmidipp/src/iniwriting.cpp, libmidipp/src/midimapper.cpp: Fixed
+	minor compiler warnings.  Preparing to merge annotation branch back
+	into master.
+	* contrib/annotate-reverse.txt, contrib/annotate.txt,
+	libmidifilex/include/midicvt_macros.h,
+	libmidipp/include/midimapper.hpp, libmidipp/src/midimapper.cpp: 
+	Fixed a couple bugs in midimapper filter settings and display.
+
+2016-04-18  Chris Ahlstrom <ahlstromcj@gmail.com>
+
+	* README.md, bootstrap, contrib/annotate-reverse.txt,
+	contrib/annotate.txt, doc/dox/doxy-reference.cfg,
+	doc/dox/doxy-userman.cfg, doc/dox/midicvt_midi_to_midi.dox,
+	libmidifilex/include/VERSION.h, libmidifilex/src/midicvt_helpers.c,
+	libmidipp/src/midimapper.cpp: Added documentation of the summarize
+	option, and updated version to 0.4 in annotation branch.
+
+2016-04-17  Chris Ahlstrom <ahlstromcj@gmail.com>
+
+	* libmidifilex/src/midicvt_helpers.c,
+	libmidipp/include/midimapper.hpp, libmidipp/src/midimapper.cpp: 
+	Fixed bug where MIDI file is truncated to 0 size if no -i option is
+	used to specify it.
+	* configure.ac, doc/dox/Makefile.am,
+	doc/dox/midicvt_midi_to_midi.dox, libmidifilex/src/midicvt_base.c,
+	libmidifilex/src/midicvt_helpers.c, libmidifilex/src/midicvt_m2m.c,
+	libmidipp/include/midimapper.hpp, libmidipp/src/iniwriting.cpp,
+	libmidipp/src/midimapper.cpp, midicvtpp/midicvtpp_main.cpp,
+	tests/inifiles/GM-excerpt-original.ini,
+	tests/inifiles/GM-excerpt.ini, tests/test_script: Added initial
+	version of annotated summary dump feature, basically works, some
+	refinement and cleanup still needed.
+
 2016-04-16  Chris Ahlstrom <ahlstromcj@gmail.com>
 
 	* README.md, bootstrap, configure.ac, data/GM_PSS-790_Multi.ini,
-	data/Makefile.am, doc/dox/doxy-reference.cfg,
+	data/Makefile.am, doc/dox/doxy-reference.cfg:
 	Modify csv conversion and INI files to quote the drum and patch names.
 
 2016-04-15  Chris Ahlstrom <ahlstromcj@gmail.com>

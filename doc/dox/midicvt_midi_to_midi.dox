@@ -16,7 +16,7 @@ the ability to directly perform some MIDI file conversions, without the need
 for scripting.
 
 \page       midicvtpp   midicvtpp
-\author     Chris Ahlstrom 2016-04-18
+\author     Chris Ahlstrom 2016-04-19
 
 \section midicvtpp_intro MIDI to MIDI Mode
 
@@ -97,6 +97,10 @@ The following options require the --m2m option:
  --summarize     Show a summary count of the conversions that occurred.
  --testing       Only the programmer knows what this one does. :-D
 \endverbatim
+
+For the "csv" options, see
+\ref midicvtpp_usage_csv_drums and
+\ref midicvtpp_usage_csv_patches.
 
 The <code>--summarize</code> option is new with version 0.4.  It
 causes a summary of the conversions made to be dumped to <code>stderr</code>.
@@ -217,19 +221,19 @@ For example, in the <code>tests</code> directory, we ran the following
 command to create <code>GM_PSS-790_Drums.ini</code>:
 
 \verbatim
-   $ ../midicvtpp/midicvtpp --csv-Patches csvfiles/GM_PSS-790_Patches.csv
+   $ ../midicvtpp/midicvtpp --csv-patches csvfiles/GM_PSS-790_Patches.csv
          --output inifiles/GM_PSS-790_Patches.ini
 \endverbatim
 
 We concatenated
 <code>GM_PSS-790_Drum.ini</code> and 
 <code>GM_PSS-790_Patches.ini</code> in order to make a combination INI
-file, <code>GM_PSS-790_Multi.ini</code>, the can perform both
-mappings.
+file, <code>GM_PSS-790_Multi.ini</code>, that can perform both
+mappings in the same run.
 
 These INI files are somewhat self-explanatory.  Further explanation can be
 found in the developer's reference manual,
-<i>midicvt_reference_manual.pdf</i>.
+<i>midicvt_reference_manual.pdf</i> and in the source code itself.
 
 \subsection midicvtpp_usage_m2m midicvtpp --m2m
 
