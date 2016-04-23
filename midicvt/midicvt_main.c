@@ -72,14 +72,14 @@ static const char * const s_help_version =
 /**
  *    Provides the entry-point for the midicvt program.
  *
- * @param argc
+ * \param argc
  *    Provides the standard count of the number of command-line arguments,
  *    including the name of the program.
  *
- * @param argv
+ * \param argv
  *    Provides the command-line arguments as an array of pointers.
  *
- * @return
+ * \return
  *    Returns a 0 value if the application succeeds, and a non-zero value
  *    otherwise.
  */

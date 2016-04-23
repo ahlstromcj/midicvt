@@ -1,69 +1,72 @@
-? value pair (35, 44) not inserted
-? value pair (36, 45) not inserted
-? value pair (41, 47) not inserted
-? value pair (45, 48) not inserted
-? value pair (40, 49) not inserted
-? value pair (47, 50) not inserted
-? value pair (37, 51) not inserted
-? value pair (48, 53) not inserted
-? value pair (75, 73) not inserted
-? value pair (55, 79) not inserted
-? value pair (40, 81) not inserted
-? value pair (45, 82) not inserted
-? value pair (47, 83) not inserted
-? value pair (48, 84) not inserted
-? value pair (62, 115) not inserted
-? value pair (7, 117) not inserted
-? value pair (26, 122) not inserted
-? value pair (27, 123) not inserted
-? value pair (24, 124) not inserted
-? value pair (30, 13) not inserted
-? value pair (56, 15) not inserted
-? value pair (71, 19) not inserted
-? value pair (26, 26) not inserted
-? value pair (19, 29) not inserted
-? value pair (7, 30) not inserted
-? value pair (23, 31) not inserted
-? value pair (42, 35) not inserted
-? value pair (25, 36) not inserted
-? value pair (36, 39) not inserted
-? value pair (25, 40) not inserted
-? value pair (42, 42) not inserted
-? value pair (59, 44) not inserted
-? value pair (71, 45) not inserted
-? value pair (46, 46) not inserted
-? value pair (73, 47) not inserted
-? value pair (48, 48) not inserted
-? value pair (51, 51) not inserted
-? value pair (6, 53) not inserted
-? value pair (56, 56) not inserted
-? value pair (57, 57) not inserted
-? value pair (61, 61) not inserted
-? value pair (62, 62) not inserted
-? value pair (40, 67) not inserted
-? value pair (27, 69) not inserted
-? value pair (28, 70) not inserted
-? value pair (71, 71) not inserted
-? value pair (25, 72) not inserted
-? value pair (24, 73) not inserted
-? value pair (75, 75) not inserted
-? value pair (45, 78) not inserted
-? value pair (63, 82) not inserted
-? value pair (71, 85) not inserted
-? value pair (74, 88) not inserted
-? value pair (55, 90) not inserted
-? value pair (61, 92) not inserted
-? value pair (70, 93) not inserted
-? value pair (1, 95) not inserted
-? value pair (91, 96) not inserted
-? value pair (74, 99) not inserted
+Drum value pair (35, 44) not inserted
+Drum value pair (36, 45) not inserted
+Drum value pair (41, 47) not inserted
+Drum value pair (45, 48) not inserted
+Drum value pair (40, 49) not inserted
+Drum value pair (47, 50) not inserted
+Drum value pair (37, 51) not inserted
+Drum value pair (48, 53) not inserted
+Drum value pair (75, 73) not inserted
+Drum value pair (55, 79) not inserted
+Drum value pair (40, 81) not inserted
+Drum value pair (45, 82) not inserted
+Drum value pair (47, 83) not inserted
+Drum value pair (48, 84) not inserted
+Patch value pair (62, 115) not inserted
+Patch value pair (7, 117) not inserted
+Patch value pair (26, 122) not inserted
+Patch value pair (27, 123) not inserted
+Patch value pair (24, 124) not inserted
+Patch value pair (30, 13) not inserted
+Patch value pair (56, 15) not inserted
+Patch value pair (71, 19) not inserted
+Patch value pair (26, 26) not inserted
+Patch value pair (19, 29) not inserted
+Patch value pair (7, 30) not inserted
+Patch value pair (23, 31) not inserted
+Patch value pair (42, 35) not inserted
+Patch value pair (25, 36) not inserted
+Patch value pair (36, 39) not inserted
+Patch value pair (25, 40) not inserted
+Patch value pair (42, 42) not inserted
+Patch value pair (59, 44) not inserted
+Patch value pair (71, 45) not inserted
+Patch value pair (46, 46) not inserted
+Patch value pair (73, 47) not inserted
+Patch value pair (48, 48) not inserted
+Patch value pair (51, 51) not inserted
+Patch value pair (6, 53) not inserted
+Patch value pair (56, 56) not inserted
+Patch value pair (57, 57) not inserted
+Patch value pair (61, 61) not inserted
+Patch value pair (62, 62) not inserted
+Patch value pair (40, 67) not inserted
+Patch value pair (27, 69) not inserted
+Patch value pair (28, 70) not inserted
+Patch value pair (71, 71) not inserted
+Patch value pair (25, 72) not inserted
+Patch value pair (24, 73) not inserted
+Patch value pair (75, 75) not inserted
+Patch value pair (45, 78) not inserted
+Patch value pair (63, 82) not inserted
+Patch value pair (71, 85) not inserted
+Patch value pair (74, 88) not inserted
+Patch value pair (55, 90) not inserted
+Patch value pair (61, 92) not inserted
+Patch value pair (70, 93) not inserted
+Patch value pair (1, 95) not inserted
+Patch value pair (91, 96) not inserted
+Patch value pair (74, 99) not inserted
+Input file:  'b4.mid'
+Output file: 'b4-reverse.mid'
+INI file:    'tests/inifiles/GM_PSS-790_Multi.ini'
 midipp::midimap 'Conversions':
    INI style:               'sectioned'
    Setup name:              'midicvtpp'
    Map type:                'multi'
    Record count:             120
-   GM channel:               16
-   Device channel:           10
+   GM drum channel:          16
+   Device drum channel:      10
    Filter channel:           -1
    Extract channel:          false
    Reject channel:           false
@@ -84,10 +87,10 @@ Drum/note map:
    11 drum records dumped
 Patch/program map:
    Size:                     83
-   1: Patch #  3 Honkytonk Piano          ---> # 25 Acoustic Guitar (steel)  (Acoustic Guitar (steel))
-   1: Patch # 25 Steel Guitar             ---> # 33 Electric Bass (finger)   (Electric Bass (finger))
-   1: Patch # 26 Jazz Guitar              ---> # 12 Marimba                  (Marimba)
-   1: Patch # 33 Elec Bass                ---> # 38 Synth Bass 1             (Synth Bass 1)
-   2: Patch # 62 Synth Brass 1            ---> #  0 Acoustic Grand Piano     (Acoustic Grand Piano)
-   1: Patch # 69 Flugelhorn               ---> # 87 Lead 8 (bass + lead)     (Lead 8 (bass + lead))
+   1: Patch #  4 Honkytonk Piano          ---> # 26 Acoustic Guitar (steel)  (Acoustic Guitar (steel))
+   1: Patch # 26 Steel Guitar             ---> # 34 Electric Bass (finger)   (Electric Bass (finger))
+   1: Patch # 27 Jazz Guitar              ---> # 13 Marimba                  (Marimba)
+   1: Patch # 34 Elec Bass                ---> # 39 Synth Bass 1             (Synth Bass 1)
+   2: Patch # 63 Synth Brass 1            ---> #  1 Acoustic Grand Piano     (Acoustic Grand Piano)
+   1: Patch # 70 Flugelhorn               ---> # 88 Lead 8 (bass + lead)     (Lead 8 (bass + lead))
    6 patch records dumped

@@ -28,7 +28,7 @@
  * \library       libmidipp
  * \author        Chris Ahlstrom
  * \date          2014-04-24
- * \updates       2016-04-19
+ * \updates       2016-04-23
  * \version       $Revision$
  * \license       GNU GPL
  *
@@ -115,6 +115,9 @@ midimapper::midimapper ()
  :
    m_file_style      (),
    m_setup_name      (),
+   m_ini_filespec    (),
+   m_in_filename     (),
+   m_out_filename    (),
    m_map_type        (),
    m_record_count    (0),
    m_gm_channel      (10 - 1),         // MIDI channel 10 on 0-15 scale
@@ -163,6 +166,12 @@ midimapper::midimapper ()
  *    that the channel is to be dropped from the output MIDI file.  If
  *    false (the default value), the channel is the only one kept in the
  *    output MIDI file.
+ *
+ * \param infile
+ *    The name of the input MIDI file, for informational purposes only.
+ *
+ * \param outile
+ *    The name of the outut MIDI file, for informational purposes only.
  */
 
 midimapper::midimapper
@@ -171,10 +180,15 @@ midimapper::midimapper
    const std::string & filespec,
    bool reverse_it,
    int filter_channel,
-   bool reject_it
+   bool reject_it,
+   const std::string & infile,
+   const std::string & outfile
 ) :
    m_file_style      (),
    m_setup_name      (name),
+   m_ini_filespec    (filespec),
+   m_in_filename     (infile),
+   m_out_filename    (outfile),
    m_map_type        (),
    m_record_count    (0),
    m_gm_channel      (NOT_ACTIVE),
@@ -351,14 +365,20 @@ midimapper::read_maps (const std::string & filename)
                      gmname = devvaluename;
                   }
 
+                  std::string secname = "unknown";
                   annotation an(devvalue, gmvaluename, devvaluename, gmname);
                   midimap_pair p = std::make_pair(gmvalue, an);
                   midimap_result resultpair;
                   if (sect == INI_SECTION_DRUM)
+                  {
                      resultpair = m_drum_map.insert(p);
+                     secname = DRUM_SECTION;
+                  }
                   else if (sect == INI_SECTION_PATCH)
+                  {
                      resultpair = m_patch_map.insert(p);
-
+                     secname = PATCH_SECTION;
+                  }
                   result = resultpair.second;
                   if (result)
                   {
@@ -366,13 +386,11 @@ midimapper::read_maps (const std::string & filename)
                   }
                   else
                   {
-                     char temp[80];
-                     snprintf
+                     fprintf
                      (
-                        temp, sizeof temp, "value pair (%d, %d) not inserted",
-                        gmvalue, devvalue
+                        stderr, "%s value pair (%d, %d) not inserted\n",
+                        secname.c_str(), gmvalue, devvalue
                      );
-                     errprint(temp);
                      result = true;    /* failure to insert is not fatal      */
                   }
                }
@@ -775,6 +793,15 @@ show_maps
    bool full_output
 )
 {
+   if (! container.in_filename().empty())
+      fprintf(stderr, "Input file:  '%s'\n", container.in_filename().c_str());
+
+   if (! container.out_filename().empty())
+      fprintf(stderr, "Output file: '%s'\n", container.out_filename().c_str());
+
+   if (! container.ini_filename().empty())
+      fprintf(stderr, "INI file:    '%s'\n", container.ini_filename().c_str());
+
    fprintf
    (
       stderr,
@@ -825,35 +852,16 @@ show_maps
 
          if (show_it)
          {
-            /*
-             * Not sure why we're reversing these here.  They were already
-             * reversed when the containers were created.
-             */
-
-#if 0
-            if (container.map_reversed())
-            {
-               dev = mi->first;
-               gm = mi->second.value();
-               gmname = mi->second.value_name();
-            }
-            else
-            {
-#endif
             gm = mi->first;
             dev = mi->second.value();
             gmname = mi->second.key_name();
             devname = mi->second.value_name();
             equivname = mi->second.gm_name();
-#if 0
-            }
-#endif
             fprintf
             (
                stderr, fpformat,
                mi->second.count(), gm, gmname.c_str(),
-               dev, devname.c_str(),
-               equivname.c_str()
+               dev, devname.c_str(), equivname.c_str()
             );
             ++testcounter;
          }
@@ -888,27 +896,11 @@ show_maps
 
          if (show_it)
          {
-            /*
-             * Not sure why we're reversing these here.  They were already
-             * reversed when the containers were created.
-             */
-#if 0
-            if (container.map_reversed())
-            {
-               gm = mi->second;
-               dev = mi->first;
-            }
-            else
-            {
-#endif
-               gm = mi->first;
-               dev = mi->second.value();
-               gmname = mi->second.key_name();
-               devname = mi->second.value_name();
-               equivname = mi->second.gm_name();
-#if 0
-            }
-#endif
+            gm = mi->first + 1;                 /* adjust to human terms   */
+            dev = mi->second.value() + 1;       /* ditto                   */
+            gmname = mi->second.key_name();
+            devname = mi->second.value_name();
+            equivname = mi->second.gm_name();
             fprintf
             (
                stderr, fpformat,
@@ -947,20 +939,8 @@ show_maps
          {
             int in;
             int out;
-#if 0
-            if (container.map_reversed())
-            {
-               in = mi->second;
-               out = mi->first;
-            }
-            else
-            {
-#endif
-               in = mi->first;
-               out = mi->second;
-#if 0
-            }
-#endif
+            in = mi->first;
+            out = mi->second;
             fprintf(stderr, fpformat, in + 1, out + 1);
             ++testcounter;
          }
@@ -1301,3 +1281,4 @@ midimap_chanpressure (int chan, int pressure)
  *
  * vim: sw=3 ts=3 wm=8 et ft=cpp
  */
+

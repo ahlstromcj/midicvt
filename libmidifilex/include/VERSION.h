@@ -10,12 +10,14 @@
  * \library       libmidifilex
  * \author        Chris Ahlstrom
  * \date          2007-02-28
- * \updates       2016-04-18
+ * \updates       2016-04-23
  * \version       $Revision$
  * \license       GNU GPL
  */
 
-#define LIBMIDIFILEX_VERSION "0.4.0.0"
+#include "midicvt-config.h"            /* VERSION information                 */
+
+#define LIBMIDIFILEX_VERSION           MIDICVT_VERSION
 
 #endif   /* LIBMIDIFILEX_VERSION_H */
 

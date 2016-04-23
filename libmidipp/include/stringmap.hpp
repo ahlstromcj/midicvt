@@ -201,7 +201,7 @@ public:
    }
 
    /**
-    * @getter m_Name
+    * \getter m_Name
     */
 
    const std::string & name () const
@@ -409,7 +409,7 @@ public:
 protected:
 
    /**
-    * @setter m_Name
+    * \setter m_Name
     */
 
    void name (const std::string & n)

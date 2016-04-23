@@ -1978,7 +1978,7 @@ static int yy_get_next_buffer (void)
 /**
  * Immediately switch to a different input stream.
  *
- * @param input_file
+ * \param input_file
  *    A readable stream.
  *
  * @note

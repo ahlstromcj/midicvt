@@ -129,7 +129,7 @@ midicvt_set_defaults (void)
 }
 
 /**
- * @setter g_option_fold
+ * \setter g_option_fold
  */
 
 void
@@ -139,7 +139,7 @@ midicvt_set_option_fold (int f)
 }
 
 /**
- * @getter g_option_fold
+ * \getter g_option_fold
  */
 
 int
@@ -149,7 +149,7 @@ midicvt_option_fold (void)
 }
 
 /**
- * @setter g_option_mfile_tag
+ * \setter g_option_mfile_tag
  */
 
 void
@@ -159,7 +159,7 @@ midicvt_set_option_mfile (cbool_t f)
 }
 
 /**
- * @getter g_option_mfile_tag
+ * \getter g_option_mfile_tag
  */
 
 cbool_t
@@ -169,7 +169,7 @@ midicvt_option_mfile (void)
 }
 
 /**
- * @setter g_option_strict_track
+ * \setter g_option_strict_track
  */
 
 void
@@ -179,7 +179,7 @@ midicvt_set_option_strict (cbool_t f)
 }
 
 /**
- * @getter g_option_strict_track
+ * \getter g_option_strict_track
  */
 
 cbool_t
@@ -189,7 +189,7 @@ midicvt_option_strict (void)
 }
 
 /**
- * @setter g_option_ignore_track
+ * \setter g_option_ignore_track
  */
 
 void
@@ -199,7 +199,7 @@ midicvt_set_option_ignore (cbool_t f)
 }
 
 /**
- * @getter g_option_ignore_track
+ * \getter g_option_ignore_track
  */
 
 cbool_t
@@ -209,7 +209,7 @@ midicvt_option_ignore (void)
 }
 
 /**
- * @setter g_option_verbose
+ * \setter g_option_verbose
  */
 
 void
@@ -219,7 +219,7 @@ midicvt_set_option_verbose (cbool_t f)
 }
 
 /**
- * @getter g_option_verbose
+ * \getter g_option_verbose
  */
 
 cbool_t
@@ -229,7 +229,7 @@ midicvt_option_verbose (void)
 }
 
 /**
- * @setter g_option_verbose_notes
+ * \setter g_option_verbose_notes
  */
 
 void
@@ -239,7 +239,7 @@ midicvt_set_option_verbose_notes (cbool_t f)
 }
 
 /**
- * @getter g_option_verbose_notes
+ * \getter g_option_verbose_notes
  */
 
 cbool_t
@@ -249,7 +249,7 @@ midicvt_option_verbose_notes (void)
 }
 
 /**
- * @setter g_option_absolute_times
+ * \setter g_option_absolute_times
  */
 
 void
@@ -259,7 +259,7 @@ midicvt_set_option_absolute_times (cbool_t f)
 }
 
 /**
- * @getter g_option_absolute_times
+ * \getter g_option_absolute_times
  */
 
 cbool_t
@@ -269,7 +269,7 @@ midicvt_option_absolute_times (void)
 }
 
 /**
- * @setter g_option_debug
+ * \setter g_option_debug
  */
 
 void
@@ -279,7 +279,7 @@ midicvt_set_option_debug (cbool_t f)
 }
 
 /**
- * @getter g_option_debug
+ * \getter g_option_debug
  */
 
 cbool_t
@@ -289,7 +289,7 @@ midicvt_option_debug (void)
 }
 
 /**
- * @setter g_option_docompile
+ * \setter g_option_docompile
  */
 
 void
@@ -299,7 +299,7 @@ midicvt_set_option_compile (cbool_t f)
 }
 
 /**
- * @getter g_option_docompile
+ * \getter g_option_docompile
  *
  *    We need to expose this value for main() to use.
  */
@@ -311,7 +311,7 @@ midicvt_option_compile (void)
 }
 
 /**
- * @setter g_option_midi2midi
+ * \setter g_option_midi2midi
  */
 
 void
@@ -321,7 +321,7 @@ midicvt_set_option_m2m (cbool_t f)
 }
 
 /**
- * @getter g_option_midi2midi
+ * \getter g_option_midi2midi
  *
  *    We need to expose this value for main() to use.
  */

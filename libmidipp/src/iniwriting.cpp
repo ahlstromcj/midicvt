@@ -7,7 +7,7 @@
  * \library       libmidipp
  * \author        Chris Ahlstrom
  * \date          2014-04-23
- * \updates       2016-04-17
+ * \updates       2016-04-23
  * \version       $Revision$
  * \license       $XPC_SUITE_GPL_LICENSE$
  *
@@ -38,7 +38,7 @@ namespace midipp
  */
 
 static const std::string s_explanatory_header =
-"# midicvtpp v 0.4.0\n"
+"# midicvtpp v 0.4.0.1\n"
 "#\n"
 "# This file provides easy-to-use settings for remapping some MIDI events\n"
 "# so that a MIDI file for a specific device plays back in General MIDI (GM).\n"
@@ -92,8 +92,7 @@ static const std::string s_explanatory_header =
 /**
  *    Writes a csvarray object to a file in a simple INI format.
  *
- * @deprecated
- *
+ * \deprecated
  *    The input fields of a Drum map grabbed from a spreadsheet are in the
  *    following order:
  *
@@ -129,6 +128,13 @@ write_simple_drum_file
          << "#" << _NL
          ;
 
+      /*
+       * \change ca 2016-04-23 0.4.0.1
+       *    We don't want to set the reverse specification in the generated
+       *    file, since it can override the command-line's --reverse option.
+       *    If one really wants this option, uncomment it in the file.
+       */
+
       output
          << GM_INI_FILE_STYLE       << " = simple" << _NL
          << GM_INI_SETUP_NAME       << " = "       << csv.name() << _NL
@@ -137,7 +143,7 @@ write_simple_drum_file
          << GM_INI_DEV_CHANNEL      << " = 10"     << _NL   /* some use ch 16 */
          << GM_INI_EXTRACT_CHANNEL  << " = "       << GM_INI_NO_VALUE << _NL
          << GM_INI_REJECT_CHANNEL   << " = "       << GM_INI_NO_VALUE << _NL
-         << GM_INI_REVERSE          << " = false"  << _NL
+ << "# " << GM_INI_REVERSE          << " = false"  << _NL
          << GM_INI_TESTING          << " = false"  << _NL
          << _NL
          ;
@@ -200,6 +206,13 @@ write_sectioned_drum_file
          << _NL
          ;
 
+      /*
+       * \change ca 2016-04-23 0.4.0.1
+       *    We don't want to set the reverse specification in the generated
+       *    file, since it can override the command-line's --reverse option.
+       *    If one really wants this option, uncomment it in the file.
+       */
+
       output
          << GM_INI_FILE_STYLE       << " = sectioned" << _NL
          << GM_INI_SETUP_NAME       << " = "       << csv.name() << _NL
@@ -208,7 +221,7 @@ write_sectioned_drum_file
          << GM_INI_DEV_CHANNEL      << " = 10"     << _NL   /* some use ch 16 */
          << GM_INI_EXTRACT_CHANNEL  << " = "       << GM_INI_NO_VALUE << _NL
          << GM_INI_REJECT_CHANNEL   << " = "       << GM_INI_NO_VALUE << _NL
-         << GM_INI_REVERSE          << " = false"  << _NL
+ << "# " << GM_INI_REVERSE          << " = false"  << _NL
          << GM_INI_TESTING          << " = false"  << _NL
          << _NL
          ;
@@ -283,6 +296,13 @@ write_sectioned_patch_file
             << _NL
             ;
 
+      /*
+       * \change ca 2016-04-23 0.4.0.1
+       *    We don't want to set the reverse specification in the generated
+       *    file, since it can override the command-line's --reverse option.
+       *    If one really wants this option, uncomment it in the file.
+       */
+
          output
             << GM_INI_FILE_STYLE       << " = sectioned" << _NL
             << GM_INI_SETUP_NAME       << " = "       << csv.name() << _NL
@@ -291,7 +311,7 @@ write_sectioned_patch_file
             << GM_INI_DEV_CHANNEL      << " = 10"     << _NL
             << GM_INI_EXTRACT_CHANNEL  << " = "       << GM_INI_NO_VALUE << _NL
             << GM_INI_REJECT_CHANNEL   << " = "       << GM_INI_NO_VALUE << _NL
-            << GM_INI_REVERSE          << " = false"  << _NL
+    << "# " << GM_INI_REVERSE          << " = false"  << _NL
             << GM_INI_TESTING          << " = false"  << _NL
             << _NL
             ;

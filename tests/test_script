@@ -8,7 +8,7 @@
 # \library    	libimidifilex, libmidipp, midicvt, midicvtpp
 # \author     	Chris Ahlstrom
 # \date       	2014-05-09
-# \updates     2016-04-17
+# \updates     2016-04-23
 # \version    	$Revision$
 # \license    	$XPC_SUITE_GPL_LICENSE$
 #
@@ -19,6 +19,10 @@
 #  conversion, were output using the legacy "MFile" marker, instead of
 #  "MThd".  This means that we will have to create more results files and
 #  double the number of tests to verify the new format.
+#
+# \change ca 2016-04-23
+#     Removed midicvt --m2m tests that cannot ever work... that works only for
+#     the C++ version!
 #
 # \change ca 2015-08-14
 #     Added a test of converting ASCII to MIDI, where the ASCII files uses
@@ -131,13 +135,6 @@ TEST_LINE="$MIDICVT -c tmp/ex1-mthd.asc -o tmp/ex1-mthd-recompiled.mid"
 run_test tmp/ex1-mthd-recompiled.mid results/ex1-recompiled.mid
 
 #-----------------------------------------------------------------------------
-# midicvt, convert MIDI to MIDI file using --m2m option
-#-----------------------------------------------------------------------------
-
-TEST_LINE="$MIDICVT --m2m --input midifiles/ex1.mid --output tmp/ex1-m2m.mid"
-run_test tmp/ex1-m2m.mid results/ex1-m2m.mid
-
-#-----------------------------------------------------------------------------
 # choo2xg.mid
 #-----------------------------------------------------------------------------
 # midicvt, convert MIDI to ASCII file
@@ -153,13 +150,6 @@ run_test tmp/choo2xg.asc results/choo2xg.asc
 
 TEST_LINE="$MIDICVT -c tmp/choo2xg.asc -o tmp/choo2xg-recompiled.mid"
 run_test tmp/choo2xg-recompiled.mid results/choo2xg-recompiled.mid
-
-#-----------------------------------------------------------------------------
-# midicvt, convert MIDI to MIDI file using --m2m option
-#-----------------------------------------------------------------------------
-
-TEST_LINE="$MIDICVT --m2m --input midifiles/choo2xg.mid --output tmp/choo2xg-m2m.mid"
-run_test tmp/choo2xg-m2m.mid results/choo2xg-recompiled.mid
 
 #-----------------------------------------------------------------------------
 # CountryStrum.mid
@@ -182,15 +172,6 @@ run_test tmp/CountryStrum.asc results/CountryStrum.asc
 
 TEST_LINE="$MIDICVT -c tmp/CountryStrum.asc -o tmp/CountryStrum-recompiled.mid"
 run_test tmp/CountryStrum-recompiled.mid results/CountryStrum-recompiled.mid
-
-#-----------------------------------------------------------------------------
-# midicvt, convert MIDI to MIDI file using --m2m option
-#
-# We have to compare the output MIDI file to the recompiled MIDI file here.
-#-----------------------------------------------------------------------------
-
-TEST_LINE="$MIDICVT --m2m --input midifiles/CountryStrum.mid --output tmp/CountryStrum-m2m.mid"
-run_test tmp/CountryStrum-m2m.mid results/CountryStrum-recompiled.mid
 
 #-----------------------------------------------------------------------------
 # dixie03.mid
@@ -218,13 +199,6 @@ TEST_LINE="$MIDICVT -c tmp/dixie03.asc -o tmp/dixie03-recompiled.mid"
 run_test tmp/dixie03-recompiled.mid midifiles/dixie03.mid
 
 #-----------------------------------------------------------------------------
-# midicvt, convert MIDI to MIDI file using --m2m option
-#-----------------------------------------------------------------------------
-
-TEST_LINE="$MIDICVT --m2m --input midifiles/dixie03.mid --output tmp/dixie03-m2m.mid"
-run_test tmp/dixie03-m2m.mid midifiles/dixie03.mid
-
-#-----------------------------------------------------------------------------
 # Dixie031.mid
 #-----------------------------------------------------------------------------
 # midicvt, convert MIDI to ASCII file
@@ -246,13 +220,6 @@ run_test tmp/Dixie031.asc results/dixie031.asc
 
 TEST_LINE="$MIDICVT -c tmp/Dixie031.asc -o tmp/Dixie031-recompiled.mid"
 run_test tmp/Dixie031-recompiled.mid midifiles/Dixie031.mid
-
-#-----------------------------------------------------------------------------
-# midicvt, convert MIDI to MIDI file using --m2m option
-#-----------------------------------------------------------------------------
-
-TEST_LINE="$MIDICVT --m2m --input midifiles/Dixie031.mid --output tmp/Dixie031-m2m.mid"
-run_test tmp/Dixie031-m2m.mid midifiles/Dixie031.mid
 
 #-----------------------------------------------------------------------------
 # Dixie04.mid
@@ -318,13 +285,6 @@ else
 fi
 
 #-----------------------------------------------------------------------------
-# midicvt, convert MIDI to MIDI file using --m2m option
-#-----------------------------------------------------------------------------
-
-TEST_LINE="$MIDICVT --m2m --input midifiles/example1.mid --output tmp/example1-m2m.mid"
-run_test tmp/example1-m2m.mid results/example1-recompiled.mid
-
-#-----------------------------------------------------------------------------
 # example2.mid
 #-----------------------------------------------------------------------------
 # midicvt, convert MIDI to ASCII file
@@ -346,13 +306,6 @@ else
    echo "? Failed: '$TEST_LINE'"
    exit 99
 fi
-
-#-----------------------------------------------------------------------------
-# midicvt, convert MIDI to MIDI file using --m2m option
-#-----------------------------------------------------------------------------
-
-TEST_LINE="$MIDICVT --m2m --input midifiles/example2.mid --output tmp/example2-m2m.mid"
-run_test tmp/example2-m2m.mid results/example2-recompiled.mid
 
 #-----------------------------------------------------------------------------
 # example3.mid
@@ -378,20 +331,6 @@ else
 fi
 
 #-----------------------------------------------------------------------------
-# midicvt, convert MIDI to MIDI file using --m2m option
-#
-# Again, we short-cut the process of figuring out the differences by adding
-# a follow-on step that makes sure converting the two MIDI files to ASCII
-# yields matching ASCII files.
-#-----------------------------------------------------------------------------
-
-TEST_LINE="$MIDICVT --m2m --input midifiles/example3.mid --output tmp/example3-m2m.mid"
-$TEST_LINE
-
-TEST_LINE="$MIDICVT -i tmp/example3-m2m.mid -o tmp/example3-m2m.asc"
-run_test tmp/example3-m2m.asc results/example3.asc
-
-#-----------------------------------------------------------------------------
 # example4.mid
 #-----------------------------------------------------------------------------
 # midicvt, convert MIDI to ASCII file
@@ -415,20 +354,6 @@ else
 fi
 
 #-----------------------------------------------------------------------------
-# midicvt, convert MIDI to MIDI file using --m2m option
-#
-# Again, we short-cut the process of figuring out the differences by adding
-# a follow-on step that makes sure converting the two MIDI files to ASCII
-# yields matching ASCII files.
-#-----------------------------------------------------------------------------
-
-TEST_LINE="$MIDICVT --m2m --input midifiles/example4.mid --output tmp/example4-m2m.mid"
-$TEST_LINE
-
-TEST_LINE="$MIDICVT -i tmp/example4-m2m.mid -o tmp/example4-m2m.asc"
-run_test tmp/example4-m2m.asc results/example4.asc
-
-#-----------------------------------------------------------------------------
 # example5.mid
 #-----------------------------------------------------------------------------
 # midicvt, convert MIDI to ASCII file
@@ -450,20 +375,6 @@ else
    echo "? Failed: '$TEST_LINE'"
    exit 99
 fi
-
-#-----------------------------------------------------------------------------
-# midicvt, convert MIDI to MIDI file using --m2m option
-#
-# Again, we short-cut the process of figuring out the differences by adding
-# a follow-on step that makes sure converting the two MIDI files to ASCII
-# yields matching ASCII files.
-#-----------------------------------------------------------------------------
-
-TEST_LINE="$MIDICVT --m2m --input midifiles/example5.mid --output tmp/example5-m2m.mid"
-$TEST_LINE
-
-TEST_LINE="$MIDICVT -i tmp/example5-m2m.mid -o tmp/example5-m2m.asc"
-run_test tmp/example5-m2m.asc results/example5.asc
 
 #-----------------------------------------------------------------------------
 # tdixie03.mid
@@ -491,13 +402,6 @@ TEST_LINE="$MIDICVT -c tmp/tdixie03.asc -o tmp/tdixie03-recompiled.mid"
 run_test tmp/tdixie03-recompiled.mid midifiles/tdixie03.mid
 
 #-----------------------------------------------------------------------------
-# midicvt, convert MIDI to MIDI file using --m2m option
-#-----------------------------------------------------------------------------
-
-TEST_LINE="$MIDICVT --m2m --input midifiles/tdixie03.mid --output tmp/tdixie03-m2m.mid"
-run_test tmp/tdixie03-m2m.mid midifiles/tdixie03.mid
-
-#-----------------------------------------------------------------------------
 # wonworld.mid
 #-----------------------------------------------------------------------------
 # midicvt, convert MIDI to ASCII file
@@ -517,20 +421,6 @@ run_test tmp/wonworld.asc results/wonworld.asc
 
 TEST_LINE="$MIDICVT -c tmp/wonworld.asc -o tmp/wonworld-recompiled.mid"
 run_test tmp/wonworld-recompiled.mid results/wonworld-recompiled.mid
-
-#-----------------------------------------------------------------------------
-# midicvt, convert MIDI to MIDI file using --m2m option
-#-----------------------------------------------------------------------------
-
-TEST_LINE="$MIDICVT --m2m --input midifiles/wonworld.mid --output tmp/wonworld-m2m.mid"
-$TEST_LINE
-if [ $? == 0 ] ; then
-   TEST_LINE="$MIDICVT -t -i tmp/wonworld-recompiled.mid -o tmp/wonworld.asc"
-   run_test tmp/wonworld.asc results/wonworld.asc
-else
-   echo "? Failed: '$TEST_LINE'"
-   exit 99
-fi
 
 #-----------------------------------------------------------------------------
 # midicvtpp (C++) tests
@@ -553,11 +443,10 @@ fi
 # attempt any remappings.  The output should be similar to the input;
 # however, many MIDI files have issues that --m2m (or --compile from the
 # ASCII file) fix.
-#
 #-----------------------------------------------------------------------------
-
-TEST_LINE="$MIDICVT --m2m stomtors/stomtors.mid tmp/stomtors-m2m.mid"
-run_test tmp/stomtors-m2m.mid results/stomtors/stomtors-m2m.mid
+#
+# TEST_LINE="$MIDICVT --m2m stomtors/stomtors.mid tmp/stomtors-m2m.mid"
+# run_test tmp/stomtors-m2m.mid results/stomtors/stomtors-m2m.mid
 
 #-----------------------------------------------------------------------------
 # Verify that stomtors.asc generation hasn't changed
@@ -583,13 +472,16 @@ run_test tmp/stomtors-m2m.mid results/stomtors/stomtors-m2m.mid
 #-----------------------------------------------------------------------------
 # Extract channel 16 from stomtors.mid
 #-----------------------------------------------------------------------------
-
-TEST_LINE="$MIDICVTPP --m2m --extract 16 stomtors/stomtors.mid tmp/stomtors-drums-16.mid"
-run_test tmp/stomtors-drums-16.mid results/stomtors/stomtors-drums-16.mid
-echo ""
-echo "Also examine results/stomtors/stomtors-drums-16.mid to see that the tracks"
-echo "that did not have channel 16 events are now empty."
-echo ""
+#
+# Needs to be fixed by adding a proper --m2m option.  But if we are extracting,
+# we should not really need that.  Sounds like a FEATURE TO FIX!
+#
+# TEST_LINE="$MIDICVTPP --extract 16 stomtors/stomtors.mid tmp/stomtors-drums-16.mid"
+# run_test tmp/stomtors-drums-16.mid results/stomtors/stomtors-drums-16.mid
+# echo ""
+# echo "Also examine results/stomtors/stomtors-drums-16.mid to see that the tracks"
+# echo "that did not have channel 16 events are now empty."
+# echo ""
 
 #-----------------------------------------------------------------------------
 # Verify that compiling the (saved) ASCII file, with empty tracks, recovers

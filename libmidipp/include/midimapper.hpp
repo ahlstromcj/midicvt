@@ -31,7 +31,7 @@
  * \library       libmidipp
  * \author        Chris Ahlstrom
  * \date          2014-04-24
- * \updates       2016-04-19
+ * \updates       2016-04-23
  * \version       $Revision$
  * \license       GNU GPL
  *
@@ -296,6 +296,25 @@ private:
    std::string m_setup_name;
 
    /**
+    *    Saves the name of the INI file, which can be useful in the
+    *    show_maps() function.
+    */
+
+   std::string m_ini_filespec;
+
+   /**
+    *    Saves the name of the input MIDI file, for information only.
+    */
+
+   std::string m_in_filename;
+
+   /**
+    *    Saves the name of the output MIDI file, for information only.
+    */
+
+   std::string m_out_filename;
+
+   /**
     *    Indicates what kind of mapping is allegedly provided by the file.
     *    This can be one of the following values:
     *
@@ -443,7 +462,9 @@ public:
       const std::string & filespec  = "",    // for behavior like C version
       bool reverse_it               = false,
       int filter_channel            = NOT_ACTIVE,
-      bool reject_it                = false
+      bool reject_it                = false,
+      const std::string & infile    = "",
+      const std::string & outfile   = ""
    );
 
    int repitch (int channel, int input);
@@ -488,7 +509,7 @@ public:
    }
 
    /**
-    * @getter m_file_style
+    * \getter m_file_style
     */
 
    const std::string & file_style () const
@@ -497,7 +518,7 @@ public:
    }
 
    /**
-    * @getter m_setup_name
+    * \getter m_setup_name
     */
 
    const std::string & setup_name () const
@@ -506,7 +527,34 @@ public:
    }
 
    /**
-    * @getter m_map_type
+    * \getter m_ini_filespec
+    */
+
+   const std::string & ini_filename () const
+   {
+      return m_ini_filespec;
+   }
+
+   /**
+    * \getter m_in_filename
+    */
+
+   const std::string & in_filename () const
+   {
+      return m_in_filename;
+   }
+
+   /**
+    * \getter m_out_filename
+    */
+
+   const std::string & out_filename () const
+   {
+      return m_out_filename;
+   }
+
+   /**
+    * \getter m_map_type
     */
 
    const std::string & map_type () const
@@ -515,7 +563,7 @@ public:
    }
 
    /**
-    * @getter m_record_count
+    * \getter m_record_count
     */
 
    int record_count () const
@@ -524,7 +572,7 @@ public:
    }
 
    /**
-    * @getter m_gm_channel
+    * \getter m_gm_channel
     */
 
    int gm_channel () const
@@ -533,7 +581,7 @@ public:
    }
 
    /**
-    * @getter m_device_channel
+    * \getter m_device_channel
     */
 
    int device_channel () const
@@ -542,7 +590,7 @@ public:
    }
 
    /**
-    * @getter m_filter_channel
+    * \getter m_filter_channel
     */ 
 
    int filter_channel () const
@@ -555,7 +603,7 @@ public:
    }
 
    /**
-    * @getter m_extraction_on
+    * \getter m_extraction_on
     */
 
    bool extract () const
@@ -564,7 +612,7 @@ public:
    }
 
    /**
-    * @getter m_rejection_on
+    * \getter m_rejection_on
     */
 
    bool reject () const
@@ -573,7 +621,7 @@ public:
    }
 
    /**
-    * @getter m_is_valid;
+    * \getter m_is_valid;
     */
 
    bool valid () const
@@ -582,7 +630,7 @@ public:
    }
 
    /**
-    * @getter m_drum_map
+    * \getter m_drum_map
     *    Returns a reference to the note map.  The weird thing was that,
     *    when I had left the reference operator out, show_note_map() would
     *    show a lot of notes missing from the map, as if copying the map
@@ -595,7 +643,7 @@ public:
    }
 
    /**
-    * @getter m_patch_map
+    * \getter m_patch_map
     *    Returns a reference to the patch map.
     */
 
@@ -605,7 +653,7 @@ public:
    }
 
    /**
-    * @getter m_channel_map
+    * \getter m_channel_map
     *    Returns a reference to the channel map.
     */
 
@@ -615,7 +663,7 @@ public:
    }
 
    /**
-    * @getter m_map_reversed
+    * \getter m_map_reversed
     */
 
    bool map_reversed () const

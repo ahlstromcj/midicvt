@@ -33,7 +33,7 @@
  * \license       GNU GPL
  *
  *    We've offloaded the help text of midicvt to this module so that it
- *    can be re-used in an upcoming C++ version of midicvt.
+ *    can be re-used in the C++ version of midicvt.
  */
 
 #include <midicvt_macros.h>            /* cbool_t, nullptr, true, false, etc. */
@@ -58,11 +58,13 @@ extern cbool_t midicvt_parse (int argc, char * argv [], const char * version);
 extern long midi_file_offset (void);
 extern void midi_file_offset_clear (void);
 extern void midi_file_offset_increment (void);
+extern cbool_t midi_version_option (void);
 
 EXTERN_C_END
 
 /*
- * midicvt_helpers.c
+ * midicvt_helpers.h
  *
  * vim: sw=3 ts=3 wm=8 et ft=c
  */
+

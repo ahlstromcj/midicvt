@@ -6,7 +6,7 @@ dnl \file          configure.ac
 dnl \library       libmidifilex, libmidipp, midicvt, and midicvtpp
 dnl \author        Chris Ahlstrom
 dnl \date          2014-04-08
-dnl \update        2016-04-19
+dnl \update        2016-04-23
 dnl \version       $Revision$
 dnl \license       $MIDICVT_SUITE_GPL_LICENSE$
 dnl
@@ -51,7 +51,7 @@ PACKAGE=midicvt
 AC_DEFINE_UNQUOTED(PACKAGE, "$PACKAGE")
 AC_SUBST(PACKAGE)
 
-VERSION="0.4.0.0"
+VERSION="0.4.0.1"
 AC_DEFINE_UNQUOTED(VERSION, "$VERSION")
 AC_SUBST(VERSION)
 
@@ -84,7 +84,7 @@ dnl      incremented.
 MIDICVT_API_MAJOR="0"
 AC_SUBST([MIDICVT_API_MAJOR])
 
-MIDICVT_API_MINOR="3"
+MIDICVT_API_MINOR="4"
 AC_SUBST([MIDICVT_API_MINOR])
 
 MIDICVT_API_PATCH="0"
@@ -264,8 +264,8 @@ dnl            "MIDICVT_" to these values when it generated midicvt-config.h.
 
 AH_TOP(
 
-#define VERSION_DATE_SHORT "2016-04-19"
-#define VERSION "0.4.0.0"
+#define VERSION_DATE_SHORT "2016-04-23"
+#define VERSION "0.4.0.1"
 #define API_VERSION "0.4"
 
 )

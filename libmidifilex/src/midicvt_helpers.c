@@ -28,7 +28,7 @@
  * \library       midicvt application
  * \author        Chris Ahlstrom
  * \date          2014-04-19
- * \updates       2016-04-19
+ * \updates       2016-04-23
  * \version       $Revision$
  * \license       GNU GPL
  *
@@ -97,7 +97,6 @@ static const char * const gs_help_usage_2_3 =
    "                 tracks with other name-tags can be processed.\n"
    " --ignore        Allow, but don't process,  non-MTrk chunks. MIDI says to\n"
    "                 ignore them; midicvt otherwise treats them as tracks.\n"
-   "\n"
    ;
 
 static const char * const gs_help_usage_3 =
@@ -164,6 +163,13 @@ static char gs_output_file[MIDICVT_PATH_MAX];
  */
 
 static long gs_file_offset = 0;
+
+/**
+ *    Indicates if --version appeared on the command line.
+ *    Returning false from midicvt_parse() is not enough.
+ */
+
+static cbool_t gs_version_option = false;
 
 /**
  *    Provides the version text for the midicvt-related programs.
@@ -343,6 +349,16 @@ void
 midi_file_offset_increment (void)
 {
    ++gs_file_offset;
+}
+
+/**
+ *    Provides the gs_version_option flag for use in main().
+ */
+
+cbool_t
+midi_version_option (void)
+{
+   return gs_version_option;
 }
 
 /**
@@ -586,6 +602,7 @@ midicvt_parse (int argc, char * argv [], const char * version)
       else if (check_option(argv[option_index], "--", "--version"))
       {
          midicvt_version(version);
+         gs_version_option = true;
          return false;
       }
       else if (check_option(argv[option_index], "-h", "--help"))
@@ -670,8 +687,7 @@ midicvt_parse (int argc, char * argv [], const char * version)
          midicvt_help(version);        /* bad option, give help */
          errprintf
          (
-            "? Bad option '%s' given, see the help above\n",
-            argv[option_index]
+            "? Bad option '%s' given, see the help above\n", argv[option_index]
          );
          return false;
       }

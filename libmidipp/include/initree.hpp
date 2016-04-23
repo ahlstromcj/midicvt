@@ -144,7 +144,7 @@ public:
    }
 
    /**
-    * @getter m_name
+    * \getter m_name
     */
 
    const std::string & name () const
@@ -153,7 +153,7 @@ public:
    }
 
    /**
-    * @setter m_name
+    * \setter m_name
     */
 
    void name (const std::string & n)

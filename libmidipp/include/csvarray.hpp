@@ -130,7 +130,7 @@ public:
    }
 
    /**
-    * @getter  m_is_valid;
+    * \getter  m_is_valid;
     */
 
    bool is_valid () const
@@ -139,7 +139,7 @@ public:
    }
 
    /**
-    * @getter m_csv_lines
+    * \getter m_csv_lines
     */
 
    const Rows & rows () const
@@ -148,7 +148,7 @@ public:
    }
 
    /**
-    * @getter m_source_file
+    * \getter m_source_file
     */
 
    const std::string & source_file () const
@@ -157,7 +157,7 @@ public:
    }
 
    /**
-    * @getter m_name
+    * \getter m_name
     */
 
    const std::string & name () const
@@ -166,7 +166,7 @@ public:
    }
 
    /**
-    * @setter m_name
+    * \setter m_name
     */
 
    void name (const std::string & n)

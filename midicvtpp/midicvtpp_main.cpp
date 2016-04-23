@@ -29,7 +29,7 @@
  * \library       midicvtpp application
  * \author        Chris Ahlstrom
  * \date          2014-04-19
- * \updates       2016-04-17
+ * \updates       2016-04-23
  * \version       $Revision$
  * \license       GNU GPL
  *
@@ -68,7 +68,7 @@ static const char * const s_help_version =
  */
 
 static const char * const gs_help_usage_1 =
-   "midicvtpp adds functionality to midicvt:\n"
+   "midicvtpp adds functionality to midicvt.\n"
    "\n"
    " --csv-drums f   Convert a CSV (comma-separated values) file to a sectioned\n"
    "                 INI drum file.  Option -o/--output specifies the full name\n"
@@ -76,19 +76,17 @@ static const char * const gs_help_usage_1 =
    " --csv-patches f Convert a CSV file to a sectioned INI patch/program file.\n"
    "                 Option -o/--output specifies the output name.  Default is\n"
    "                 'out.ini', not stdout.\n"
-   " --m2m f         Employ the given INI mapping file(s) to convert MIDI\n"
-   "                 to MIDI.  Only one file at a time is supported.\n"
+   " --m2m f         Employ the given INI mapping file to convert MIDI to MIDI.\n"
    "\n"
    "The following options require the --m2m option:\n"
    "\n"
-   " --reverse       Reverse the mapping specified by --m2m. Not all mappings.\n"
+   " --reverse       Reverse the mapping specified by --m2m. Not all mappings\n"
    "                 can be fully reversed; unique key values are required in\n"
    "                 both directions.\n"
    " --extract n     Write only channel events from channel n, n = 1 to 16.\n"
    " --reject n      Write only channel events not from channel n.\n"
    " --summarize     Show a summary count of the conversions that occurred.\n"
    " --testing       Only the programmer knows what this one does. :-D\n"
-   "\n"
    ;
 
 /**
@@ -205,7 +203,8 @@ midicvtpp_parse (int argc, char * argv [])
    bool result = midicvt_parse(argc, argv, s_help_version);
    if (! result)
    {
-      midicvtpp_help();
+      if (! midi_version_option())
+         midicvtpp_help();
    }
    else
    {
@@ -300,13 +299,25 @@ midicvtpp_parse (int argc, char * argv [])
          }
          else if (check_option(argv[option_index], "-o", "--output"))
          {
-            if ((option_index + 1) < argc)
+            /*
+             * \change ca 2016-04-23
+             *    This option should not be used to set the INI file-name
+             *    unless we are setting up only to write that, using one
+             *    of the "csv" options.  Otherwise, this option is already
+             *    parsed in the C code, in module midicvt_helpers.c, in
+             *    the midicvt_parse() function.
+             */
+
+            if (s_write_csv_drum || s_write_csv_patch)
             {
-               option_index++;
-               s_ini_out_filename = argv[option_index];
+               if ((option_index + 1) < argc)
+               {
+                  option_index++;
+                  s_ini_out_filename = argv[option_index];
+               }
+               else
+                  s_ini_out_filename = "out.ini";
             }
-            else
-               s_ini_out_filename = "out.ini";
          }
          else if (check_option(argv[option_index], "-2", "--m2m"))
          {
@@ -336,14 +347,14 @@ midicvtpp_parse (int argc, char * argv [])
 /**
  *    Provides the entry-point for the midicvtpp program.
  *
- * @param argc
+ * \param argc
  *    Provides the standard count of the number of command-line arguments,
  *    including the name of the program.
  *
- * @param argv
+ * \param argv
  *    Provides the command-line arguments as an array of pointers.
  *
- * @return
+ * \return
  *    Returns a 0 value if the application succeeds, and a non-zero value
  *    otherwise.
  */
@@ -412,7 +423,9 @@ main (int argc, char * argv [])
             midipp::midimapper m
             (
                s_mapping_name, s_ini_in_filename, s_m2m_reversal,
-               s_filter_channel, s_rejection_on
+               s_filter_channel, s_rejection_on,
+               std::string(midicvt_input_file()),
+               std::string(midicvt_output_file())
             );
             if (m.valid())
             {

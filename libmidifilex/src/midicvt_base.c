@@ -2217,7 +2217,7 @@ revert_stdout ()
    cbool_t result = fflush(stdout) == 0;
    if (not_nullptr(g_redirect_file))
    {
-      (void) fclose(g_redirect_file);     /* @change ca 2015-08-21 */
+      (void) fclose(g_redirect_file);     /* \change ca 2015-08-21 */
       g_redirect_file = nullptr;
    }
    if (gs_saved_stdout != (-1))
