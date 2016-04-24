@@ -1,3 +1,31 @@
+2016-04-24  Chris Ahlstrom <ahlstromcj@gmail.com>
+
+	* README.md, configure.ac, doc/dox/doxy-reference.cfg,
+	doc/dox/doxy-userman.cfg, doc/dox/midicvt_usage.dox,
+	libmidifilex/src/midicvt_base.c,
+	libmidifilex/src/midicvt_helpers.c, libmidipp/src/iniwriting.cpp,
+	midicvtpp/midicvtpp_main.cpp, tests/README, tests/test_script.old: 
+	Still more fixes, enough to jack us up to version 0.4.1 now.  And now merged
+	to master.
+
+2016-04-23  Chris Ahlstrom <ahlstromcj@gmail.com>
+
+	* README.md, configure.ac, contrib/annotate-reverse.txt,
+	contrib/annotate.txt, libmidifilex/include/VERSION.h,
+	libmidifilex/include/midicvt_helpers.h,
+	libmidifilex/src/midicvt_base.c,
+	libmidifilex/src/midicvt_globals.c,
+	libmidifilex/src/midicvt_helpers.c, libmidifilex/src/t2m_no_flex.c,
+	libmidipp/include/csvarray.hpp, libmidipp/include/initree.hpp,
+	libmidipp/include/midimapper.hpp, libmidipp/include/stringmap.hpp,
+	libmidipp/src/iniwriting.cpp, libmidipp/src/midimapper.cpp,
+	midicvt/midicvt_main.c, midicvtpp/midicvtpp_main.cpp,
+	tests/inifiles/GM_PSS-790_Drums.ini,
+	tests/inifiles/GM_PSS-790_Multi.ini,
+	tests/inifiles/GM_PSS-790_Patches.ini, tests/test_script: Fixed more
+	input/output options, add output to the summarize option, fixed some
+	real boners in test_script, and verified and updated the INI files.
+
 2016-04-19  Chris Ahlstrom <ahlstrom@centiped>
 
 	* libmidifilex/src/midicvt_helpers.c, libmidifilex/src/midifilex.c,
