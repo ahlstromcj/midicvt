@@ -28,7 +28,7 @@
  * \library       midicvt application
  * \author        Chris Ahlstrom
  * \date          2014-04-19
- * \updates       2016-04-23
+ * \updates       2016-04-24
  * \version       $Revision$
  * \license       GNU GPL
  *
@@ -45,13 +45,14 @@
 #include <midifilex.h>                 /* global variables from midifile lib  */
 #include <midicvt_globals.h>           /* global option variables             */
 #include <midicvt_helpers.h>           /* provides flex and help-text support */
+#include "midicvt-config.h"            /* settings from configure.ac          */
 
 /**
  *    Default version string.  Normally, the caller of midicvt_version()
  *    will provide a string, though.
  */
 
-static const char * const gs_help_version = "midicvt v 0.4.0.0";
+static const char * const gs_help_version = MIDICVT_PACKAGE_STRING;
 
 /**
  *    Help string.  Because of legacy C rules, we have to define 5
@@ -71,15 +72,13 @@ static const char * const gs_help_usage_2_1 =
    " -c  --compile   Flag to compile ASCII input into MIDI/SMF.\n"
    " -d  --debug     Send any debug output to stderr.\n"
    " -f  --fold [N]  Fold SysEx and SeqSpec data at N (default 80) columns.\n"
-   " -i  --input [F] Specify input file (replaces stdin).  Default file-name is\n"
-   "                 'out.mid' or 'out.asc', depending on --compile option.\n"
+   " -i  --input [F] Specify input file (replaces stdin).  No default file-name.\n"
    " -m  --merge     Collapse continued system-exclusives."
    ;
 
 static const char * const gs_help_usage_2_2 =
    " -n  --note      Show note on/off value using note+octave.\n"
-   " -o --output [F] Specify output file (replaces stdout). Default file-name\n"
-   "                 is 'out.asc' or 'out.mid', depending on --compile option.\n"
+   " -o --output [F] Specify output file (replaces stdout). No default file-name.\n"
    " -t  --time      Use absolute time instead of ticks.\n"
    " -v  --verbose   Output in columns with --notes on.\n"
    " -r  --report    Write detailed information to stderr (debugging).\n"
@@ -92,7 +91,9 @@ static const char * const gs_help_usage_2_2 =
 
 static const char * const gs_help_usage_2_3 =
    " --mfile         Write ASCII using 'MFile' instead of 'MThd' tag.\n"
-   " --mthd          Write ASCII using 'MThd' (default).  Either can be read.\n"
+   "                 Deprecated, for legacy support only.\n"
+   " --mthd          Write ASCII using 'MThd' (default).  Either can be read,\n"
+   "                 but this one is preferred.\n"
    " --strict        Require that 'MTrk' is the tag for tracks.  By default,\n"
    "                 tracks with other name-tags can be processed.\n"
    " --ignore        Allow, but don't process,  non-MTrk chunks. MIDI says to\n"
@@ -114,7 +115,7 @@ static const char * const gs_help_usage_4 =
    "    midicvt -c midi.asc -o midi.mid      Create a MIDI version.\n"
    "    midicvt midi.mid | somefilter | midicvt -c -o midi2.mid\n"
    "\n"
-   "Recommended: use -i/--input and -o/--output to specify the file-names.\n"
+   "Recommended: Use -i/--input and -o/--output to specify the file-names.\n"
    ;
 
 /**
@@ -508,8 +509,6 @@ midicvt_parse (int argc, char * argv [], const char * version)
       }
       else if (check_option(argv[option_index], "-2", "--m2m"))
       {
-         midicvt_set_option_m2m(true);
-
          /*
           * \change ca 2014-05-13
           *    We shouldn't bypass any argument in the C processing of
@@ -519,52 +518,94 @@ midicvt_parse (int argc, char * argv [], const char * version)
           *    But if we process this argument, it becomes the input MIDI
           *    file, and the following MIDI file argument, if not preceded
           *    by "-i", is the file-name, and it gets truncated.  Very
-          *    nasty!  Skip this argument.
+          *    nasty!  Skip this argument.  In fact, it is better to
+          *    abort.
           */
 
-          if ((option_index + 1) < argc)
-          {
-             if (argv[option_index+1][0] != '-')
-             {
-                option_index++;        /* skip m2m filename here in C scan */
-             }
-             else
-             {
-               errprint("--m2m option requires a file-name");
-               break;
-             }
-          }
+         cbool_t ok = true;
+         midicvt_set_option_m2m(true);
+         if ((option_index + 1) < argc)
+         {
+            if (argv[option_index+1][0] != '-')
+               option_index++;        /* skip m2m filename here in C scan */
+            else
+               ok = false;
+         }
+         else
+            ok = false;
+
+         if (! ok)
+         {
+            errprint("--m2m option (midicvtpp only) requires a file-name");
+            result = false;
+            break;
+         }
       }
       else if (check_option(argv[option_index], "-i", "--input"))
       {
+         cbool_t ok = true;
          if ((option_index + 1) < argc)
          {
-            option_index++;
-            if (! midicvt_set_input_file(argv[option_index]))
-               return false;
+            if (argv[option_index+1][0] != '-')
+            {
+               option_index++;
+               if (! midicvt_set_input_file(argv[option_index]))
+                  ok = false;
+            }
+            else
+               ok = false;
          }
          else
+            ok = false;
+
+         if (! ok)
          {
-            if (midicvt_option_compile())
-               (void) midicvt_set_input_file("out.asc");
-            else
-               (void) midicvt_set_input_file("out.mid");
+            /*
+             * Better to do nothing if the user provides --input, but does
+             * not provide a file-name.  Plus, the default names are a bit
+             * silly.
+             *
+             * if (midicvt_option_compile())
+             *    (void) midicvt_set_input_file("out.asc");
+             * else
+             *    (void) midicvt_set_input_file("out.mid");
+             */
+
+            errprint("--input option requires a file-name");
+            result = false;
+            break;
          }
       }
       else if (check_option(argv[option_index], "-o", "--output"))
       {
+         cbool_t ok = true;
          if ((option_index + 1) < argc)
          {
-            option_index++;
-            if (! midicvt_set_output_file(argv[option_index]))
-               return false;
+            if (argv[option_index+1][0] != '-')
+            {
+               option_index++;
+               if (! midicvt_set_output_file(argv[option_index]))
+                  ok = false;
+            }
          }
          else
+            ok = false;
+
+         if (! ok)
          {
-            if (midicvt_option_compile())
-               (void) midicvt_set_output_file("out.mid");
-            else
-               (void) midicvt_set_output_file("out.asc");
+            /*
+             * Better to do nothing if the user provides --output, but does
+             * not provide a file-name.
+             *
+             * if (midicvt_option_compile())
+             *    (void) midicvt_set_output_file("out.mid");
+             * else
+             *    (void) midicvt_set_output_file("out.asc");
+             */
+
+            errprint("--output option requires a file-name");
+            result = false;
+            break;
          }
       }
       else if (check_option(argv[option_index], "", "--mfile"))

@@ -28,7 +28,7 @@
  * \library       midicvt application
  * \author        Chris Ahlstrom and many other authors
  * \date          2014-04-09
- * \updates       2016-04-17
+ * \updates       2016-04-24
  * \version       $Revision$
  * \license       GNU GPL
  *
@@ -2349,7 +2349,9 @@ midicvt_setup_mfread (void)
 {
    cbool_t result;
    if (midicvt_have_input_file())
+   {
       g_io_file = efopen(midicvt_input_file(), "rb");
+   }
    else
    {
       g_io_file = fdopen(fileno(stdin), "rb");
@@ -2363,9 +2365,12 @@ midicvt_setup_mfread (void)
          cbool_t ok = redirect_stdout(midicvt_output_file(), "w");
          if (! ok)
          {
-            errprint
+            fprintf
             (
-               "midicvt_setup_mfread(): could not redirect stdout to output file"
+               stderr,
+               "midicvt_setup_mfread(): "
+               "could not redirect stdout to output file '%s'\n",
+               midicvt_output_file()
             );
             result = false;
          }
@@ -2440,10 +2445,24 @@ midicvt_setup_mfread (void)
    }
    else
    {
-      errprint
-      (
-         "midicvt_setup_mfread(): could not set up input MIDI file for reading"
-      );
+      if (midicvt_have_input_file())
+      {
+         fprintf
+         (
+            stderr,
+            "midicvt_setup_mfread(): "
+            "could not set up input file '%s' for reading\n",
+            midicvt_input_file()
+         );
+      }
+      else
+      {
+         errprint
+         (
+            "midicvt_setup_mfread(): "
+            "could not set up input MIDI file for reading"
+         );
+      }
    }
    return result;
 }

@@ -29,7 +29,7 @@
  * \library       midicvtpp application
  * \author        Chris Ahlstrom
  * \date          2014-04-19
- * \updates       2016-04-23
+ * \updates       2016-04-24
  * \version       $Revision$
  * \license       GNU GPL
  *
@@ -68,7 +68,7 @@ static const char * const s_help_version =
  */
 
 static const char * const gs_help_usage_1 =
-   "midicvtpp adds functionality to midicvt.\n"
+   "midicvtpp adds functionality to midicvt:\n"
    "\n"
    " --csv-drums f   Convert a CSV (comma-separated values) file to a sectioned\n"
    "                 INI drum file.  Option -o/--output specifies the full name\n"
@@ -78,7 +78,7 @@ static const char * const gs_help_usage_1 =
    "                 'out.ini', not stdout.\n"
    " --m2m f         Employ the given INI mapping file to convert MIDI to MIDI.\n"
    "\n"
-   "The following options require the --m2m option:\n"
+   "The following options also require the --m2m option:\n"
    "\n"
    " --reverse       Reverse the mapping specified by --m2m. Not all mappings\n"
    "                 can be fully reversed; unique key values are required in\n"

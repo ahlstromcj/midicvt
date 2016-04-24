@@ -37,20 +37,18 @@ in order to see the following brief explanation.
  -c  --compile   Flag to compile ASCII input into SMF/MIDI.
  -d  --debug     Send any debug output to stderr.
  -f  --fold [N]  Fold SysEx or SeqSpec data at N (default 80) columns.
- -i  --input [F] Specify input file (replaces stdin).  Default file-name is
-                 'out.mid' or 'out.asc', depending on --compile option.
+ -i  --input [F] Specify input file (replaces stdin).  No default file-name.
  -m  --merge     Collapse continued system-exclusives.
-
  -n  --note      Show note on/off value using note+octave.
- -o --output [F] Specify output file (replaces stdout). Default file-name
-                 is 'out.asc' or 'out.mid', depending on --compile option.
+ -o --output [F] Specify output file (replaces stdout). No default file-name.
  -t  --time      Use absolute time instead of ticks.
  -v  --verbose   Output in columns with --notes on.
  -r  --report    Write detailed information to stderr (debugging).
  --version       Show the version information for this program.
  --mfile         Write ASCII using 'MFile' instead of 'MThd' tag.
+                 Deprecated, for legacy support only.
  --mthd          Write ASCII using the 'MThd' tag (default).  The program
-                 can read either tag.
+                 can read either tag, but this one is preferred.
  --strict        Require that all tracks are marked with 'MTrk'.  By
                  default, tracks with other names can be processed.
  --ignore        Allow non-Mtrk chunks, but do not process them.

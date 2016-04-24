@@ -1,6 +1,11 @@
 Chris Ahlstrom
 Test Files for midicvt and midicvtpp
-2014-04-08 to 2015-08-21
+2014-04-08 to 2016-04-24
+
+Before we get started, please note that we have copied test_script to
+test_script.old and have removed some broken (and nonsensical) tests from
+test_script.  Man, was I drunk when I wrote those --m2m tests for the
+C version, midicvt, which does not even support that option?
 
 The following two command lines were run in sequence to generate the results
 files in test-files/results:
@@ -83,12 +88,12 @@ We also tried some of the test files from the midi2text project.
    choo2xg.mid and choo2xg.asc
 
 This MIDI file, when converted to a text file using the --time option, yields
-a text file that matches ch002xg.asc, so we can see that midicvt's conversion
+a text file that matches ch002xg.asc, so we can see that the midicvt conversion
 matches that of midi2text.  Compiling it back from the text file yields:
 
    choo2xg-recompiled.mid
 
 This file is a lot smaller than choo2xg.mid, but when both are play via
-timidity, they sound the same.  We haven't checked yet.
+timidity, they sound the same.  We have not checked yet.
 
 # vim: ts=3 sw=3 et ft=sh

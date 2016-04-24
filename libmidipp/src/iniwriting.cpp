@@ -7,7 +7,7 @@
  * \library       libmidipp
  * \author        Chris Ahlstrom
  * \date          2014-04-23
- * \updates       2016-04-23
+ * \updates       2016-04-24
  * \version       $Revision$
  * \license       $XPC_SUITE_GPL_LICENSE$
  *
@@ -16,10 +16,10 @@
  */
 
 #include <fstream>                     /* std::ofstream                       */
-
 #include <csvarray.hpp>                /* midipp::csvarray class              */
 #include <ininames.hpp>                /* some stock string values            */
 #include <iniwriting.hpp>              /* the functions in this module        */
+#include "midicvt-config.h"            /* defines version information         */
 
 /**
  *    Provides a less cluttered way to add a newline to string output.
@@ -38,7 +38,7 @@ namespace midipp
  */
 
 static const std::string s_explanatory_header =
-"# midicvtpp v 0.4.0.1\n"
+"# midicvtpp v " MIDICVT_VERSION "\n"
 "#\n"
 "# This file provides easy-to-use settings for remapping some MIDI events\n"
 "# so that a MIDI file for a specific device plays back in General MIDI (GM).\n"
