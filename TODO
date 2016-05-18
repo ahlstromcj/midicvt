@@ -1,6 +1,11 @@
 Chris Ahlstrom
 TODO List
-2015-08-21 to 2015-08-22
+2015-08-21 to 2016-05-18
+
+Add a "verbose" mode where, when one does not care to be able to convert the
+text back to MIDI, more informative human readable output is created:
+
+   -  For MIDI CC, instead of Par v=123, shown MIDI CC and the effect name.
 
 Try to get rid of the memory leaks from:
 
