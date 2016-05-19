@@ -2401,7 +2401,7 @@ midicvt_setup_mfread (void)
       {
          if (midicvt_option_verbose())
          {
-#ifdef USE_MIDICOMP_VERBOSE_FORMAT
+#ifdef USE_MIDICOMP_VERBOSE_FORMAT              // undefined
              g_option_Onmsg   = "On      ch=%-2d  note=%-3s  vol=%-3d\n";
              g_option_Offmsg  = "Off     ch=%-2d  note=%-3s  vol=%-3d\n";
              g_option_PoPrmsg = "PolyPr  ch=%-2d  note=%-3s  val=%-3d\n";
@@ -2409,11 +2409,12 @@ midicvt_setup_mfread (void)
              g_option_Pbmsg   = "Pb      ch=%-2d  val=%-3d\n";
              g_option_PrChmsg = "ProgCh  ch=%-2d  prog=%-3d\n";
              g_option_ChPrmsg = "ChanPr  ch=%-2d  val=%-3d\n";
-#elif USE_MIDI2TEXT_DEFAULT_FORMAT
+#elif USE_MIDI2TEXT_DEFAULT_FORMAT              // undefined
 
              /*
               * Since the midi2text project provided many more examples
-              * for testing, we will use its uglier format.
+              * for testing, we will use its uglier format.  But how
+              * are we getting these values?
               */
 
              g_option_Onmsg   = "On ch=%d n=%s v=%d\n";
@@ -2424,6 +2425,12 @@ midicvt_setup_mfread (void)
              g_option_PrChmsg = "PrCh ch=%d p=%d\n";
              g_option_ChPrmsg = "ChPr ch=%d v=%d\n";
 #else
+             /*
+              * These values are also statically wired in the
+              * midicvt_globals.c module function midicvt_set_defaults(),
+              * and those values are what seem to be used.
+              */
+
              g_option_Onmsg   = "On ch=%d note=%s vol=%d\n";
              g_option_Offmsg  = "Off ch=%d note=%s vol=%d\n";
              g_option_PoPrmsg = "PolyPr ch=%d note=%s val=%d\n";

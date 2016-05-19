@@ -6,7 +6,7 @@
 # \library     libmidifilex
 # \author      Chris Ahlstrom
 # \date        2014-04-08
-# \updates     2014-04-29
+# \updates     2016-05-19
 # \version     $Revision$
 # \license     $XPC_SUITE_GPL_LICENSE$
 #
@@ -116,6 +116,7 @@ builddir = @abs_top_builddir@
 pkginclude_HEADERS = \
  VERSION.h \
  midicvt_base.h \
+ midicvt_cc.h \
  midicvt_globals.h \
  midicvt_helpers.h \
  midicvt_macros.h \

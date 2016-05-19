@@ -32,7 +32,7 @@
  * \library       midicvt application portion of libmidifilex
  * \author        Chris Ahlstrom and others; see documentation
  * \date          2014-04-09
- * \updates       2015-08-19
+ * \updates       2016-05-19
  * \version       $Revision$
  * \license       GNU GPL
  */
@@ -56,7 +56,8 @@
 #define READMT_IGNORE_NON_MTRK      (-9)
 
 /**
- *    Global variables!
+ *    Global variables!  We have managed to hide some of the other ones
+ *    within the midicvt_globals.c module, but not all of them yet.
  */
 
 extern FILE * g_io_file;
@@ -82,6 +83,12 @@ extern char * g_option_Parmsg;
 extern char * g_option_Pbmsg;
 extern char * g_option_PrChmsg;
 extern char * g_option_ChPrmsg;
+
+/*
+ * Additions for the --human option
+ */
+
+extern char * g_human_Parmsg;
 
 /*
  * Use externs from the flex-generated file.

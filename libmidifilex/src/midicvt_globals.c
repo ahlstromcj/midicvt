@@ -65,20 +65,27 @@ char * g_option_PrChmsg          = "PrCh ch=%d p=%d\n";
 char * g_option_ChPrmsg          = "ChPr ch=%d v=%d\n";
 
 /*
+ * For the --human option.
+ */
+
+char * g_human_Parmsg            = "CC channel %d %s value %d\n";
+
+/*
  * These variables have accessor functions in this module, but are
  * otherwise private.
  */
 
 static int g_option_fold                = 0;
-static cbool_t g_option_mfile_tag       = false;    /* new 2015-08-14 */
-static cbool_t g_option_strict_track    = false;    /* new 2015-08-18 */
-static cbool_t g_option_ignore_track    = false;    /* new 2015-08-19 */
+static cbool_t g_option_mfile_tag       = false;   /* new 2015-08-14 */
+static cbool_t g_option_strict_track    = false;   /* new 2015-08-18 */
+static cbool_t g_option_ignore_track    = false;   /* new 2015-08-19 */
 static cbool_t g_option_verbose         = false;
 static cbool_t g_option_verbose_notes   = false;
 static cbool_t g_option_absolute_times  = false;
 static cbool_t g_option_debug           = false;
 static cbool_t g_option_docompile       = false;
 static cbool_t g_option_midi2midi       = false;
+static cbool_t g_option_human           = false;   /* new 2015-05-19 */
 
 /**
  * Use externs from an include file!  The flex-generated code is a bit
@@ -119,6 +126,7 @@ midicvt_set_defaults (void)
    g_option_absolute_times = false;
    g_option_debug          = false;
    g_option_docompile      = false;
+   g_option_human          = false;       /* new 2015-05-19 */
    g_option_Onmsg          = "On ch=%d n=%s v=%d\n";
    g_option_Offmsg         = "Off ch=%d n=%s v=%d\n";
    g_option_PoPrmsg        = "PoPr ch=%d n=%s v=%d\n";
@@ -126,6 +134,12 @@ midicvt_set_defaults (void)
    g_option_Pbmsg          = "Pb ch=%d v=%d\n";
    g_option_PrChmsg        = "PrCh ch=%d p=%d\n";
    g_option_ChPrmsg        = "ChPr ch=%d v=%d\n";
+
+   /*
+    * Upcoming --human options
+    */
+
+   g_human_Parmsg          = "CC channel %d %s value %d\n";
 }
 
 /**

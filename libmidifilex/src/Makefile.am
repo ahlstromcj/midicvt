@@ -6,7 +6,7 @@
 # \library    	libmidifilex
 # \author     	Chris Ahlstrom
 # \date       	2014-04-08
-# \updates     2014-06-21
+# \updates     2016-05-19
 # \version    	$Revision$
 # \license    	$XPC_SUITE_GPL_LICENSE$
 #
@@ -137,6 +137,7 @@ lib_LTLIBRARIES = libmidifilex.la
 libmidifilex_la_SOURCES = \
  midifilex.c \
  midicvt_base.c \
+ midicvt_cc.c \
  midicvt_globals.c \
  midicvt_helpers.c \
  midicvt_m2m.c \
@@ -222,9 +223,6 @@ show:
 
 #******************************************************************************
 # Makefile.am (libmidifilex/src)
-#------------------------------------------------------------------------------
-# Local Variables:
-# End:
 #------------------------------------------------------------------------------
 # vim: ts=3 sw=3 noet ft=automake
 #------------------------------------------------------------------------------

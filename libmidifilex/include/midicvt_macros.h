@@ -10,7 +10,7 @@
  * \library       libmidifilex
  * \author        Chris Ahlstrom and other authors; see documentation
  * \date          2013-11-17
- * \updates       2016-04-19
+ * \updates       2016-05-19
  * \version       $Revision$
  * \license       GNU GPL
  *
@@ -52,6 +52,13 @@
 #define MIDI_NOTE_A4             69
 #define MIDI_NOTE_MAX           127
 #define MIDI_FREQ_A4            440
+
+/**
+ *    Defines the maximum number of values of MIDI continuous controller
+ *    (control change) numbers.
+ */
+
+#define MIDI_VALUE_COUNT         128
 
 /**
  *    Defines the maximum number of unique MIDI notes.
