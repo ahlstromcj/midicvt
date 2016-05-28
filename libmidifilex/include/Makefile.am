@@ -6,7 +6,7 @@
 # \library     libmidifilex
 # \author      Chris Ahlstrom
 # \date        2014-04-08
-# \updates     2016-05-19
+# \updates     2016-05-28
 # \version     $Revision$
 # \license     $XPC_SUITE_GPL_LICENSE$
 #
@@ -64,10 +64,18 @@ MIDICVT_LT_REVISION = @MIDICVT_LT_REVISION@
 MIDICVT_LT_AGE = @MIDICVT_LT_AGE@
 
 #******************************************************************************
+# Local project directories
+#------------------------------------------------------------------------------
+
+top_srcdir = @top_srcdir@
+builddir = @abs_top_builddir@
+
+#******************************************************************************
 # Install directories
 #------------------------------------------------------------------------------
 
 prefix = @prefix@
+includedir = @midicvtincludedir@
 libdir = @midicvtlibdir@
 datadir = @datadir@
 datarootdir = @datarootdir@
@@ -135,30 +143,6 @@ pkginclude_HEADERS = \
 
 uninstall-hook:
 	@echo "Note:  you may want to remove $(pkgincludedir) manually"
-
-#******************************************************************************
-# Debugging targets
-#------------------------------------------------------------------------------
-
-show:
-	@echo "Install directories:"
-	@echo
-	@echo "prefix        = $(prefix)"
-	@echo "datadir       = $(datadir)"
-	@echo "datarootdir   = $(datarootdir)"
-	@echo "libdir        = $(libdir)"
-	@echo "midicvtlibdir     = $(midicvtlibdir)"
-	@echo "midicvtdocdir     = $(midicvtdocdir)"
-	@echo "midicvtdoxygendir = $(midicvtdoxygendir)"
-	@echo "midicvtincludedir = $(midicvtincludedir)"
-	@echo "localedir     = $(localedir)"
-	@echo
-	@echo "Local directories:"
-	@echo
-	@echo "top_srcdir    = $(top_srcdir) [XPC Basic root directory]"
-	@echo "srcdir    		= $(srcdir)"
-	@echo "top_builddir  = $(top_builddir)"
-	@echo "builddir      = $(builddir)"
 
 #******************************************************************************
 # Makefile.am (midicvt/include)

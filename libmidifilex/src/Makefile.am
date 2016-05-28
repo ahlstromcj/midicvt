@@ -6,7 +6,7 @@
 # \library    	libmidifilex
 # \author     	Chris Ahlstrom
 # \date       	2014-04-08
-# \updates     2016-05-19
+# \updates     2016-05-27
 # \version    	$Revision$
 # \license    	$XPC_SUITE_GPL_LICENSE$
 #
@@ -144,7 +144,9 @@ libmidifilex_la_SOURCES = \
  t2m_no_flex.c
 
 # We generally won't generate this file using flex, and specify the prebuilt
-# version t2m_no_flex.c above: t2mflex.c.  See below for why.
+# version t2m_no_flex.c above: t2mflex.c.  See below for why.  Also not sure we
+# need these header-file dependencies, since GNU keeps track of them in .deps
+# directories.
 
 libmidifilex_la_LDFLAGS = -version-info $(version)
 libmidifilex_la_DEPENDENCIES = \
@@ -204,22 +206,22 @@ uninstall-hook:
 show:
 	@echo "Install directories:"
 	@echo
-	@echo "prefix        = $(prefix)"
-	@echo "datadir       = $(datadir)"
-	@echo "datarootdir   = $(datarootdir)"
-	@echo "libdir        = $(libdir)"
+	@echo "prefix        	 = $(prefix)"
+	@echo "datadir       	 = $(datadir)"
+	@echo "datarootdir   	 = $(datarootdir)"
+	@echo "libdir        	 = $(libdir)"
 	@echo "midicvtlibdir     = $(midicvtlibdir)"
 	@echo "midicvtdocdir     = $(midicvtdocdir)"
 	@echo "midicvtdoxygendir = $(midicvtdoxygendir)"
 	@echo "midicvtincludedir = $(midicvtincludedir)"
-	@echo "localedir     = $(localedir)"
+	@echo "localedir     	 = $(localedir)"
 	@echo
 	@echo "Local directories:"
 	@echo
-	@echo "top_srcdir    = $(top_srcdir) [XPC Basic root directory]"
-	@echo "srcdir    		= $(srcdir)"
-	@echo "top_builddir  = $(top_builddir)"
-	@echo "builddir      = $(builddir)"
+	@echo "top_srcdir    	 = $(top_srcdir) [root directory]"
+	@echo "srcdir    			 = $(srcdir)"
+	@echo "top_builddir  	 = $(top_builddir)"
+	@echo "builddir      	 = $(builddir)"
 
 #******************************************************************************
 # Makefile.am (libmidifilex/src)

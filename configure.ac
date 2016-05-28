@@ -13,6 +13,8 @@ dnl
 dnl   This script is for the midicvt project, a repacking and fixing of the
 dnl   midicomp project and the project derived from it, midi2text.
 dnl
+dnl   Process this file with autoconf to produce a configure script.
+dnl
 dnl ---------------------------------------------------------------------------
 
 AC_PREREQ(2.60)
@@ -51,12 +53,21 @@ PACKAGE=midicvt
 AC_DEFINE_UNQUOTED(PACKAGE, "$PACKAGE")
 AC_SUBST(PACKAGE)
 
-VERSION="0.4.2.0"
+VERSION="0.4.2.1"
 AC_DEFINE_UNQUOTED(VERSION, "$VERSION")
 AC_SUBST(VERSION)
 
 MIDICVT_SUITE_NAME="MIDICVT"
 AC_SUBST([MIDICVT_SUITE_NAME])
+
+dnl For now, the code to set this up is in the libseq64 and seq_gtkmm2
+dnl Makefiles:
+dnl
+dnl GIT_VERSION=$(shell git describe --abbrev=7 --always --tags)
+dnl GIT_VERSION="0.9.11-9-gc9ee500"
+dnl AC_DEFINE_UNQUOTED(GIT_VERSION, "$GIT_VERSION")
+dnl AC_DEFINE(GIT_VERSION, "$GIT_VERSION")
+dnl AC_SUBST(GIT_VERSION)
 
 dnl 1.a. Set up version information for this project.
 dnl
@@ -124,6 +135,8 @@ dnl 1.d. Set up the suite name and current-project name.
 
 MIDICVT_PROJECT_NAME="MIDICVT"
 AC_SUBST([MIDICVT_PROJECT_NAME])
+
+AC_DEFINE(_GNU_SOURCE, 1, [gnu source])
 
 dnl 2. Libtool
 dnl
@@ -218,9 +231,12 @@ AC_GCC_VERSION
 dnl C++ support.  Run tests in C++.  Note the order; avoids messy warnings.
 
 AC_LANG_C
+AC_PROG_CC
 AC_LANG_CPLUSPLUS dnl or AC_LANG(C++)
 AC_PROG_CXX
 AC_PROG_CXXCPP
+AC_PROG_INSTALL
+AC_PROG_LN_S
 
 dnl 5.c. Mingw support.
 dnl
@@ -261,18 +277,20 @@ dnl      since the macro call in quotes does /not/ get expanded.
 dnl
 dnl      Note: The AX_PREFIX_CONFIG_H macro called way above prepends
 dnl            "MIDICVT_" to these values when it generated midicvt-config.h.
+dnl
+dnl #define API_VERSION "0.4"             // defined on command line
 
 AH_TOP(
 
-#define VERSION_DATE_SHORT "2016-05-19"
-#define VERSION "0.4.2.0"
-#define API_VERSION "0.4"
+#define VERSION_DATE_SHORT "2016-05-28"
+#define VERSION "0.4.2.1"
 
 )
 
 dnl 7. Checks for build configuration.
 dnl
 dnl 7.a. Compiling with debugging, coverage, or profiling options.
+dnl      Implemented in m4/xpc_debug.m4.
 dnl
 dnl      --enable-debug
 dnl      --enable-coverage
@@ -374,6 +392,7 @@ AC_CONFIG_FILES([
  midicvt/Makefile
  midicvtpp/Makefile
  data/Makefile
+ man/Makefile
  ])
 
 AC_OUTPUT

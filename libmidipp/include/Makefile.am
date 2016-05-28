@@ -6,7 +6,7 @@
 # \library     libmidipp
 # \author      Chris Ahlstrom
 # \date        2014-04-22
-# \updates     2014-05-02
+# \updates     2014-05-28
 # \version     $Revision$
 # \license     $XPC_SUITE_GPL_LICENSE$
 #
@@ -68,6 +68,7 @@ MIDICVT_LT_AGE = @MIDICVT_LT_AGE@
 #------------------------------------------------------------------------------
 
 prefix = @prefix@
+includedir = @midicvtincludedir@
 libdir = @midicvtlibdir@
 datadir = @datadir@
 datarootdir = @datarootdir@
@@ -118,34 +119,7 @@ uninstall-hook:
 	@echo "Note:  you may want to remove $(pkgincludedir) manually"
 
 #******************************************************************************
-# Debugging targets
-#------------------------------------------------------------------------------
-
-show:
-	@echo "Install directories:"
-	@echo
-	@echo "prefix        = $(prefix)"
-	@echo "datadir       = $(datadir)"
-	@echo "datarootdir   = $(datarootdir)"
-	@echo "libdir        = $(libdir)"
-	@echo "midicvtlibdir     = $(midicvtlibdir)"
-	@echo "midicvtdocdir     = $(midicvtdocdir)"
-	@echo "midicvtdoxygendir = $(midicvtdoxygendir)"
-	@echo "midicvtincludedir = $(midicvtincludedir)"
-	@echo "localedir     = $(localedir)"
-	@echo
-	@echo "Local directories:"
-	@echo
-	@echo "top_srcdir    = $(top_srcdir) [XPC Basic root directory]"
-	@echo "srcdir    		= $(srcdir)"
-	@echo "top_builddir  = $(top_builddir)"
-	@echo "builddir      = $(builddir)"
-
-#******************************************************************************
 # Makefile.am (libmidipp/include)
-#------------------------------------------------------------------------------
-# Local Variables:
-# End:
 #------------------------------------------------------------------------------
 # vim: ts=3 sw=3 noet ft=automake
 #------------------------------------------------------------------------------

@@ -172,26 +172,6 @@ all-local:
 # Debugging targets
 #------------------------------------------------------------------------------
 
-show:
-	@echo "Install directories:"
-	@echo
-	@echo "prefix           = $(prefix)"
-	@echo "datadir          = $(datadir)"
-	@echo "datarootdir      = $(datarootdir)"
-	@echo "libdir           = $(libdir)"
-	@echo "midicvtlibdir      = $(midicvtlibdir)"
-	@echo "midicvtdocdir      = $(midicvtdocdir)"
-	@echo "midicvtdoxygendir  = $(midicvtdoxygendir)"
-	@echo "midicvtincludedir  = $(midicvtincludedir)"
-	@echo "localedir        = $(localedir)"
-	@echo
-	@echo "Local directories:"
-	@echo
-	@echo "top_srcdir       = $(top_srcdir) [project root directory]"
-	@echo "srcdir           = $(srcdir)"
-	@echo "top_builddir     = $(top_builddir)"
-	@echo "builddir         = $(builddir)"
-
 showver:
 	@echo "PACKAGE            = $(PACKAGE)"
 	@echo "VERSION            = $(VERSION)"
@@ -203,11 +183,8 @@ showver:
 	@echo "MIDICVT_LT_REVISION  = $(MIDICVT_LT_REVISION)"
 	@echo "MIDICVT_LT_AGE       = $(MIDICVT_LT_AGE)"
 
-#****************************************************************************
+#*****************************************************************************
 # Makefile.am (midicvt top-level)
-#----------------------------------------------------------------------------
-# Local Variables:
-# End:
-#------------------------------------------------------------------------------
+#-----------------------------------------------------------------------------
 # vim: ts=3 sw=3 ft=automake
-#----------------------------------------------------------------------------
+#-----------------------------------------------------------------------------

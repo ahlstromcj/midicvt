@@ -6,7 +6,7 @@
 # \library    	midicvtpp application
 # \author     	Chris Ahlstrom
 # \date       	2014-04-19
-# \update      2014-04-24
+# \update      2016-05-27
 # \version    	$Revision$
 # \license    	$XPC_SUITE_GPL_LICENSE$
 #
@@ -61,7 +61,7 @@ VERSION = @VERSION@
 #------------------------------------------------------------------------------
 
 prefix = @prefix@
-libdir = @xpclibdir@
+libdir = @midicvtlibdir@                  # was xpclibdir
 datadir = @datadir@
 datarootdir = @datarootdir@
 midicvtincludedir = @midicvtincludedir@
@@ -197,9 +197,6 @@ distclean-local:
 
 #******************************************************************************
 # Makefile.am (midicvtpp)
-#------------------------------------------------------------------------------
-# Local Variables:
-# End:
 #------------------------------------------------------------------------------
 # 	vim: ts=3 sw=3 ft=automake
 #------------------------------------------------------------------------------

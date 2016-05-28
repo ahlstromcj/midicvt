@@ -6,7 +6,7 @@
 # \library    	midicvt libraries
 # \author     	Chris Ahlstrom
 # \date       	2014-05-20
-# \update     	2016-04-17
+# \update     	2016-05-28
 # \version    	$Revision$
 # \license    	$XPC_SUITE_GPL_LICENSE$
 #
@@ -16,22 +16,8 @@
 
 AUTOMAKE_OPTIONS = foreign dist-zip dist-bzip2
 MAINTAINERCLEANFILES = Makefile.in dox-warnings.log
-
-#*******************************************************************************
-# EXTRA_DIST
-#-------------------------------------------------------------------------------
-#
-# 	   Some of the sample files are not included in the tar-file, since only
-# 	   a developer of an automake project would ever care about them.
-#
-# 	   The rest are included automatically by the automake process.
-#
-# xpc_automake.dox xpc_mainpage_generic.dox xpc_mingw.dox xpc_nice_classes.dox
-# xpc_philosophy.dox xpc_subversion.dox xpc_suite.dox
-#
-#------------------------------------------------------------------------------
-
-EXTRA_DIST = make_dox doxy*.cfg
+CLEANFILES = dox-stamp
+EXTRA_DIST = make_dox doxy*.cfg *.dox
 
 top_srcdir = @top_srcdir@
 srcdir = @srcdir@
