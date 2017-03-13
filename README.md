@@ -1,5 +1,5 @@
 # midicvt 0.4.1.0
-(C) Chris Ahlstrom 2014-2016
+(C) Chris Ahlstrom 2014-2017
 
 This project supports MIDI-to-text-to-MIDI conversions like midicomp and
 midi2text (it is derived from those projects), and adds support for direct
