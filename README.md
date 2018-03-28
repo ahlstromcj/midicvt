@@ -1,5 +1,5 @@
 # midicvt 0.4.1.0
-(C) Chris Ahlstrom 2014-2017
+(C) Chris Ahlstrom 2014-2018
 
 This project supports MIDI-to-text-to-MIDI conversions like midicomp and
 midi2text (it is derived from those projects), and adds support for direct
@@ -22,7 +22,7 @@ bug report.
    2. Add support for creating a Debian package.
    3. Add still more tests and examples.
 
-Currently Linux-only, and built by GNU Autotools.
+Currently Linux-only, and built by GNU Autotools.  See the INSTALL file.
 
 ## Author
 ### Chris Ahlstrom

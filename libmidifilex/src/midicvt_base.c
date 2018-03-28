@@ -28,7 +28,7 @@
  * \library       midicvt application
  * \author        Chris Ahlstrom and many other authors
  * \date          2014-04-09
- * \updates       2016-04-24
+ * \updates       2018-03-28
  * \version       $Revision$
  * \license       GNU GPL
  *
@@ -475,7 +475,7 @@ prnote (int pitch)
    {
         "c", "c#", "d", "d#", "e", "f", "f#", "g", "g#", "a", "a#", "b"
    };
-   static char buf[8];
+   static char buf[16];
    if (midicvt_option_verbose_notes())
       (void) snprintf(buf, sizeof(buf), "%s%d", s_notes[pitch % 12], pitch / 12);
    else

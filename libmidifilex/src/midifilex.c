@@ -60,7 +60,7 @@
  * \author        Other authors (see below), with modifications by Chris
  *                Ahlstrom,
  * \date          2014-04-08
- * \updates       2016-04-19
+ * \updates       2018-03-28
  * \version       $Revision$
  * \license       GNU GPL
  *
@@ -1112,7 +1112,7 @@ readheader (void)
       }
       if (mfreportable())
       {
-         char tmp[80];
+         char tmp[128];
          (void) snprintf
          (
             tmp, sizeof tmp,

@@ -1,0 +1,29 @@
+INSTALL for midicvt 0.4.1 and above
+Chris Ahlstrom
+2014-2018
+
+This project supports MIDI-to-text-to-MIDI conversions like midicomp and
+midi2text (it is derived from those projects), and adds support for direct
+MIDI-to-MIDI conversions driven by an INI file, using a C++ add-on.
+
+Standard Install:
+
+    If you have a source tarball, such as midicvt-master-0.4.1-stable.tar.xz,
+    untar this file in a temporary place and run
+
+    $ ./configure
+
+Advanced Install:
+
+    If you want to start from scratch, use the bootstrap script:
+
+        $ ./bootstrap
+
+    The do the "Standard Install" described above.
+
+    If you want to make a source tarball, bootstrap the project, then
+    run a command like this:
+
+        $ ./pack --release 0.4.1 stable
+
+# vim: sw=4 ts=4 wm=4 et ft=sh
