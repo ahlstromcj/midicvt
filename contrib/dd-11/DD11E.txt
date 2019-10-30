@@ -1,0 +1,169 @@
+
+Demo:
+
+    Power on
+    Volume 1/2
+    DEMO button
+
+12 Percussion Sets (each assigns instruments/notes to the 8 pads and pedal).
+Set 10 is "Auto Bass Chord".
+
+Percussion Sets:
+
+    00  Rock Drum Set 1
+    01  Rock Drum Set 2
+    02  Jazz Drum Set
+    03  Latin Percussion Set 1
+    04  Latin Percussion Set 2
+    05  Vibraphone (C3-C3)
+    06  Marimba (C2-C3)
+    07  Steel Drum (C3-C4)
+    08  Tympani (C1-C2)
+    09  Orchestra Hit (C2-C3)
+    10  Auto Bass Chord
+    11  Custom Set (user assignable)
+
+Percussion Set Assignments (Pads 1 to 8 and Pedal)
+
+    00  Rock Drum Set 1
+        1   Snare Drum Reverb
+        2   Tom High 1
+        3   Tom Mid 1
+        4   Tom Low 1
+        5   Hi Hat Closed
+        6   Hi Hat Open
+        7   Hand Clap
+        8   Crash Cymbal
+        P   Bass Drum Reverb
+    01  Rock Drum Set 2
+        1   Snare Drum Low
+        2   Tom High 2
+        3   Tom Mid 2
+        4   Tom Low 2
+        5   Hi Hat Closed
+        6   Hi Hat Open
+        7   Ride Cup
+        8   Crash Cymbal
+        P   Bass Drum 1
+    02  Jazz Drum Set
+        1   Snare Drum High
+        2   Snare Drum Rim
+        3   Tom High 2
+        4   Tom Low 2
+        5   Hi Hat Closed
+        6   Hi Hat Open
+        7   Ride Cymbal
+        8   Splash Cymbal
+        P   Bass Drum 2
+    03  Latin Percussion Set 1
+        1   Conga Low
+        2   Conga High
+        3   Agogo Low
+        4   Agogo High
+        5   Bongo Low
+        6   Bongo High
+        7   Timbale Low
+        8   Timbale High
+        P   Bass Drum 1
+    04  Latin Percussion Set 2
+        1   Conga High
+        2   Conga Mute
+        3   Agogo Low
+        4   Agogo High
+        5   Cuica Low
+        6   Cuica High
+        7   Shaker
+        8   Crash Cymbal
+        P   Tom Low 1
+    05  Vibraphone (C3-C3)
+    06  Marimba (C2-C3)
+    07  Steel Drum (C3-C4)
+    08  Tympani (C1-C2)
+    09  Orchestra Hit (C2-C3)
+        1   C
+        2   D
+        3   E
+        4   F
+        5   G
+        6   A
+        7   B
+        8   C
+        P   #
+    10  Auto Bass Chord
+        1   C / Maj
+        2   D / Maj7
+        3   E / 7th
+        4   F / 7sus4
+        5   G / min
+        6   A / min7
+        7   B / min7-5
+        8   C /dim
+        P   #
+    11  Custom Set (user assignable)
+
+Instrument List (Note Number):
+
+    Channel 16 by default, default program (Pr) for pad play
+
+    ##  Instrument                 Note No.     Pr Ch
+    00  Bass Drum Gated Reverb      C1  36      xx 16   Base Drum 1
+    01  Bass Drum 1                 G#1 44      xx 16   Pedal Hi-Hat
+    02  Bass Drum 2                 A1  45      xx 16   Low Tom
+    03  Snare Drum Gated Reverb     D1  38      xx 16   Acoustic Snare
+    04  Snare Drum Low              E2  52      xx 16   Chinese Cymbal
+    05  Snare Drum High             C#2 49      xx 16   Crash Cymbal 1
+    06  Snare Drum Rim Shot         D#2 51      xx 16   Ride Cymbal 1
+    07  Tom Low 1                   F1  41      xx 16   Low Floor Tom
+    08  Tom Mid 1                   F#1 42      xx 16   Close Hi-Hat
+    09  Tom High 1                  G1  43      xx 16   High Floor Tom
+    10  Tom Low 2                   C2  48      xx 16   Hi-Mid Tom
+    11  Tom Mid 2                   D2  50      xx 16   High Tom
+    12  Tom High 2                  F2  53      xx 16   Ride Bell
+    13  Hand Clap                   F#2 54      xx 16A  Tambourine
+    14  Cowbell                     G2  55      xx 16   Splash Cymbal
+    15  Shaker                      G#2 56      xx 16   Cowbell
+    16  Hit Hat Closed              A2  57      xx 16   Crash Cymbal 2
+    17  Hit Hat Open                B2  59      xx 16   Ride Cymbal 2
+    18  Crash Cymbal                C3  60      xx 16   Hi Bongo
+    19  Splash Cymbal               C#3 61      xx 16   Low Bongo
+    20  Ride Cymbal Cup             D3  62      xx 16   Mute Hi Conga
+    21  Ride Cymbal                 D#3 63      xx 16   Open Hi Conga
+    22  Conga Low                   E3  64      xx 16   Low Conga
+    23  Conga High                  F3  65      xx 16   High Timbale
+    24  Conga Muted                 F#3 66      xx 16   Low Timbale
+    25  Bongo Low                   G3  67      xx 16   High Agogo
+    26  Bongo High                  G#3 68      xx 16   Low Agogo
+    27  Timbale Low                 A3  69      xx 16   Cabasa
+    28  Timbale High                A#3 70      xx 16   Maracas
+    29  Claves Low                  C4  72      xx 16   Long Whistle
+    30  Claves High                 C#4 73      xx 16   Short Guiro
+    31  Agogo Low                   D4  74      xx 16   Long Guiro
+    32  Agogo High                  D#4 75      xx 16   Claves
+    33  Cuica Low                   E4  76      xx 16   Hi Wood Block
+    34  Cuica High                  F4  77      xx 16   Low Wood Block
+    35  Vibraphone Pad Only         C3+ 60-73   07  1   N/A
+    36  Marimba Pad Only            C2+ 48-61   08  2   N/A
+    37  Steel Drum Pad Only         C3+ 60-73   09  3   N/A
+    38  Timpani Pad Only            C1+ 36-49   66  4   N/A
+    39  Orchestra Hit Pad Only      C2+ 48-61   90  5   N/A
+
+    For 35-39, the pads have the same pitches as in the percussion set of the
+    same name.
+
+    35  Vibraphone Pad Only         C3-C4# 60-73
+    36  Marimba Pad Only            C2-C3# 48-61
+    37  Steel Drum Pad Only         C3-C4# 60-73
+    38  Timpani Pad Only            C1-C2# 36-49
+    39  Orchestra Hit Pad Only      C2-C3# 48-61
+
+ABC Play:
+
+    xx  Synth Brass                 C2-C4  48-72
+    xx  Piano                       C2-C4  48-72
+    xx  Electric Piano              C2-C4  48-72
+    xx  Electric Guitar Mute        C2-C4  48-72
+    xx  Wood Bass                   C0-C3  24-60
+    xx  Electric Bass               C0-C3  24-60
+
+
+
