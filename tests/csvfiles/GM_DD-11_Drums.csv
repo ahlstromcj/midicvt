@@ -1,0 +1,51 @@
+Acoustic Bass Drum,35,N/A,35,Acoustic Bass Drum
+Bass Drum 1,36,Bass Drum Gated Reverb,36,Bass Drum 1
+Side Stick,37,N/A,80,Side Stick
+Acoustic Snare,38,Snare Drum Gated Reverb,40,Electric Snare
+Hand Clap,39,N/A,39,Hand Clap
+Electric Snare,40,N/A,40,Electric Snare
+Low Floor Tom,41,Tom Low 1,41,Low Floor Tom
+Closed Hi-Hat,42,Tom Mid 1,47,Low-Mid Tom
+High Floor Tom,43,Tom High 1,50,High Tom
+Pedal Hi-Hat,44,Bass Drum 1,36,Bass Drum 1
+Low Tom,45,Bass Drum 2,35,Acoustic Bass Drum
+Open Hi-Hat,46,N/A,46,Open Hi-Hat
+Low-Mid Tom,47,N/A,47,Low-Mid Tom
+Hi-Mid Tom,48,Tom Low 2,45,Low Tom
+Crash Cymbal 1,49,Snare Drum High,38,Acoustic Snare
+High Tom,50,Tom Mid 2,48,Hi-Mid Tom
+Ride Cymbal 1,51,Snare Drum Rim Shot,76,Hi Wood Block
+Chinese Cymbal,52,Snare Drum Low,40,Electric Snare
+Ride Bell,53,Tom High 2,50,High Tom
+Tambourine,54,Hand Clap,39,Hand Clap
+Splash Cymbal,55,Cowbell,56,Cowbell
+Cowbell,56,Shaker,70,Maracas
+Crash Cymbal 2,57,Hit Hat Closed,42,Closed Hi-Hat
+Vibraslap,58,N/A,58,Vibraslap
+Ride Cymbal 2,59,Hit Hat Open,46,Open Hi-Hat
+Hi Bongo,60,Crash Cymbal,49,Crash Cymbal 1
+Low Bongo,61,Splash Cymbal,57,Crash Cymbal 2
+Mute Hi Conga,62,Ride Cymbal Cup,51,Ride Cymbal 1
+Open Hi Conga,63,Ride Cymbal,59,Ride Cymbal 2
+Low Conga,64,Conga Low,64,Low Conga
+High Timbale,65,Conga High,63,Open Hi Conga
+Low Timbale,66,Conga Muted,62,Mute Hi Conga
+High Agogo,67,Bongo Low,61,Low Bongo
+Low Agogo,68,Bongo High,60,Hi Bongo
+Cabasa,69,Timbale Low,66,Low Timbale
+Maracas,70,Timbale High,65,High Timbale
+Short Whistle,71,N/A,71,Short Whistle
+Long Whistle,72,Claves Low,75,Claves
+Short Guiro,73,Claves High,75,Claves
+Long Guiro,74,Agogo Low,68,Low Agogo
+Claves,75,Agogo High,67,High Agogo
+Hi Wood Block,76,Cuica Low,73,Short Guiro
+Low Wood Block,77,Cuica High,74,Long Guiro
+Mute Cuica,78,N/A,71,Short Whistle
+Open Cuica,79,N/A,55,Splash Cymbal
+Mute Triangle,80,N/A,44,Pedal Hi-Hat
+Open Triangle,81,N/A,40,Electric Snare
+N/A,82,N/A,45,Low Tom
+N/A,83,N/A,47,Low-Mid Tom
+N/A,84,N/A,48,Hi-Mid Tom
+N/A,85,N/A,50,High Tom
