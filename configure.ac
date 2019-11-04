@@ -51,7 +51,7 @@ PACKAGE=midicvt
 AC_DEFINE_UNQUOTED(PACKAGE, "$PACKAGE")
 AC_SUBST(PACKAGE)
 
-VERSION="0.4.1.0"
+VERSION="0.5.0"
 AC_DEFINE_UNQUOTED(VERSION, "$VERSION")
 AC_SUBST(VERSION)
 
@@ -264,8 +264,8 @@ dnl            "MIDICVT_" to these values when it generated midicvt-config.h.
 
 AH_TOP(
 
-#define VERSION_DATE_SHORT "2016-04-24"
-#define VERSION "0.4.1.0"
+#define VERSION_DATE_SHORT "2019-11-03"
+#define VERSION "0.5.0"
 #define API_VERSION "0.4"
 
 )

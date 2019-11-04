@@ -19,7 +19,6 @@
  */
 
 #include <fstream>
-
 #include <csvarray.hpp>                /* the functions in this module        */
 
 /**

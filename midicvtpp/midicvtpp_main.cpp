@@ -29,7 +29,7 @@
  * \library       midicvtpp application
  * \author        Chris Ahlstrom
  * \date          2014-04-19
- * \updates       2016-04-24
+ * \updates       2019-11-03
  * \version       $Revision$
  * \license       GNU GPL
  *
@@ -76,7 +76,7 @@ static const char * const gs_help_usage_1 =
    " --csv-patches f Convert a CSV file to a sectioned INI patch/program file.\n"
    "                 Option -o/--output specifies the output name.  Default is\n"
    "                 'out.ini', not stdout.\n"
-   " --m2m f         Employ the given INI mapping file to convert MIDI to MIDI.\n"
+   " --m2m f.ini     Employ the given INI mapping file to convert MIDI to MIDI.\n"
    "\n"
    "The following options also require the --m2m option:\n"
    "\n"
@@ -87,6 +87,14 @@ static const char * const gs_help_usage_1 =
    " --reject n      Write only channel events not from channel n.\n"
    " --summarize     Show a summary count of the conversions that occurred.\n"
    " --testing       Only the programmer knows what this one does. :-D\n"
+   ;
+
+static const char * const gs_help_usage_2 =
+   "\n"
+   "Conversion example:\n"
+   "\n"
+   "$ midicvtpp --m2m GM_PSS-790_Drums.ini -i stomtors-drums-16.mid\n"
+   "    -o stomtors-drums-10.mid\n"
    ;
 
 /**
