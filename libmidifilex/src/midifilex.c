@@ -60,7 +60,7 @@
  * \author        Other authors (see below), with modifications by Chris
  *                Ahlstrom,
  * \date          2014-04-08
- * \updates       2018-03-28
+ * \updates       2023-04-26
  * \version       $Revision$
  * \license       GNU GPL
  *
@@ -384,18 +384,19 @@ biggermsg (void)
    static const int s_message_increment = 128;
    char * newmess;
    char * oldmess = s_message_buffer;
-   int oldleng = s_message_size;
+   size_t oldleng = s_message_size;
+   size_t newleng = sizeof(char) * s_message_size;
    s_message_size += s_message_increment;
-   newmess = (char *) malloc((unsigned) (sizeof(char) * s_message_size));
+   newmess = (char *) malloc((unsigned) newleng);
    if (is_nullptr(newmess))
        mferror("biggermsg(): malloc error!");
 
    if (not_nullptr(oldmess))           /* copy old message to larger new one */
    {
-       register char * p = newmess;
-       register char * q = oldmess;
-       register char * endq = &oldmess[oldleng];
-       for ( ; q != endq; p++, q++ )
+       char * p = newmess;
+       char * q = oldmess;
+       char * endq = &oldmess[oldleng];
+       for ( ; q != endq; p++, q++)
            *p = *q;
 
        free(oldmess);

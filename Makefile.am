@@ -6,7 +6,7 @@
 # \library     libmidifilex, libmidipp, midicvt, and midicvtpp
 # \author      Chris Ahlstrom
 # \date        2014-04-08
-# \updates     2016-04-15
+# \updates     2023-12-05
 # \version     $Revision$
 # \license     $MIDICVT_SUITE_GPL_LICENSE$
 #
@@ -132,11 +132,14 @@ libtool: $(LIBTOOL_DEPS)
 #  Note that doc/dox is not commented out.  If you do not want to Build the
 #  documentation, then comment out the "doc/dox" specification.  You can still
 #  make the documentation manually by calling the make_dox script, in that
-#  case.
+#  case. 2023-12-05: building the docs is broken and I don't feel like figuring
+#  it out.
+#
+#     doc/dox
 #
 #-----------------------------------------------------------------------------
 
-SUBDIRS = m4 libmidifilex midicvt libmidipp midicvtpp data doc/dox
+SUBDIRS = m4 libmidifilex midicvt libmidipp midicvtpp data
 
 #*****************************************************************************
 # DIST_SUBDIRS

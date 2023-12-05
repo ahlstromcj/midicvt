@@ -6,7 +6,7 @@ dnl \file          configure.ac
 dnl \library       libmidifilex, libmidipp, midicvt, and midicvtpp
 dnl \author        Chris Ahlstrom
 dnl \date          2014-04-08
-dnl \update        2016-04-24
+dnl \update        2023-12-05
 dnl \version       $Revision$
 dnl \license       $MIDICVT_SUITE_GPL_LICENSE$
 dnl
@@ -357,10 +357,12 @@ AH_BOTTOM(
 
 dnl Set up the Makefiles.  First, add Doxygen support conditionally, not using
 dnl doc/dox/Makefile.  Then do the rest.
-
-AM_CONDITIONAL([HAVE_DOXYGEN],
-    [test -n "$DOXYGEN"])AM_COND_IF([HAVE_DOXYGEN],
-    [AC_CONFIG_FILES([doc/dox/Makefile])])
+dnl
+dnl We currently get errors, so have commented this one out.
+dnl
+dnl AM_CONDITIONAL([HAVE_DOXYGEN],
+dnl     [test -n "$DOXYGEN"])AM_COND_IF([HAVE_DOXYGEN],
+dnl     [AC_CONFIG_FILES([doc/dox/Makefile])])
 
 AC_CONFIG_FILES([
  Makefile

@@ -28,7 +28,7 @@
  * \library       midicvt application
  * \author        Chris Ahlstrom and many other authors
  * \date          2014-04-09
- * \updates       2018-03-28
+ * \updates       2023-12-05
  * \version       $Revision$
  * \license       GNU GPL
  *
@@ -2168,9 +2168,10 @@ redirect_stdout (const char * filename, const char * mode)
 {
    int rc = fflush(stdout);
    cbool_t result = rc == 0;
+   g_redirect_file = nullptr;                      /* for safety           */
    if (result)
    {
-      rc = fgetpos(stdout, &gs_saved_stdout_pos);  /* fails, 'Illegal seek' */
+      rc = fgetpos(stdout, &gs_saved_stdout_pos);  /* fails 'Illegal seek' */
       result = true;
       if (result)
       {
@@ -2358,6 +2359,7 @@ midicvt_setup_mfread (void)
       (void) midicvt_set_input_file("stdin");
    }
    result = not_nullptr(g_io_file);
+   g_redirect_file = nullptr;
    if (result)
    {
       if (midicvt_have_output_file())
