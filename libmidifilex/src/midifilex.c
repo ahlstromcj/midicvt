@@ -385,21 +385,31 @@ biggermsg (void)
    char * newmess = 0;
    char * oldmess = s_message_buffer;
    size_t oldleng = s_message_size;
-// size_t newleng = sizeof(char) * s_message_size;
    size_t newleng;
    s_message_size += s_message_increment;
    newleng = sizeof(char) * s_message_size;
    newmess = malloc((unsigned) newleng);
    if (is_nullptr(newmess))
-       mferror("biggermsg(): malloc error!");
+       mferror("biggermsg(): malloc error");
 
-   if (not_nullptr(oldmess))           /* copy old message to larger new one */
+   if (not_nullptr(oldmess) && not_nullptr(newmess))
    {
+#if defined USE_OLD_CODE
        char * p = newmess;
        char * q = oldmess;
+       char * newp = &newmess[newleng];
        char * endq = &oldmess[oldleng];
-       for ( ; q != endq; p++, q++)
+       for ( ; p != newp && q != endq; ++p, ++q)
            *p = *q;
+#else
+      if (newleng > oldleng)
+      {
+         (void) memset(newmess, 0, newleng);
+         (void) memcpy(newmess, oldmess, oldleng);
+      }
+      else
+         mferror("biggermsg(): reallocation error");
+#endif
 
        free(oldmess);
    }
