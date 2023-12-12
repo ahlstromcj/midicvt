@@ -1,5 +1,5 @@
-# midicvt 0.4.1.0
-(C) Chris Ahlstrom 2014-2018
+# midicvt 0.4.1.1
+(C) Chris Ahlstrom 2014-2023
 
 This project supports MIDI-to-text-to-MIDI conversions like midicomp and
 midi2text (it is derived from those projects), and adds support for direct
@@ -8,7 +8,7 @@ The C++ project can also transform the patch numbers of files, and the drum
 notes and channel as well, converting device-specific values (e.g. Yamaha
 PSS-790) to General MIDI (GM) format, for example.
 
-The newest version, `0.4.1`, adds some more important bug fixes, additional
+The newest version, `0.4.2`, adds some more important bug fixes, additional
 documentation, and a `--summarize` option to show a summary of what conversions
 were made by `midicvtpp`.
 
